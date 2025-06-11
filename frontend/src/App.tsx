@@ -3,9 +3,25 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+
 function App() {
   const [count, setCount] = useState(0)
+  const [result, setResult] = useState("")
 
+
+  const callAPI = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/")
+      const text = await response.text()
+      if (response.ok) {
+        if (result === "Hello World!") setResult("Hello again")
+        else setResult(text)
+      }
+      else setResult("Fail rồi")
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <div>
@@ -28,6 +44,9 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+
+
+      <button onClick={() => callAPI()}>Click to fetch API and response is: {result}</button>
     </>
   )
 }
