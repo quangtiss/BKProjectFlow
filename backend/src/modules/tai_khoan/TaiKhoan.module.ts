@@ -7,5 +7,6 @@ import { TaiKhoanController } from './TaiKhoan.controller';
   imports: [PrismaModule],
   controllers: [TaiKhoanController],
   providers: [TaiKhoanService],
+  exports: [TaiKhoanService],
 })
 export class TaiKhoanModule {}
