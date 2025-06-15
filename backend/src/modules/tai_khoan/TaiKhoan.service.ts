@@ -11,8 +11,15 @@ export class TaiKhoanService {
   }
 
   async findOne(ten_tai_khoan: string): Promise<tai_khoan | null> {
-    return this.prisma.tai_khoan.findFirst({
+    return this.prisma.tai_khoan.findUnique({
       where: { ten_tai_khoan },
     });
+  }
+
+  async findById(id: number): Promise<tai_khoan | any> {
+    const taiKhoan = await this.prisma.tai_khoan.findUnique({
+      where: { id },
+    });
+    return taiKhoan ?? { message: 'Không tìm thấy tài khoản' };
   }
 }
