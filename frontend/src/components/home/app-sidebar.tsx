@@ -1,4 +1,6 @@
 // import * as React from "react"
+import { useState, useEffect } from "react"
+import { ProfileService } from "@/services/auth/profile"
 import {
   IconCamera,
   IconChartBar,
@@ -32,11 +34,6 @@ import {
 } from "@/components/home/ui/sidebar"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -149,6 +146,24 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = useState({
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },)
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profileData = await ProfileService()
+      setUser({
+        name: profileData?.name || "Chưa rõ tên",
+        email: profileData?.email,
+        avatar: "/avatars/shadcn.jpg",
+      })
+    }
+    fetchProfile()
+  })
+
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -172,7 +187,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )
