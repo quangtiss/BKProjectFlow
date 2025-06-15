@@ -19,7 +19,7 @@ export class AuthService {
     if (tai_khoan?.mat_khau !== mat_khau) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: tai_khoan.id, username: tai_khoan.ten_tai_khoan };
+    const payload = { sub: tai_khoan.id, username: tai_khoan.ten_tai_khoan, role: tai_khoan.vai_tro };
     const access_token = await this.jwtService.signAsync(payload);
     // ✅ Ghi token vào cookie
     res.cookie("access_token", access_token, {

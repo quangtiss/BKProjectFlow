@@ -11,6 +11,7 @@ import {
 import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { Public } from "./guard/public.decorator";
+import { Roles } from "./guard/roles.decorator";
 
 @Controller("auth")
 export class AuthController {
@@ -43,6 +44,7 @@ export class AuthController {
     return this.authService.SignUp(data)
   }
 
+  @Roles("Sinh viên")
   @Get("profile")
   async getProfile(@Request() req) {
     return this.authService.getProfile(req);

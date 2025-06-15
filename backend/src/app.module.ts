@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TaiKhoanModule } from './modules/tai_khoan/TaiKhoan.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
+import { RolesGuard } from './modules/auth/guard/roles.guard';
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ import { AuthGuard } from './modules/auth/guard/auth.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule { }
