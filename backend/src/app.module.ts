@@ -11,10 +11,11 @@ import { AuthGuard } from './modules/auth/guard/auth.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
-    isGlobal: true, // rất quan trọng để có thể dùng process.env ở mọi nơi
+      isGlobal: true, // rất quan trọng để có thể dùng process.env ở mọi nơi
     }),
     TaiKhoanModule,
-    AuthModule,],
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

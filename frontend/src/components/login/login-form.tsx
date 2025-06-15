@@ -3,16 +3,36 @@ import { Button } from "@/components/login/button"
 import { Card, CardContent } from "@/components/login/card"
 import { Input } from "@/components/login/input"
 import { Label } from "@/components/login/label"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/routes/auth-context"
+import { LogInService } from "@/services/auth/login"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth(); // nhớ đã thêm vào context
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await LogInService(username, password)
+      setIsAuthenticated(true);
+      navigate("/")
+    } catch (error) {
+      console.error('Lỗi khi gọi service Login:', error);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -21,12 +41,14 @@ export function LoginForm({
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="text">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="text"
+                  type="text"
+                  placeholder="Enter your username"
                   required
+                  value={username}
+                  onChange={(text) => setUsername(text.target.value)}
                 />
               </div>
               <div className="grid gap-3">
@@ -39,7 +61,7 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" placeholder="Enter your password" required value={password} onChange={(text) => setPassword(text.target.value)} />
               </div>
               <Button type="submit" className="w-full">
                 Login
@@ -88,7 +110,7 @@ export function LoginForm({
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.svg"
+              src="/image-login.png"
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
