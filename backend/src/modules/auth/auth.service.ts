@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private taikhoanService: TaiKhoanService,
     private jwtService: JwtService
-  ) {}
+  ) { }
 
   async LogIn(
     ten_tai_khoan: string,
@@ -45,6 +45,10 @@ export class AuthService {
     return {
       message: "Đăng xuất thành công",
     };
+  }
+
+  async SignUp(data) {
+    return await this.taikhoanService.addTaiKhoan(data)
   }
 
   async getProfile(req) {

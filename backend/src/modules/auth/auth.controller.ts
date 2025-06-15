@@ -14,7 +14,7 @@ import { Public } from "./guard/public.decorator";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Public()
   @HttpCode(HttpStatus.OK)
@@ -34,6 +34,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   LogOut(@Res({ passthrough: true }) res: Response) {
     return this.authService.LogOut(res);
+  }
+
+
+  @Public()
+  @Post("signup")
+  SignUp(@Body() data) {
+    return this.authService.SignUp(data)
   }
 
   @Get("profile")
