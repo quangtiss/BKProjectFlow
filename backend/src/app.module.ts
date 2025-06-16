@@ -8,6 +8,7 @@ import { TaiKhoanModule } from './modules/tai_khoan/TaiKhoan.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { RolesGuard } from './modules/auth/guard/roles.guard';
+import { HocKiModule } from './modules/hoc_ki/HocKi.module';
 
 @Module({
   imports: [
@@ -16,9 +17,10 @@ import { RolesGuard } from './modules/auth/guard/roles.guard';
     }),
     TaiKhoanModule,
     AuthModule,
+    HocKiModule,
   ],
   controllers: [AppController],
-  providers: [
+  providers: [ // Áp dụng global cho kiểm soát yêu cầu đăng nhập Auth và quản lý Role nào được dùng api nào
     AppService,
     {
       provide: APP_GUARD,

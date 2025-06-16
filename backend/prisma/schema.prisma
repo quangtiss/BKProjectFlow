@@ -100,7 +100,7 @@ model giao_vu {
 
 model hoc_ki {
   id         Int          @id @default(autoincrement())
-  ten_hoc_ki String?      @db.VarChar(100)
+  ten_hoc_ki String?      @unique @db.VarChar(100)
   nam_hoc    Int?
   de_tai     de_tai[]
   hoi_dong   hoi_dong[]
@@ -205,7 +205,7 @@ model tai_khoan {
   mat_khau                 String?                   @db.VarChar(255)
   ten                      String?                   @db.VarChar(255)
   ho                       String?                   @db.VarChar(255)
-  sdt                      String?                   @db.VarChar(255)
+  sdt                      String?                   @unique @db.VarChar(255)
   cccd                     String?                   @unique @db.VarChar(255)
   ngay_sinh                DateTime?                 @db.Date
   email                    String?                   @unique @db.VarChar(255)

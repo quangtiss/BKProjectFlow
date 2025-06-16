@@ -13,7 +13,6 @@ import { SignUpDTO } from "./dto/signup.dto";
 import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { Public } from "./guard/public.decorator";
-import { Roles } from "./guard/roles.decorator";
 
 @Controller("auth")
 export class AuthController {
@@ -46,7 +45,6 @@ export class AuthController {
     return this.authService.SignUp(data)
   }
 
-  @Roles("Sinh viên", "Giảng viên", "Giáo vụ", "Giảng viên trưởng bộ môn")
   @Get("profile")
   async getProfile(@Request() req) {
     return this.authService.getProfile(req);
