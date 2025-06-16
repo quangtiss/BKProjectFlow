@@ -23,21 +23,7 @@ export class TaiKhoanService {
     return taiKhoan ?? { message: "Không tìm thấy tài khoản" };
   }
 
-  async addTaiKhoan(
-    data: {
-      ten_tai_khoan: string,
-      mat_khau: string,
-      ho: string,
-      ten: string,
-      sdt: string,
-      cccd: string,
-      ngay_sinh: string,
-      email: string,
-      dia_chi: string,
-      gioi_tinh: string,
-      vai_tro: string
-    }
-  ) {
+  async create(data: any) {
     return await this.prisma.tai_khoan.create({
       data: {
         ...data,

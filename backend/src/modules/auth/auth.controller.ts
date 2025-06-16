@@ -8,6 +8,8 @@ import {
   Get,
   Res,
 } from "@nestjs/common";
+import { LogInDTO } from "./dto/login.dto";
+import { SignUpDTO } from "./dto/signup.dto";
 import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { Public } from "./guard/public.decorator";
@@ -21,7 +23,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post("login")
   async LogIn(
-    @Body() logInDto: Record<string, any>,
+    @Body() logInDto: LogInDTO,
     @Res({ passthrough: true }) res: Response
   ) {
     return await this.authService.LogIn(
@@ -40,11 +42,11 @@ export class AuthController {
 
   @Public()
   @Post("signup")
-  SignUp(@Body() data) {
+  SignUp(@Body() data: SignUpDTO) {
     return this.authService.SignUp(data)
   }
 
-  @Roles("Sinh viên")
+  @Roles("Sinh viên", "Giảng viên", "Giáo vụ", "Giảng viên trưởng bộ môn")
   @Get("profile")
   async getProfile(@Request() req) {
     return this.authService.getProfile(req);

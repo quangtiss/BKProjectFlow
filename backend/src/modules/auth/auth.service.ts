@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async SignUp(data) {
-    return await this.taikhoanService.addTaiKhoan(data)
+    return await this.taikhoanService.create(data)
   }
 
   async getProfile(req) {
