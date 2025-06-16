@@ -31,4 +31,15 @@ export class TaiKhoanService {
       }
     });
   }
+
+  async update(id: number, data: any) {
+    if (!data || Object.keys(data).length === 0) {
+      // Không có gì để cập nhật
+      return null;
+    }
+    return await this.prisma.tai_khoan.update({
+      where: { id: id },
+      data: data
+    })
+  }
 }
