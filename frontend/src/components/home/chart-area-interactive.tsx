@@ -107,6 +107,12 @@ export function ChartAreaInteractive() {
                   Yes. It adheres to the WAI-ARIA design pattern.
                 </AccordionContent>
               </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Due</AccordionTrigger>
+                <AccordionContent>
+                  209234-23409824
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
           </CardContent>
         </Card>
