@@ -1,6 +1,8 @@
 import { IsString, MinLength, MaxLength, Matches, IsIn, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class UpdateBaseInformationDTO {
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Họ phải ở dạng chuỗi' })
     @MinLength(1, { message: 'Họ tối thiểu 1 kí tự' })
@@ -8,6 +10,7 @@ export class UpdateBaseInformationDTO {
     ho: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Tên phải ở dạng chuỗi' })
     @MinLength(1, { message: 'Tên tối thiểu 1 kí tự' })
@@ -15,16 +18,18 @@ export class UpdateBaseInformationDTO {
     ten: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Số điện thoại phải ở dạng chuỗi' })
     @MinLength(1, { message: 'Số điện thoại tối thiểu 1 kí tự' })
     @MaxLength(20, { message: 'Số điện thoại tối đa 20 kí tự' })
     @Matches(/^0\d{9,10}$/, {
-        message: 'Số điện thoại không hợp lệ',
+        message: 'Số điện thoại phải có tổng cộng 10-11 chữ số và bắt đầu bằng chữ số 0',
     })
     sdt: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Số CCCD phải ở dạng chuỗi' })
     @MinLength(2, { message: 'Số CCCD tối thiểu 2 kí tự' })
@@ -32,6 +37,7 @@ export class UpdateBaseInformationDTO {
     cccd: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Ngày sinh phải ở dạng chuỗi' })
     @MinLength(2, { message: 'Ngày sinh tối thiểu 2 kí tự' })
@@ -39,6 +45,7 @@ export class UpdateBaseInformationDTO {
     ngay_sinh: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Email phải ở dạng chuỗi' })
     @MinLength(2, { message: 'Email tối thiểu 2 kí tự' })
@@ -49,6 +56,7 @@ export class UpdateBaseInformationDTO {
     email: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsString({ message: 'Địa chỉ phải ở dạng chuỗi' })
     @MinLength(2, { message: 'Địa chỉ tối thiểu 2 kí tự' })
@@ -56,6 +64,7 @@ export class UpdateBaseInformationDTO {
     dia_chi: string;
 
 
+    @Transform(({ value }) => value.trim())
     @IsOptional()
     @IsIn(['Nam', 'Nữ'], {
         message: 'Giới tính chỉ được là Nam hoặc Nữ',
