@@ -52,9 +52,9 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/home/ui/badge"
-import { Button } from "@/components/home/ui/button"
-import { Checkbox } from "@/components/home/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Drawer,
   DrawerClose,
@@ -64,7 +64,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/home/ui/drawer"
+} from "@/components/ui/drawer"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -72,17 +72,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/home/ui/dropdown-menu"
-import { Input } from "@/components/home/ui/input"
-import { Label } from "@/components/home/ui/label"
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/home/ui/select"
-import { Separator } from "@/components/home/ui/separator"
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import {
   Table,
   TableBody,
@@ -90,13 +90,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/home/ui/table"
+} from "@/components/ui/table"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/home/ui/tabs"
+} from "@/components/ui/tabs"
 
 export const schema = z.object({
   id: z.number(),

@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/login/button"
-import { Card, CardContent } from "@/components/login/card"
-import { Input } from "@/components/login/input"
-import { Label } from "@/components/login/label"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/routes/auth-context"

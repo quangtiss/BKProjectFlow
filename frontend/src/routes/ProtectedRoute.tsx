@@ -5,7 +5,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>; // Hoặc spinner
+        return <div>Loading...</div>
     }
 
     if (!isAuthenticated) {

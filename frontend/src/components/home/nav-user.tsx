@@ -10,7 +10,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/home/ui/avatar"
+} from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,13 +19,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/home/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/home/ui/sidebar"
+} from "@/components/ui/sidebar"
 import { LogOutService } from "@/services/auth/logout"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/routes/auth-context"

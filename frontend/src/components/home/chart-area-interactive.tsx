@@ -2,7 +2,8 @@
 
 // import * as React from "react"
 import { useEffect, useState } from "react"
-
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
   Card,
@@ -11,18 +12,30 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/home/ui/card"
+} from "@/components/ui/card"
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
+} from "@tabler/icons-react"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/home/ui/select"
+} from "@/components/ui/select"
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/components/home/ui/toggle-group"
+} from "@/components/ui/toggle-group"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export const description = "An interactive area chart"
 
@@ -81,8 +94,104 @@ export function ChartAreaInteractive() {
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        ABC
+        <Card>
+          <CardHeader>
+            <CardTitle>Card Title</CardTitle>
+            <CardAction>Card Action</CardAction>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Informations</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
       </CardContent>
+
+      {/* ----------Footer------------ */}
+      <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
+        <div className="flex items-center justify-between px-4">
+          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex"></div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                // value={`${table.getState().pagination.pageSize}`}
+                value={'5'}
+              // onValueChange={(value) => {
+              //   table.setPageSize(Number(value))
+              // }}
+              >
+                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                  <SelectValue
+                  // placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[5, 10].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              {/* Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()} */}
+              Page A of B
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+              // onClick={() => table.setPageIndex(0)}
+              // disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <IconChevronsLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+              // onClick={() => table.previousPage()}
+              // disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <IconChevronLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+              // onClick={() => table.nextPage()}
+              // disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <IconChevronRight />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden size-8 lg:flex"
+                size="icon"
+              // onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              // disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <IconChevronsRight />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ---------End Footer---------- */}
     </Card>
   )
 }
