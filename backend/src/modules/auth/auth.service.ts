@@ -26,7 +26,7 @@ export class AuthService {
       httpOnly: true, // Không cho JS truy cập
       secure: false, // Bật = true nếu dùng HTTPS
       sameSite: "lax", // Giúp ngăn CSRF (hoặc dùng 'strict')
-      maxAge: 1000 * 60 * 15, // Hết hạn sau 15 phút
+      maxAge: 1000 * 60 * 45, // Hết hạn sau 15 phút
     });
     return {
       message: "Đăng nhập thành công",

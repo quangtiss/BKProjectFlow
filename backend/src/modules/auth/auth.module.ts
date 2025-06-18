@@ -11,11 +11,11 @@ import { jwtConstants } from './guard/constants';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '15m' },
+      signOptions: { expiresIn: '45m' },
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }

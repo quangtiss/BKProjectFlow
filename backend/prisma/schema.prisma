@@ -36,31 +36,33 @@ model dang_ki {
 }
 
 model de_tai {
-  id                 Int             @id @default(autoincrement())
-  ngay_tao           DateTime?       @db.Timestamptz(6)
-  trang_thai         String?         @db.VarChar(100)
-  trang_thai_duyet   String?         @db.VarChar(100)
-  giai_doan          String?         @db.VarChar(100)
-  ten_tieng_viet     String?         @db.VarChar(255)
-  ten_tieng_anh      String?         @db.VarChar(255)
-  mo_ta              String?         @db.VarChar(255)
-  ma_de_tai          String?         @db.VarChar(100)
-  nhom_nganh         String?         @db.VarChar(255)
-  he_dao_tao         String?         @db.VarChar(255)
-  so_luong_sinh_vien Int?
-  id_hoc_ki          Int?
-  id_hoi_dong        Int?
-  cham_diem          cham_diem[]
-  chinh_sua          chinh_sua[]
-  dang_ki            dang_ki?
-  hoc_ki             hoc_ki?         @relation(fields: [id_hoc_ki], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  hoi_dong           hoi_dong?       @relation(fields: [id_hoi_dong], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  duyet_de_tai       duyet_de_tai?
-  huong_dan          huong_dan[]
-  ket_qua            ket_qua[]
-  moi_lien_quan      moi_lien_quan[]
-  nhiem_vu           nhiem_vu[]
-  tin_nhan           tin_nhan[]
+  id                    Int             @id @default(autoincrement())
+  ngay_tao              DateTime?       @db.Timestamptz(6)
+  trang_thai            String?         @db.VarChar(100)
+  trang_thai_duyet      String?         @db.VarChar(100)
+  giai_doan             String?         @db.VarChar(100)
+  ten_tieng_viet        String?         @db.VarChar(255)
+  ten_tieng_anh         String?         @db.VarChar(255)
+  mo_ta                 String?         @db.VarChar(255)
+  ma_de_tai             String?         @db.VarChar(100)
+  nhom_nganh            String?         @db.VarChar(255)
+  he_dao_tao            String?         @db.VarChar(255)
+  so_luong_sinh_vien    Int?
+  id_giang_vien_de_xuat Int?
+  id_hoc_ki             Int?
+  id_hoi_dong           Int?
+  cham_diem             cham_diem[]
+  chinh_sua             chinh_sua[]
+  dang_ki               dang_ki?
+  giang_vien            giang_vien?     @relation(fields: [id_giang_vien_de_xuat], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  hoc_ki                hoc_ki?         @relation(fields: [id_hoc_ki], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hoi_dong              hoi_dong?       @relation(fields: [id_hoi_dong], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  duyet_de_tai          duyet_de_tai?
+  huong_dan             huong_dan[]
+  ket_qua               ket_qua[]
+  moi_lien_quan         moi_lien_quan[]
+  nhiem_vu              nhiem_vu[]
+  tin_nhan              tin_nhan[]
 }
 
 model duyet_de_tai {
@@ -78,6 +80,7 @@ model giang_vien {
   to_chuyen_nganh String?     @db.VarChar(255)
   id_tai_khoan    Int?        @unique
   cham_diem       cham_diem[]
+  de_tai          de_tai[]
   tai_khoan       tai_khoan?  @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
   huong_dan       huong_dan[]
   nhiem_vu        nhiem_vu[]
@@ -154,6 +157,8 @@ model lich_trinh {
   ngay_ket_thuc DateTime? @db.Timestamptz(6)
   id_nguoi_them Int?
   id_hoc_ki     Int?
+  created_at    DateTime? @db.Timestamptz(6)
+  updated_at    DateTime? @db.Timestamptz(6)
   hoc_ki        hoc_ki?   @relation(fields: [id_hoc_ki], references: [id], onDelete: NoAction, onUpdate: NoAction)
   giao_vu       giao_vu?  @relation(fields: [id_nguoi_them], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -221,7 +226,7 @@ model tai_khoan {
   email                    String?                   @unique @db.VarChar(255)
   dia_chi                  String?                   @db.VarChar(255)
   gioi_tinh                String?                   @db.VarChar(100)
-  vai_tro                  String?                   @db.VarChar(100)
+  vai_tro                  String                    @db.VarChar(100)
   giang_vien               giang_vien?
   giang_vien_truong_bo_mon giang_vien_truong_bo_mon?
   giao_vu                  giao_vu?
