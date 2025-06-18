@@ -24,14 +24,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:3000', {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then(res => res.ok ? res.text() : Promise.reject())
-            .then(() => setIsAuthenticated(true))
-            .catch(() => setIsAuthenticated(false))
-            .finally(() => setLoading(false));
+        const isLogin = async () => {
+            try {
+                const response = await fetch('http://localhost:3000', {
+                    method: 'GET',
+                    credentials: 'include',
+                })
+                if (response.ok) setIsAuthenticated(true)
+                else setIsAuthenticated(false)
+            } catch {
+                setIsAuthenticated(false)
+            } finally {
+                setLoading(false)
+            }
+
+        }
+        isLogin()
     }, []);
 
     return (

@@ -1,7 +1,7 @@
 "use client"
 
 // import * as React from "react"
-import { type Icon } from "@tabler/icons-react"
+import { IconHelp, IconSearch, IconSettings } from "@tabler/icons-react"
 
 import {
   SidebarGroup,
@@ -11,30 +11,43 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string
-    url: string
-    icon: Icon
-  }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+export function NavSecondary(props: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+
+
+          <SidebarMenuItem key={'Settings'}>
+            <SidebarMenuButton asChild>
+              <a>
+                <IconSettings />
+                <span>{'Settings'}</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Get Help'}>
+            <SidebarMenuButton asChild>
+              <a>
+                <IconHelp />
+                <span>{'Get Help'}</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Search'}>
+            <SidebarMenuButton asChild>
+              <a>
+                <IconSearch />
+                <span>{'Search'}</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

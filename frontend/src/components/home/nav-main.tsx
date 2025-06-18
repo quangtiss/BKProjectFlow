@@ -1,4 +1,4 @@
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, IconMail } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,17 +8,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {
+  IconDashboard,
+  IconListDetails,
+  IconChartBar,
+  IconFolder,
+  IconUsers
+} from "@tabler/icons-react"
 import { useNavigate } from "react-router-dom"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
-}) {
+export function NavMain() {
   const navigate = useNavigate()
   return (
     <SidebarGroup>
@@ -45,14 +44,47 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+
+          <SidebarMenuItem key={'Dashboard'}>
+            <SidebarMenuButton tooltip={'Dashboard'}>
+              <IconDashboard />
+              <span>Dashboard</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Lifecycle'}>
+            <SidebarMenuButton tooltip={'Lifecycle'}>
+              <IconListDetails />
+              <span>Lifecycle</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Analytics'}>
+            <SidebarMenuButton tooltip={'Analytics'}>
+              <IconChartBar />
+              <span>Analytics</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Projects'}>
+            <SidebarMenuButton tooltip={'Projects'}>
+              <IconFolder />
+              <span>Projects</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem key={'Team'}>
+            <SidebarMenuButton tooltip={'Team'}>
+              <IconUsers />
+              <span>Team</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
