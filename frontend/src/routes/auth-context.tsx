@@ -12,13 +12,15 @@ type AuthContextType = {
     loading: boolean;
     setIsAuthenticated: (value: boolean) => void;
     role: string | null;
+    setRole: (value: string | null) => void
 };
 
 const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     loading: true,
     setIsAuthenticated: () => { },
-    role: null
+    role: null,
+    setRole: () => { }
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -54,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, role }}>
+        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, role, setRole }}>
             {children}
         </AuthContext.Provider>
     );

@@ -7,13 +7,15 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/routes/auth-context"
 import { LogInService } from "@/services/auth/login"
+import { ProfileService } from "@/services/auth/profile"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth(); // nhớ đã thêm vào context
+  const { setIsAuthenticated } = useAuth(); // Set biến xem đã đăng nhập chưa
+  const { setRole } = useAuth(); // Set biến xem role là gì
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,6 +23,8 @@ export function LoginForm({
     e.preventDefault();
     try {
       await LogInService(username, password)
+      const dataUser = await ProfileService()
+      setRole(dataUser.vai_tro);
       setIsAuthenticated(true);
       navigate("/")
     } catch (error) {

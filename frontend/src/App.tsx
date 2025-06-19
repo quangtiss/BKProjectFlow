@@ -24,7 +24,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/other" element={<Other />} />
             {/* Route chỉ cho giảng viên */}
-            <Route element={<ProtectedRoute allowedRoles={['Giảng viên trưởng bộ môn']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['Giảng viên trưởng bộ môn', 'Giáo vụ']} />}>
               <Route path="/duyet-de-tai" element={<DuyetDeTai />} />
             </Route>
           </Route>

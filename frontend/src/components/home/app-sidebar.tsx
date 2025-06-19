@@ -27,7 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const fetchProfile = async () => {
       const profileData = await ProfileService()
       setUser({
-        name: profileData?.name || "Chưa rõ tên",
+        name: profileData?.fullName || "Chưa rõ tên",
         email: profileData?.email,
         avatar: "/avatars/shadcn.jpg",
       })

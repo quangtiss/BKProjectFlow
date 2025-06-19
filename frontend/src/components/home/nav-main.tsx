@@ -53,7 +53,8 @@ export function NavMain() {
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Lifecycle'}>
+          <SidebarMenuItem key={'Lifecycle'}
+            onClick={() => navigate('/duyet-de-tai')}>
             <SidebarMenuButton tooltip={'Lifecycle'}>
               <IconListDetails />
               <span>Lifecycle</span>

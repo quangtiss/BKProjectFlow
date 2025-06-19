@@ -43,11 +43,13 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth(); // nhớ đã thêm vào context
+  const { setIsAuthenticated } = useAuth();
+  const { setRole } = useAuth();
 
   const LogOut = async () => {
     try {
       await LogOutService()
+      setRole(null)
       setIsAuthenticated(false)
       navigate('/login')
     } catch (error) {
