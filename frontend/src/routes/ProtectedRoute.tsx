@@ -1,8 +1,15 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './auth-context';
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-    const { isAuthenticated, loading } = useAuth();
+type ProtectedRouteProps = {
+    allowedRoles?: string[];
+};
+
+
+export default function ProtectedRoute({
+    allowedRoles
+}: ProtectedRouteProps) {
+    const { isAuthenticated, loading, role } = useAuth();
 
     if (loading) {
         return <div>Loading...</div>
@@ -12,5 +19,9 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         return <Navigate to="/login" replace />;
     }
 
-    return <>{children}</>;
+    if (allowedRoles && !allowedRoles.includes(role || '')) {
+        return <Navigate to="/403" replace />;
+    }
+
+    return <Outlet />;
 }
