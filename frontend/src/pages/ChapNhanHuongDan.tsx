@@ -41,7 +41,7 @@ import {
 
 export const description = "An interactive area chart"
 
-export function DuyetDeTai() {
+export function ChapNhanHuongDan() {
     const isMobile = useIsMobile()
     const [timeRange, setTimeRange] = useState("90d")
 
@@ -54,7 +54,7 @@ export function DuyetDeTai() {
     return (
         <Card className="@container/card">
             <CardHeader>
-                <CardTitle>Duyệt đề tài do giảng viên và sinh viên đề xuất</CardTitle>
+                <CardTitle>Chấp nhận hướng dẫn đêt tài do sinh viên đề xuất</CardTitle>
                 <CardAction>
                     <ToggleGroup
                         type="single"
@@ -94,16 +94,16 @@ export function DuyetDeTai() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Card Title</CardTitle>
+                        <CardTitle>KHMT21</CardTitle>
                         <CardDescription>
-                            Hello
+                            Phát triển hệ thống quản lý đề tài sinh viên
                         </CardDescription>
                         <CardAction className="flex flex-row items-center -mr-5">
-                            <Button className="bg-red-400">
-                                <IconCircleXFilled />
+                            <Button variant={'outline'}>
+                                Từ chối{" "}<IconCircleXFilled className="text-red-400" />
                             </Button>
-                            <Button className="mx-5 bg-green-400">
-                                <IconCircleCheckFilled />
+                            <Button variant={'outline'} className="mx-5">
+                                Chấp nhận{" "}<IconCircleCheckFilled className="text-green-400" />
                             </Button>
                         </CardAction>
                     </CardHeader>
@@ -134,11 +134,11 @@ export function DuyetDeTai() {
                             Hello
                         </CardDescription>
                         <CardAction className="flex flex-row items-center -mr-5">
-                            <Button className="bg-red-400">
-                                <IconCircleXFilled />
+                            <Button variant={'outline'}>
+                                Từ chối{" "}<IconCircleXFilled className="text-red-400" />
                             </Button>
-                            <Button className="mx-5 bg-green-400">
-                                <IconCircleCheckFilled />
+                            <Button variant={'outline'} className="mx-5">
+                                Chấp nhận{" "}<IconCircleCheckFilled className="text-green-400" />
                             </Button>
                         </CardAction>
                     </CardHeader>

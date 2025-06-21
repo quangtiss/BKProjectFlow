@@ -27,7 +27,7 @@ export function NavMain() {
             <SidebarMenuButton
               tooltip="Quick Create"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-              onClick={() => navigate('/other')}
+              onClick={() => navigate('/de-xuat-de-tai')}
             >
               <IconCirclePlusFilled />
               <span>Quick Create</span>
@@ -36,7 +36,7 @@ export function NavMain() {
               size="icon"
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/other')}
             >
               <IconMail />
               <span className="sr-only">Inbox</span>
@@ -45,7 +45,7 @@ export function NavMain() {
         </SidebarMenu>
         <SidebarMenu>
 
-          <SidebarMenuItem key={'Dashboard'}>
+          <SidebarMenuItem key={'Dashboard'} onClick={() => { navigate('/chap-nhan-huong-dan') }}>
             <SidebarMenuButton tooltip={'Dashboard'}>
               <IconDashboard />
               <span>Dashboard</span>

@@ -18,6 +18,7 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
+  IconEdit,
 } from "@tabler/icons-react"
 import {
   Select,
@@ -36,6 +37,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { toast } from "sonner"
 
 export const description = "An interactive area chart"
 
@@ -94,10 +96,23 @@ export function ChartAreaInteractive() {
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+
         <Card>
           <CardHeader>
             <CardTitle>Card Title</CardTitle>
-            <CardAction>Card Action</CardAction>
+            <CardAction>
+              <Button variant={'outline'} onClick={() =>
+                toast("Event has been created", {
+                  description: "Sunday, December 03, 2023 at 9:00 AM",
+                  action: {
+                    label: "Undo",
+                    onClick: () => console.log("Undo"),
+                  },
+                })
+              }>
+                <IconEdit />
+              </Button>
+            </CardAction>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible>
@@ -116,6 +131,42 @@ export function ChartAreaInteractive() {
             </Accordion>
           </CardContent>
         </Card>
+
+        <hr className="my-4 border-t border-gray-300" />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Card Title</CardTitle>
+            <CardAction>
+              <Button variant={'outline'} onClick={() =>
+                toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
+                  loading: `Saving`,
+                  success: "Done",
+                  error: "Error",
+                })
+              }>
+                <IconEdit />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Informations</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Due</AccordionTrigger>
+                <AccordionContent>
+                  209234-23409824
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+
       </CardContent>
 
       {/* ----------Footer------------ */}
