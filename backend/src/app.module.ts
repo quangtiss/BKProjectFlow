@@ -32,8 +32,6 @@ import { ThamGiaModule } from './modules/tham_gia/tham_gia.module';
 import { ThucHienModule } from './modules/thuc_hien/thuc_hien.module';
 import { TieuChiModule } from './modules/tieu_chi/tieu_chi.module';
 import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
-import { TestModule } from './test/test.module';
-import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -65,8 +63,7 @@ import { TestModule } from './test/test.module';
     ThamGiaModule,
     ThucHienModule,
     TieuChiModule,
-    TinNhanModule,
-    TestModule
+    TinNhanModule
   ],
   controllers: [AppController],
   providers: [ // Áp dụng global cho kiểm soát yêu cầu đăng nhập Auth và quản lý Role nào được dùng api nào
