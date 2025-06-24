@@ -4,27 +4,27 @@ import { PrismaService } from "prisma/prisma.service";
 
 @Injectable()
 export class TaiKhoanService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prismaService: PrismaService) { }
 
   async findAll() {
-    return await this.prisma.tai_khoan.findMany();
+    return await this.prismaService.tai_khoan.findMany();
   }
 
   async findOne(ten_tai_khoan: string): Promise<tai_khoan | null> {
-    return await this.prisma.tai_khoan.findUnique({
+    return await this.prismaService.tai_khoan.findUnique({
       where: { ten_tai_khoan },
     });
   }
 
   async findById(id: number): Promise<tai_khoan | any> {
-    const taiKhoan = await this.prisma.tai_khoan.findUnique({
+    const taiKhoan = await this.prismaService.tai_khoan.findUnique({
       where: { id },
     });
     return taiKhoan ?? { message: "Không tìm thấy tài khoản" };
   }
 
   async create(data: any) {
-    return await this.prisma.tai_khoan.create({
+    return await this.prismaService.tai_khoan.create({
       data: {
         ...data,
         ngay_sinh: new Date(data.ngay_sinh),
@@ -37,9 +37,15 @@ export class TaiKhoanService {
       // Không có gì để cập nhật
       return null;
     }
-    return await this.prisma.tai_khoan.update({
+    return await this.prismaService.tai_khoan.update({
       where: { id: id },
       data: data
+    })
+  }
+
+  async delete(id: number) {
+    return this.prismaService.tai_khoan.delete({
+      where: { id }
     })
   }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { TaiKhoanModule } from '../tai_khoan/TaiKhoan.module';
+import { TaiKhoanModule } from '../tai_khoan/tai_khoan.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './guard/constants';
 

@@ -1,7 +1,7 @@
-import { TaiKhoanService } from './TaiKhoan.service';
+import { TaiKhoanService } from './tai_khoan.service';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'prisma/prisma.module';
-import { TaiKhoanController } from './TaiKhoan.controller';
+import { TaiKhoanController } from './tai_khoan.controller';
 
 @Module({
   imports: [PrismaModule],
@@ -9,4 +9,4 @@ import { TaiKhoanController } from './TaiKhoan.controller';
   providers: [TaiKhoanService],
   exports: [TaiKhoanService],
 })
-export class TaiKhoanModule {}
+export class TaiKhoanModule { }

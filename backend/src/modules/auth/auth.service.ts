@@ -1,4 +1,4 @@
-import { TaiKhoanService } from "./../tai_khoan/TaiKhoan.service";
+import { TaiKhoanService } from "../tai_khoan/tai_khoan.service";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Response } from "express";
 import { JwtService } from "@nestjs/jwt";
