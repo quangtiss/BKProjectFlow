@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { SinhVienService } from './sinh_vien.service';
+import { CreateSinhVienDTO } from './dto/create_sinh_vien.dto';
 
 @Controller('sinh_vien')
 export class SinhVienController {
   constructor(private readonly sinhVienService: SinhVienService) { }
 
   @Post()
-  create(@Body() body) {
+  create(@Body() body: CreateSinhVienDTO) {
     return this.sinhVienService.create(body);
   }
 

@@ -39,28 +39,28 @@ export class SignUpDTO {
     ten: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Số điện thoại phải ở dạng chuỗi' })
-    @MinLength(1, { message: 'Số điện thoại tối thiểu 1 kí tự' })
-    @MaxLength(20, { message: 'Số điện thoại tối đa 20 kí tự' })
-    @Matches(/^0\d{9,10}$/, {
-        message: 'Số điện thoại phải có tổng cộng 10-11 chữ số và bắt đầu bằng chữ số 0',
-    })
-    sdt: string;
+    // @Transform(({ value }) => value.trim())
+    // @IsString({ message: 'Số điện thoại phải ở dạng chuỗi' })
+    // @MinLength(1, { message: 'Số điện thoại tối thiểu 1 kí tự' })
+    // @MaxLength(20, { message: 'Số điện thoại tối đa 20 kí tự' })
+    // @Matches(/^0\d{9,10}$/, {
+    //     message: 'Số điện thoại phải có tổng cộng 10-11 chữ số và bắt đầu bằng chữ số 0',
+    // })
+    // sdt: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Số CCCD phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Số CCCD tối thiểu 2 kí tự' })
-    @MaxLength(30, { message: 'Số CCCD tối đa 30 kí tự' })
-    cccd: string;
+    // @Transform(({ value }) => value.trim())
+    // @IsString({ message: 'Số CCCD phải ở dạng chuỗi' })
+    // @MinLength(2, { message: 'Số CCCD tối thiểu 2 kí tự' })
+    // @MaxLength(30, { message: 'Số CCCD tối đa 30 kí tự' })
+    // cccd: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Ngày sinh phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Ngày sinh tối thiểu 2 kí tự' })
-    @MaxLength(20, { message: 'Ngày sinh tối đa 15 kí tự' })
-    ngay_sinh: string;
+    // @Transform(({ value }) => value.trim())
+    // @IsString({ message: 'Ngày sinh phải ở dạng chuỗi' })
+    // @MinLength(2, { message: 'Ngày sinh tối thiểu 2 kí tự' })
+    // @MaxLength(20, { message: 'Ngày sinh tối đa 15 kí tự' })
+    // ngay_sinh: string;
 
 
     @Transform(({ value }) => value.trim())
@@ -73,18 +73,18 @@ export class SignUpDTO {
     email: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Địa chỉ phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Địa chỉ tối thiểu 2 kí tự' })
-    @MaxLength(50, { message: 'Địa chỉ tối đa 50 kí tự' })
-    dia_chi: string;
+    // @Transform(({ value }) => value.trim())
+    // @IsString({ message: 'Địa chỉ phải ở dạng chuỗi' })
+    // @MinLength(2, { message: 'Địa chỉ tối thiểu 2 kí tự' })
+    // @MaxLength(50, { message: 'Địa chỉ tối đa 50 kí tự' })
+    // dia_chi: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsIn(['Nam', 'Nữ'], {
-        message: 'Giới tính chỉ được là Nam hoặc Nữ',
-    })
-    gioi_tinh: string;
+    // @Transform(({ value }) => value.trim())
+    // @IsIn(['Nam', 'Nữ'], {
+    //     message: 'Giới tính chỉ được là Nam hoặc Nữ',
+    // })
+    // gioi_tinh: string;
 
 
     @Transform(({ value }) => value.trim())
