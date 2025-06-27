@@ -1,95 +1,78 @@
-import { IsString, MinLength, MaxLength, Matches, IsIn } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform } from "class-transformer";
+import { Length, IsString, Matches, IsIn, ValidateIf } from "class-validator";
+import { CreateTaiKhoanDTO } from "src/modules/tai_khoan/dto/create_tai_khoan.dto";
 
-export class SignUpDTO {
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Tên tài khoản phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Tên tài khoản tối thiểu 2 kí tự' })
-    @MaxLength(15, { message: 'Tên tài khoản tối đa 15 kí tự' })
-    @Matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$/, {
-        message: 'Tên tài khoản phải có ít nhất 1 chữ cái và chỉ được chứa chữ cái, số, dấu gạch dưới',
+export class SignUpDTO extends CreateTaiKhoanDTO {
+    //Sinh viên
+    @ValidateIf(o => o.vai_tro === 'Sinh viên')
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString({ message: 'Mã số sinh viên phải là chuỗi' })
+    @Length(7, 14, {
+        message: 'Mã số sinh viên phải từ 7 đến 14 ký tự',
     })
-    ten_tai_khoan: string;
+    mssv: string;
 
 
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Mật khẩu phải ở dạng chuỗi' })
-    @MinLength(8, { message: 'Mật khẩu tối thiểu 8 ký tự' })
-    @MaxLength(20, { message: 'Mật khẩu tối đa 20 ký tự' })
-    @Matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=~`{}[\]|:;"',.?/])[A-Za-z\d!@#$%^&*()_\-+=~`{}[\]|:;"',.?/]+$/,
-        {
-            message:
-                'Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 chũ số và 1 ký tự đặc biệt (không chứa < >)',
-        },)
-    mat_khau: string;
-
-
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Họ phải ở dạng chuỗi' })
-    @MinLength(1, { message: 'Họ tối thiểu 1 kí tự' })
-    @MaxLength(50, { message: 'Họ tối đa 50 kí tự' })
-    ho: string;
-
-
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Tên phải ở dạng chuỗi' })
-    @MinLength(1, { message: 'Tên tối thiểu 1 kí tự' })
-    @MaxLength(15, { message: 'Tên tối đa 15 kí tự' })
-    ten: string;
-
-
-    // @Transform(({ value }) => value.trim())
-    // @IsString({ message: 'Số điện thoại phải ở dạng chuỗi' })
-    // @MinLength(1, { message: 'Số điện thoại tối thiểu 1 kí tự' })
-    // @MaxLength(20, { message: 'Số điện thoại tối đa 20 kí tự' })
-    // @Matches(/^0\d{9,10}$/, {
-    //     message: 'Số điện thoại phải có tổng cộng 10-11 chữ số và bắt đầu bằng chữ số 0',
-    // })
-    // sdt: string;
-
-
-    // @Transform(({ value }) => value.trim())
-    // @IsString({ message: 'Số CCCD phải ở dạng chuỗi' })
-    // @MinLength(2, { message: 'Số CCCD tối thiểu 2 kí tự' })
-    // @MaxLength(30, { message: 'Số CCCD tối đa 30 kí tự' })
-    // cccd: string;
-
-
-    // @Transform(({ value }) => value.trim())
-    // @IsString({ message: 'Ngày sinh phải ở dạng chuỗi' })
-    // @MinLength(2, { message: 'Ngày sinh tối thiểu 2 kí tự' })
-    // @MaxLength(20, { message: 'Ngày sinh tối đa 15 kí tự' })
-    // ngay_sinh: string;
-
-
-    @Transform(({ value }) => value.trim())
-    @IsString({ message: 'Email phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Email tối thiểu 2 kí tự' })
-    @MaxLength(50, { message: 'Email tối đa 50 kí tự' })
-    @Matches(/^[a-zA-Z0-9._%+-]+@hcmut\.edu\.vn$/, {
-        message: 'Email phải có định dạng @hcmut.edu.vn',
+    @ValidateIf(o => o.vai_tro === 'Sinh viên')
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString({ message: 'Năm đào tạo phải là chuỗi' })
+    @Matches(/^[1-9][0-9]{3}$/, {
+        message: 'Năm đào tạo phải bao gồm 4 chữ số, không bắt đầu bằng 0',
     })
-    email: string;
+    nam_dao_tao: string;
 
 
-    // @Transform(({ value }) => value.trim())
-    // @IsString({ message: 'Địa chỉ phải ở dạng chuỗi' })
-    // @MinLength(2, { message: 'Địa chỉ tối thiểu 2 kí tự' })
-    // @MaxLength(50, { message: 'Địa chỉ tối đa 50 kí tự' })
-    // dia_chi: string;
-
-
-    // @Transform(({ value }) => value.trim())
-    // @IsIn(['Nam', 'Nữ'], {
-    //     message: 'Giới tính chỉ được là Nam hoặc Nữ',
-    // })
-    // gioi_tinh: string;
-
-
-    @Transform(({ value }) => value.trim())
-    @IsIn(['Sinh viên', 'Giảng viên', 'Giáo vụ', 'Giảng viên trưởng bộ môn'], {
-        message: 'Vai trò chỉ có thể là Sinh viên, Giảng viên, Giáo vụ hoặc Giảng viên trưởng bộ môn',
+    @ValidateIf(o => o.vai_tro === 'Sinh viên')
+    @IsIn(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'], {
+        message: 'Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp',
     })
-    vai_tro: string
+    he_dao_tao: string
+
+
+    @ValidateIf(o => o.vai_tro === 'Sinh viên')
+    @IsIn(['Khoa học Máy tính', 'Kĩ thuật Máy tính'],
+        { message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kĩ thuật Máy tính" }
+    )
+    nganh: string
+
+
+    @ValidateIf(o => o.vai_tro === 'Sinh viên')
+    @IsIn(['Tiếng Việt', 'Tiếng Pháp', 'Tiếng Nhật', 'Tiếng Anh'], {
+        message: 'Ngôn ngữ chỉ có thể là Tiếng Việt, Tiếng Pháp, Tiếng Nhật hoặc Tiếng Anh',
+    })
+    ngon_ngu: string
+
+
+    //Giảng viên và Giảng viên trưởng bộ môn
+    @ValidateIf(o => o.vai_tro === 'Giảng viên' || o.vai_tro === "Giảng viên trưởng bộ môn")
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString({ message: 'Mã số giảng viên phải là chuỗi' })
+    @Length(7, 14, {
+        message: 'Mã số giảng viên phải từ 7 đến 14 ký tự',
+    })
+    msgv: string;
+
+
+    @ValidateIf(o => o.vai_tro === 'Giảng viên' || o.vai_tro === "Giảng viên trưởng bộ môn")
+    @IsIn(['Hệ thống thông tin', 'Hệ thống mạng', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kĩ thuật máy tính'], {
+        message: 'Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống mạng, Công nghệ phần mềm, Khoa học máy tính hoặc Kĩ thuật máy tính',
+    })
+    to_chuyen_nganh: string
+
+
+    //Giáo vụ
+    @ValidateIf(o => o.vai_tro === 'Giáo vụ')
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString({ message: 'Mã số nhân viên phải là chuỗi' })
+    @Length(7, 14, {
+        message: 'Mã số nhân viên phải từ 7 đến 14 ký tự',
+    })
+    msnv: string;
+
+
+
+    @ValidateIf(o => o.vai_tro === 'Giáo vụ')
+    @IsIn(['Nhân viên thông tin', 'Nhân viên kiểm soát'],
+        { message: "Chức vụ chỉ có thể là Nhân viên thông tin hoặc Nhân viên kiểm soát" })
+    chuc_vu: string
 }

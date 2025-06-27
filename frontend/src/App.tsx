@@ -10,6 +10,7 @@ import { DuyetDeTai } from "./pages/DuyetDeTai"
 import Forbidden from "./pages/403"
 import { ChapNhanHuongDan } from "./pages/ChapNhanHuongDan"
 import { DeXuatDeTai } from "./pages/DeXuatDeTai"
+import { SignupPage } from "./pages/SignupPage"
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/403" element={<Forbidden />} />
 
         {/* Auth Provide and Role Provide */}

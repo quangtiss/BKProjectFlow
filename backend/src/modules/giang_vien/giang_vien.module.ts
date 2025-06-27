@@ -7,5 +7,6 @@ import { PrismaModule } from 'prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [GiangVienController],
   providers: [GiangVienService],
+  exports: [GiangVienService]
 })
 export class GiangVienModule { }

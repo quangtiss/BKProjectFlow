@@ -17,6 +17,13 @@ export class GiaoVuService {
         return giao_vu ?? { message: "Không tìm thấy giáo vụ" };
     }
 
+    async findByMaSo(msnv: string) {
+        const giao_vu = await this.prismaService.giao_vu.findUnique({
+            where: { msnv },
+        });
+        return giao_vu
+    }
+
     async create(data: any) {
         return await this.prismaService.giao_vu.create(
             { data }

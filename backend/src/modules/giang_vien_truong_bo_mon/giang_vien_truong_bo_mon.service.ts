@@ -17,6 +17,13 @@ export class GiangVienTruongBoMonService {
         return giang_vien_truong_bo_mon ?? { message: "Không tìm thấy giảng viên trưởng bộ môn" };
     }
 
+    async findByMaSo(msgv: string) {
+        const giang_vien_truong_bo_mon = await this.prismaService.giang_vien_truong_bo_mon.findUnique({
+            where: { msgv },
+        });
+        return giang_vien_truong_bo_mon
+    }
+
     async create(data: any) {
         return await this.prismaService.giang_vien_truong_bo_mon.create(
             { data }

@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe, Patch, Request, Body, Post, Delete } from '@nestjs/common';
 import { TaiKhoanService } from './tai_khoan.service';
-import { UpdateBaseInformationDTO } from './dto/update_base_info.dto';
+import { UpdateTaiKhoanDTO } from './dto/update_tai_khoan';
 
 @Controller('tai_khoan')
 export class TaiKhoanController {
@@ -17,7 +17,7 @@ export class TaiKhoanController {
   }
 
   @Patch()
-  update(@Body() body: UpdateBaseInformationDTO, @Request() req) {
+  update(@Body() body: UpdateTaiKhoanDTO, @Request() req) {
     return this.taiKhoanService.update(req.user.sub, body)
   }
 

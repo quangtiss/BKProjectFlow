@@ -17,6 +17,13 @@ export class GiangVienService {
         return giang_vien ?? { message: "Không tìm thấy giảng viên" };
     }
 
+    async findByMaSo(msgv: string) {
+        const giang_vien = await this.prismaService.giang_vien.findUnique({
+            where: { msgv },
+        });
+        return giang_vien
+    }
+
     async create(data: any) {
         return await this.prismaService.giang_vien.create(
             { data }

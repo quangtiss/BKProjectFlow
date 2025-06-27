@@ -25,10 +25,7 @@ export class TaiKhoanService {
 
   async create(data: any) {
     return await this.prismaService.tai_khoan.create({
-      data: {
-        ...data,
-        ngay_sinh: new Date(data.ngay_sinh),
-      }
+      data
     });
   }
 

@@ -7,5 +7,6 @@ import { PrismaModule } from 'prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [GiaoVuController],
   providers: [GiaoVuService],
+  exports: [GiaoVuService]
 })
 export class GiaoVuModule { }

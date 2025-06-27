@@ -17,9 +17,21 @@ export class SinhVienService {
         return sinh_vien ?? { message: "Không tìm thấy sinh viên" };
     }
 
+    async findByMaSo(mssv: string) {
+        const sinh_vien = await this.prismaService.sinh_vien.findUnique({
+            where: { mssv },
+        });
+        return sinh_vien
+    }
+
     async create(data: any) {
         return await this.prismaService.sinh_vien.create(
-            { data }
+            {
+                data: {
+                    ...data,
+                    nam_dao_tao: parseInt(data.nam_dao_tao)
+                }
+            }
         )
     }
 
