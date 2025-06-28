@@ -50,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Button className="flex flex-row justify-start" variant={'ghost'} onClick={() => { navigate('/') }}>
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">BKProjectFlow</span>
               </Button>
             </SidebarMenuButton>
           </SidebarMenuItem>

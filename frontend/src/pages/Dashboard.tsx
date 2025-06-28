@@ -1,22 +1,18 @@
 import { SectionCards } from "@/components/dashboard/section-cards";
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive";
 import { DataTable } from "@/components/dashboard/data-table";
+import { getDeTai } from "@/services/de_tai/get_de_tai";
 import { useState, useEffect } from "react";
 
 export default function Dashboard() {
     const [data, setData] = useState([])
 
     useEffect(() => {
-        const fetchTest = async () => {
-            const res = await fetch("http://localhost:3000/de_tai", {
-                method: "GET",
-                credentials: 'include'
-            })
-            const dataRes = await res.json()
-            setData(dataRes)
-            console.log(dataRes);
+        const fetchDataDeTai = async () => {
+            const dataDeTai = await getDeTai();
+            setData(dataDeTai)
         }
-        fetchTest()
+        fetchDataDeTai()
     }, [])
 
     return (

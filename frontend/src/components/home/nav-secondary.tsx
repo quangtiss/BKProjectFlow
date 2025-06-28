@@ -18,31 +18,31 @@ export function NavSecondary(props: React.ComponentPropsWithoutRef<typeof Sideba
         <SidebarMenu>
 
 
-          <SidebarMenuItem key={'Settings'}>
+          <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a>
                 <IconSettings />
-                <span>{'Settings'}</span>
+                <span>Cài đặt</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Get Help'}>
+          <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a>
                 <IconHelp />
-                <span>{'Get Help'}</span>
+                <span>Trợ giúp</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Search'}>
+          <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a>
                 <IconSearch />
-                <span>{'Search'}</span>
+                <span>Tìm kiếm</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

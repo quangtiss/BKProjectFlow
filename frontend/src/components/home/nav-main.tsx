@@ -30,7 +30,7 @@ export function NavMain() {
               onClick={() => navigate('/de-xuat-de-tai')}
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>Đề xuất đề tài</span>
             </SidebarMenuButton>
             <Button
               size="icon"
@@ -48,7 +48,7 @@ export function NavMain() {
           <SidebarMenuItem key={'Dashboard'} onClick={() => { navigate('/chap-nhan-huong-dan') }}>
             <SidebarMenuButton tooltip={'Dashboard'}>
               <IconDashboard />
-              <span>Dashboard</span>
+              <span>Hướng dẫn đề tài</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
@@ -57,7 +57,7 @@ export function NavMain() {
             onClick={() => navigate('/duyet-de-tai')}>
             <SidebarMenuButton tooltip={'Lifecycle'}>
               <IconListDetails />
-              <span>Lifecycle</span>
+              <span>Duyệt đề tài</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
