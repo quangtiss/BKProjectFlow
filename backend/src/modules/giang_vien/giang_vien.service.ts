@@ -10,6 +10,15 @@ export class GiangVienService {
     }
 
 
+    async findAllWithMoreInfo() {
+        return await this.prismaService.giang_vien.findMany({
+            include: {
+                tai_khoan: true
+            }
+        })
+    }
+
+
     async findById(id_tai_khoan: number) {
         const giang_vien = await this.prismaService.giang_vien.findUnique({
             where: { id_tai_khoan },

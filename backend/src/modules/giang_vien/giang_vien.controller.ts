@@ -15,6 +15,11 @@ export class GiangVienController {
     return this.giangVienService.findAll();
   }
 
+  @Get('/with_more_information')
+  findAllWithMoreInfo() {
+    return this.giangVienService.findAllWithMoreInfo();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.giangVienService.findById(+id);
