@@ -1,4 +1,4 @@
-export async function getDeTai() {
+export async function getAllDeTai() {
     try {
         const response = await fetch('http://localhost:3000/de_tai', {
             method: "GET",

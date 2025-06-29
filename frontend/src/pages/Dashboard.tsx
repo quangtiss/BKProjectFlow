@@ -1,7 +1,7 @@
 import { SectionCards } from "@/components/dashboard/section-cards";
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive";
 import { DataTable } from "@/components/dashboard/data-table";
-import { getDeTai } from "@/services/de_tai/get_de_tai";
+import { getAllDeTai } from "@/services/de_tai/get_all_de_tai";
 import { useState, useEffect } from "react";
 
 export default function Dashboard() {
@@ -9,7 +9,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         const fetchDataDeTai = async () => {
-            const dataDeTai = await getDeTai();
+            const dataDeTai = await getAllDeTai();
             setData(dataDeTai)
         }
         fetchDataDeTai()

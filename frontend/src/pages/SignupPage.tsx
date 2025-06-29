@@ -40,17 +40,17 @@ export function SignupPage({
     const form = useForm<z.infer<typeof signUpFormSchema>>({
         resolver: zodResolver(signUpFormSchema),
         defaultValues: {
-            ten_tai_khoan: "a9",
+            ten_tai_khoan: "a1",
             mat_khau: "",
             re_mat_khau: "",
             ho: "Nguyễn Văn",
             ten: "A",
-            email: "a9@hcmut.edu.vn",
+            email: "a1@hcmut.edu.vn",
             vai_tro: "Sinh viên",
 
             //Sinh viên
 
-            mssv: "1234567",
+            mssv: "1234561",
             nam_dao_tao: "2021",
             he_dao_tao: "Chính quy",
             nganh: "Khoa học Máy tính",
@@ -58,12 +58,12 @@ export function SignupPage({
 
             //Giảng viên và Giảng viên trưởng bộ môn
 
-            msgv: "1234567",
+            msgv: "1234561",
             to_chuyen_nganh: "Hệ thống thông tin",
 
             //Giáo vụ
 
-            msnv: "1234567",
+            msnv: "1234561",
             chuc_vu: "Nhân viên thông tin"
         },
     })
@@ -90,7 +90,6 @@ export function SignupPage({
             const response = await SignUpService(filteredData)
             if (response == "Success!") {
                 setSuccess("success")
-                navigate('/login')
             }
             else {
                 setSuccess("fail")

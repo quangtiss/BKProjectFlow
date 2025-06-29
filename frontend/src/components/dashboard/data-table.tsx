@@ -387,7 +387,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results.
+                      Không có kết quả.
                     </TableCell>
                   </TableRow>
                 )}
