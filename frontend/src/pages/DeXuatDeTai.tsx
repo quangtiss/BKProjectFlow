@@ -44,7 +44,6 @@ export function DeXuatDeTai({
     const form = useForm<z.infer<typeof deXuatDeTaiFormSchema>>({
         resolver: zodResolver(deXuatDeTaiFormSchema),
         defaultValues: {
-            ngay_tao: new Date(),  //lấy date ngay khi mới render
             trang_thai: "Chưa bắt đầu",
             trang_thai_duyet: "Chưa duyệt",
             giai_doan: "Đồ án chuyên ngành",
@@ -59,8 +58,20 @@ export function DeXuatDeTai({
     })
 
     // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
-        values.ngay_tao = new Date() //tính toán lại khi submit
+    async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
+        try {
+            const response = await fetch("http://localhost:3000/de_tai", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values)
+            })
+            console.log(await response.json())
+        } catch (error) {
+            console.log(error)
+        }
         console.log(values)
     }
 
@@ -171,9 +182,9 @@ export function DeXuatDeTai({
                                                                     <SelectValue placeholder="Chọn nhóm ngành" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    <SelectItem value="KH">Khoa học máy tính</SelectItem>
-                                                                    <SelectItem value="KT">Kĩ thuật máy tính</SelectItem>
-                                                                    <SelectItem value="DN">Đa ngành</SelectItem>
+                                                                    <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
+                                                                    <SelectItem value="Kĩ thuật Máy tính">Kĩ thuật Máy tính</SelectItem>
+                                                                    <SelectItem value="Đa ngành">Đa ngành</SelectItem>
                                                                 </SelectContent>
                                                             </Select>
                                                         </FormControl>

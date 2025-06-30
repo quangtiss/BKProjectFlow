@@ -1,9 +1,6 @@
 import { z } from "zod"
 
 export const deXuatDeTaiFormSchema = z.object({
-    ngay_tao: z.date(),
-
-
     trang_thai: z
         .enum(['Chưa bắt đầu', 'Đang thực hiện', 'Đã hoàn thành'], {
             errorMap: () => ({ message: "Trạng thái chỉ có thể là Chưa bắt đầu, Đang thực hiện hoặc Đã hoàn thành" })
