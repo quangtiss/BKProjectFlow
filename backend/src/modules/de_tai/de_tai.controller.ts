@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { DeTaiService } from './de_tai.service';
+import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
 
 @Controller('de_tai')
 export class DeTaiController {
     constructor(private readonly deTaiService: DeTaiService) { }
 
     @Post()
-    create(@Body() body) {
-        return this.deTaiService.create(body);
+    create(@Body() createDeTai: CreateDeTaiDTO) {
+        return this.deTaiService.create(createDeTai);
     }
 
     @Get()

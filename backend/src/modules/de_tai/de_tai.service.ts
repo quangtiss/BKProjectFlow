@@ -18,9 +18,13 @@ export class DeTaiService {
     }
 
     async create(data: any) {
-        return await this.prismaService.de_tai.create(
-            { data }
-        )
+        return await this.prismaService.de_tai.create({
+            data: {
+                ...data,
+                ngay_tao: new Date(),
+
+            }
+        })
     }
 
     async update(id: number, data: any) {
