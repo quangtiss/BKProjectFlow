@@ -44,7 +44,7 @@ model de_tai {
   ten_tieng_viet        String?         @db.VarChar(255)
   ten_tieng_anh         String?         @db.VarChar(255)
   mo_ta                 String?         @db.VarChar(255)
-  ma_de_tai             String?         @db.VarChar(100)
+  ma_de_tai             String?         @unique @db.VarChar(100)
   nhom_nganh            String?         @db.VarChar(255)
   he_dao_tao            String?         @db.VarChar(255)
   so_luong_sinh_vien    Int?
