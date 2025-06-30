@@ -1,5 +1,5 @@
 export class CreateDeTaiDTO {
-    ngay_tao: string;
+    ngay_tao: Date;
     trang_thai: string;
     trang_thai_duyet: string;
     giai_doan: string;
