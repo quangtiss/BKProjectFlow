@@ -134,9 +134,7 @@ export class AuthService {
     }
   }
 
-  async getProfile(req) {
-    //req chứa object user
-    const user = req.user;
+  async getProfile(user) {
     const tai_khoan = await this.taiKhoanService.findById(user.sub);
     return {
       auth: user,
