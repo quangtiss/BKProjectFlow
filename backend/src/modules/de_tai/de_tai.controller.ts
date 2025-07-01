@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Request, Query } from '@nestjs/common';
 import { DeTaiService } from './de_tai.service';
 import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
+import { UpdateTrangThaiDTO } from './dto/update_trang_thai.dto';
 
 @Controller('de_tai')
 export class DeTaiController {
@@ -13,8 +14,8 @@ export class DeTaiController {
     }
 
     @Get()
-    findAll() {
-        return this.deTaiService.findAll();
+    findAll(@Query() query: { trang_thai_duyet?: string }) {
+        return this.deTaiService.findAll(query);
     }
 
     @Get(':id')
@@ -22,9 +23,15 @@ export class DeTaiController {
         return this.deTaiService.findById(+id);
     }
 
+
     @Patch(':id')
     update(@Param('id') id: string, @Body() body) {
         return this.deTaiService.update(+id, body);
+    }
+
+    @Patch('/trang_thai/:id')
+    updateTrangThai(@Param('id') id: string, @Body() updateTrangThaiData: UpdateTrangThaiDTO) {
+        return this.deTaiService.update(+id, updateTrangThaiData);
     }
 
     @Delete(':id')

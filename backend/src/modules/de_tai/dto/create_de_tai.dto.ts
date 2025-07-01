@@ -3,7 +3,7 @@ import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
     // @IsOptional()
-    // @IsIn(['Thực hiện', 'Hoàn thành'],
+    // @IsIn(['Thực hiện','Bảo lưu' ,'Hoàn thành'],
     //     { message: "Trạng thái chỉ có thể là Thực hiện hoặc Hoàn thành" })
     // trang_thai: string;
 
@@ -61,4 +61,9 @@ export class CreateDeTaiDTO {
     @IsNumber()
     @Min(1, { message: "Vui lòng chọn số sinh viên phù hợp" })
     so_luong_sinh_vien: number;
+
+
+    @IsNumber()
+    @Min(1, { message: "Vui lòng chọn giảng viên hướng dẫn phù hợp" })
+    id_giang_vien_huong_dan: number
 }

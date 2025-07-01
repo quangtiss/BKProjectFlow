@@ -7,5 +7,6 @@ import { PrismaModule } from 'prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [HuongDanController],
   providers: [HuongDanService],
+  exports: [HuongDanService]
 })
 export class HuongDanModule { }
