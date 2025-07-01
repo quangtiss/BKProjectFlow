@@ -11,10 +11,10 @@ export class GiangVienTruongBoMonService {
 
 
     async findById(id_tai_khoan: number) {
-        const giang_vien_truong_bo_mon = await this.prismaService.giang_vien_truong_bo_mon.findUnique({
+        return await this.prismaService.giang_vien_truong_bo_mon.findUnique({
             where: { id_tai_khoan },
         });
-        return giang_vien_truong_bo_mon ?? { message: "Không tìm thấy giảng viên trưởng bộ môn" };
+
     }
 
     async findByMaSo(msgv: string) {

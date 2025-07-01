@@ -11,10 +11,9 @@ export class LichTrinhService {
 
 
     async findById(id: number) {
-        const lich_trinh = await this.prismaService.lich_trinh.findUnique({
+        return await this.prismaService.lich_trinh.findUnique({
             where: { id },
         });
-        return lich_trinh ?? { message: "Không tìm thấy lịch trình" };
     }
 
     async create(data: any) {

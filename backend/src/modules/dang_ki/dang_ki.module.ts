@@ -7,5 +7,6 @@ import { PrismaModule } from 'prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [DangKiController],
   providers: [DangKiService],
+  exports: [DangKiService]
 })
 export class DangKiModule { }

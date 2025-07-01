@@ -11,10 +11,9 @@ export class MoiLienQuanService {
 
 
     async findById(id: number) {
-        const moi_lien_quan = await this.prismaService.moi_lien_quan.findUnique({
+        return await this.prismaService.moi_lien_quan.findUnique({
             where: { id },
         });
-        return moi_lien_quan ?? { message: "Không tìm thấy mối liên quan" };
     }
 
     async create(data: any) {

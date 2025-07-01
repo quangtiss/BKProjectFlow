@@ -11,10 +11,9 @@ export class ThamGiaService {
 
 
     async findById(id: number) {
-        const tham_gia = await this.prismaService.tham_gia.findUnique({
+        return await this.prismaService.tham_gia.findUnique({
             where: { id },
         });
-        return tham_gia ?? { message: "Không tìm thấy tham gia" };
     }
 
     async create(data: any) {

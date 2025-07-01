@@ -11,10 +11,9 @@ export class MauDanhGiaService {
 
 
     async findById(id: number) {
-        const mau_danh_gia = await this.prismaService.mau_danh_gia.findUnique({
+        return await this.prismaService.mau_danh_gia.findUnique({
             where: { id },
         });
-        return mau_danh_gia ?? { message: "Không tìm thấy mẫu đánh giá" };
     }
 
     async create(data: any) {

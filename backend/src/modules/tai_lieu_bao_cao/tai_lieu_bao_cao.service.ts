@@ -11,10 +11,9 @@ export class TaiLieuBaoCaoService {
 
 
     async findById(id: number) {
-        const tai_lieu_bao_cao = await this.prismaService.tai_lieu_bao_cao.findUnique({
+        return await this.prismaService.tai_lieu_bao_cao.findUnique({
             where: { id },
         });
-        return tai_lieu_bao_cao ?? { message: "Không tìm thấy tài liệu báo cáo" };
     }
 
     async create(data: any) {

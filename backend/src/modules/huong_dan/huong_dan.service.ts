@@ -11,10 +11,9 @@ export class HuongDanService {
 
 
     async findById(id: number) {
-        const huong_dan = await this.prismaService.huong_dan.findUnique({
+        return await this.prismaService.huong_dan.findUnique({
             where: { id },
         });
-        return huong_dan ?? { message: "Không tìm thấy hướng dẫn" };
     }
 
     async create(data: any) {

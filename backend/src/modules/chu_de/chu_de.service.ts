@@ -11,10 +11,9 @@ export class ChuDeService {
 
 
     async findById(id: number) {
-        const chu_de = await this.prismaService.chu_de.findUnique({
+        return await this.prismaService.chu_de.findUnique({
             where: { id },
         });
-        return chu_de ?? { message: "Không tìm thấy chủ đề" };
     }
 
     async create(data: any) {

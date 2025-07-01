@@ -11,10 +11,9 @@ export class SinhVienService {
 
 
     async findById(id_tai_khoan: number) {
-        const sinh_vien = await this.prismaService.sinh_vien.findUnique({
+        return await this.prismaService.sinh_vien.findUnique({
             where: { id_tai_khoan },
         });
-        return sinh_vien ?? { message: "Không tìm thấy sinh viên" };
     }
 
     async findByMaSo(mssv: string) {

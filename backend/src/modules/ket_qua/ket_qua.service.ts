@@ -11,10 +11,9 @@ export class KetQuaService {
 
 
     async findById(id: number) {
-        const ket_qua = await this.prismaService.ket_qua.findUnique({
+        return await this.prismaService.ket_qua.findUnique({
             where: { id },
         });
-        return ket_qua ?? { message: "Không tìm thấy kết quả" };
     }
 
     async create(data: any) {

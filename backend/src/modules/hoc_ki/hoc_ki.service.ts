@@ -11,10 +11,10 @@ export class HocKiService {
 
 
     async findById(id: number) {
-        const hoc_ki = await this.prismaService.hoc_ki.findUnique({
+        return await this.prismaService.hoc_ki.findUnique({
             where: { id },
         });
-        return hoc_ki ?? { message: "Không tìm thấy học kì" };
+
     }
 
     async create(data: any) {

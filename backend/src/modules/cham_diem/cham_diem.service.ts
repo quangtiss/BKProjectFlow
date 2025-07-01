@@ -11,10 +11,9 @@ export class ChamDiemService {
 
 
     async findById(id: number) {
-        const cham_diem = await this.prismaService.cham_diem.findUnique({
+        return await this.prismaService.cham_diem.findUnique({
             where: { id },
         });
-        return cham_diem ?? { message: "Không tìm thấy chấm điểm" };
     }
 
     async create(data: any) {

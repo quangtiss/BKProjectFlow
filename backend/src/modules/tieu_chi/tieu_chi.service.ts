@@ -11,10 +11,9 @@ export class TieuChiService {
 
 
     async findById(id: number) {
-        const tieu_chi = await this.prismaService.tieu_chi.findUnique({
+        return await this.prismaService.tieu_chi.findUnique({
             where: { id },
         });
-        return tieu_chi ?? { message: "Không tìm thấy tiêu chí" };
     }
 
     async create(data: any) {

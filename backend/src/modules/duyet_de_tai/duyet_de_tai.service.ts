@@ -11,10 +11,10 @@ export class DuyetDeTaiService {
 
 
     async findById(id: number) {
-        const duyet_de_tai = await this.prismaService.duyet_de_tai.findUnique({
+        return await this.prismaService.duyet_de_tai.findUnique({
             where: { id },
         });
-        return duyet_de_tai ?? { message: "Không tìm thấy duyệt đề tài" };
+
     }
 
     async create(data: any) {

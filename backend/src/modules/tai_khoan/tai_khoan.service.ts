@@ -17,10 +17,10 @@ export class TaiKhoanService {
   }
 
   async findById(id: number): Promise<tai_khoan | any> {
-    const taiKhoan = await this.prismaService.tai_khoan.findUnique({
+    return await this.prismaService.tai_khoan.findUnique({
       where: { id },
     });
-    return taiKhoan ?? { message: "Không tìm thấy tài khoản" };
+
   }
 
   async create(data: any) {

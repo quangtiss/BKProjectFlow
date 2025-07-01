@@ -11,10 +11,9 @@ export class ThucHienService {
 
 
     async findById(id: number) {
-        const thuc_hien = await this.prismaService.thuc_hien.findUnique({
+        return await this.prismaService.thuc_hien.findUnique({
             where: { id },
         });
-        return thuc_hien ?? { message: "Không tìm thấy thực hiện" };
     }
 
     async create(data: any) {

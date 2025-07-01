@@ -11,10 +11,9 @@ export class NhiemVuService {
 
 
     async findById(id: number) {
-        const nhiem_vu = await this.prismaService.nhiem_vu.findUnique({
+        return await this.prismaService.nhiem_vu.findUnique({
             where: { id },
         });
-        return nhiem_vu ?? { message: "Không tìm thấy nhiệm vụ" };
     }
 
     async create(data: any) {

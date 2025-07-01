@@ -1,20 +1,23 @@
-import { IsString, IsIn, MinLength, MaxLength, IsNumber, Min } from "class-validator";
+import { IsString, IsIn, MinLength, MaxLength, IsNumber, Min, IsOptional } from "class-validator";
 import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
-    @IsIn(['Chưa bắt đầu', 'Đang thực hiện', 'Đã hoàn thành'],
-        { message: "Trạng thái chỉ có thể là Chưa bắt đầu, Đang thực hiện hoặc Đã hoàn thành" })
-    trang_thai: string;
+    // @IsOptional()
+    // @IsIn(['Thực hiện', 'Hoàn thành'],
+    //     { message: "Trạng thái chỉ có thể là Thực hiện hoặc Hoàn thành" })
+    // trang_thai: string;
 
 
-    @IsIn(['Chưa duyệt', 'Đã duyệt'],
-        { message: "Trạng thái duyệt chỉ có thể là Chưa duyệt hoặc Đã duyệt" })
-    trang_thai_duyet: string;
+    // @IsOptional()
+    // @IsIn(['Chưa chấp nhận', 'Chưa duyệt', 'Đã duyệt'],
+    //     { message: "Trạng thái duyệt chỉ có thể là Chưa chấp nhận, Chưa duyệt hoặc Đã duyệt" })
+    // trang_thai_duyet: string;
 
 
-    @IsIn(['Đồ án chuyên ngành', 'Đồ án tốt nghiệp'],
-        { message: "Giai đoạn chỉ có thể là Đồ án chuyên ngành hoặc Đồ án tốt nghiệp" })
-    giai_doan: string;
+    // @IsOptional()
+    // @IsIn(['Đồ án chuyên ngành', 'Đồ án tốt nghiệp'],
+    //     { message: "Giai đoạn chỉ có thể là Đồ án chuyên ngành hoặc Đồ án tốt nghiệp" })
+    // giai_doan: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)

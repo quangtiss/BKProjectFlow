@@ -11,10 +11,9 @@ export class DangKiService {
 
 
     async findById(id: number) {
-        const dang_ki = await this.prismaService.dang_ki.findUnique({
+        return await this.prismaService.dang_ki.findUnique({
             where: { id },
         });
-        return dang_ki ?? { message: "Không tìm thấy đăng kí" };
     }
 
     async create(data: any) {

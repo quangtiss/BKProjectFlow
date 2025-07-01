@@ -11,10 +11,10 @@ export class HoiDongService {
 
 
     async findById(id: number) {
-        const hoi_dong = await this.prismaService.hoi_dong.findUnique({
+        return await this.prismaService.hoi_dong.findUnique({
             where: { id },
         });
-        return hoi_dong ?? { message: "Không tìm thấy hội đồng" };
+
     }
 
     async create(data: any) {

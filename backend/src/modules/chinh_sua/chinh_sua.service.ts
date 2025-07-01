@@ -11,10 +11,9 @@ export class ChinhSuaService {
 
 
     async findById(id: number) {
-        const chinh_sua = await this.prismaService.chinh_sua.findUnique({
+        return await this.prismaService.chinh_sua.findUnique({
             where: { id },
         });
-        return chinh_sua ?? { message: "Không tìm thấy chỉnh sửa" };
     }
 
     async create(data: any) {

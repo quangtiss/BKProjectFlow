@@ -11,10 +11,9 @@ export class TinNhanService {
 
 
     async findById(id: number) {
-        const tin_nhan = await this.prismaService.tin_nhan.findUnique({
+        return await this.prismaService.tin_nhan.findUnique({
             where: { id },
         });
-        return tin_nhan ?? { message: "Không tìm thấy tin nhắn" };
     }
 
     async create(data: any) {
