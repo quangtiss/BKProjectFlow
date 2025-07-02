@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Request } from '@nestjs/common';
 import { HuongDanService } from './huong_dan.service';
-import { UpdateHuongDanDTO } from './dto/update_huong_dan.dto';
+import { UpdateTrangThaiHuongDanDTO } from './dto/update_trang_thai.dto';
 import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('huong_dan')
@@ -31,7 +31,7 @@ export class HuongDanController {
 
   @Roles('Giảng viên')
   @Patch('accept/:id')
-  update(@Param('id') id: string, @Body() updateHuongDanData: UpdateHuongDanDTO) {
+  update(@Param('id') id: string, @Body() updateHuongDanData: UpdateTrangThaiHuongDanDTO) {
     return this.huongDanService.update(+id, updateHuongDanData);
   }
 
