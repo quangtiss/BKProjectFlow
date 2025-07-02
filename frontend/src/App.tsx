@@ -28,15 +28,13 @@ function App() {
           <Route element={<HomeLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/other" element={<Other />} />
-            {/* Route chỉ cho giảng viên */}
-            <Route element={<ProtectedRoute allowedRoles={['Giảng viên trưởng bộ môn', 'Giáo vụ']} />}>
+            <Route path="/de-xuat-de-tai" element={<DeXuatDeTai />} />
+            {/* Route chỉ cho Role chỉ định */}
+            <Route element={<ProtectedRoute allowedRoles={['Giảng viên trưởng bộ môn']} />}>
               <Route path="/duyet-de-tai" element={<DuyetDeTai />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={['Giảng viên']} />}>
               <Route path="/chap-nhan-huong-dan" element={<ChapNhanHuongDan />} />
-            </Route>
-            <Route element={<ProtectedRoute allowedRoles={['Giảng viên', 'Sinh viên']} />}>
-              <Route path="/de-xuat-de-tai" element={<DeXuatDeTai />} />
             </Route>
           </Route>
         </Route>
