@@ -15,8 +15,23 @@ export class DeTaiService {
         return await this.prismaService.de_tai.findMany({
             where: query,
             include: {
-                tai_khoan: true,
-                huong_dan: true
+                tai_khoan: {
+                    include: {
+                        sinh_vien: true,
+                        giang_vien: true,
+                        giao_vu: true,
+                        giang_vien_truong_bo_mon: true
+                    }
+                },
+                huong_dan: {
+                    include: {
+                        giang_vien: {
+                            include: {
+                                tai_khoan: true
+                            }
+                        }
+                    }
+                }
             }
         });
     }
