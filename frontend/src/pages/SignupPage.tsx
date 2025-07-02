@@ -73,7 +73,6 @@ export function SignupPage({
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
         let filteredData;
-
         //Xét dữ liệu nào cần cho các vai trò, dữ liệu nào không cần thì không dùng đến
         if (vaiTro === "Sinh viên") {
             const { re_mat_khau, msgv, to_chuyen_nganh, msnv, chuc_vu, ...data } = values;
@@ -85,18 +84,8 @@ export function SignupPage({
             const { re_mat_khau, msnv, chuc_vu, mssv, nam_dao_tao, he_dao_tao, nganh, ngon_ngu, ...data } = values
             filteredData = data
         }
-        console.log(filteredData)
-        try {
-            const response = await SignUpService(filteredData)
-            if (response == "Success!") {
-                setSuccess("success")
-            }
-            else {
-                setSuccess("fail")
-            }
-        } catch {
-            setSuccess("error")
-        }
+        const response = await SignUpService(filteredData)
+        setSuccess(response)
     }
 
 
@@ -522,7 +511,7 @@ export function SignupPage({
 
                                         <div className="grid grid-cols-1 gap-4">
 
-                                            {success == "success" ?
+                                            {success == "Success!" ?
                                                 (
                                                     <Alert className="text-green-400">
                                                         <CheckCircle2Icon />
@@ -533,7 +522,7 @@ export function SignupPage({
                                                     </Alert>
                                                 )
                                                 :
-                                                success == "fail" ? (
+                                                success == "Fail!" ? (
                                                     <Alert variant="destructive">
                                                         <AlertCircleIcon />
                                                         <AlertTitle>Đăng ký thất bại</AlertTitle>
@@ -543,7 +532,7 @@ export function SignupPage({
                                                     </Alert>
                                                 )
                                                     :
-                                                    success == "error" ? (
+                                                    success == "Error!" ? (
                                                         <Alert variant="destructive">
                                                             <CloudAlert />
                                                             <AlertTitle>Lỗi hệ thống</AlertTitle>
