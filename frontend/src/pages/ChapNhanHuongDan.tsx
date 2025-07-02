@@ -167,7 +167,7 @@ export function ChapNhanHuongDan() {
                                             </p>
                                             <p className="mb-2">
                                                 <span className="font-bold">Mã đề tài:</span>{" "}
-                                                {huongDan.de_tai.mo_ta}
+                                                {huongDan.de_tai.ma_de_tai}
                                             </p>
                                             <p className="mb-2">
                                                 <span className="font-bold">Mô tả:</span>{" "}
