@@ -1,25 +1,6 @@
 import { z } from "zod"
 
 export const deXuatDeTaiFormSchema = z.object({
-    trang_thai: z
-        .enum(['Chưa bắt đầu', 'Đang thực hiện', 'Đã hoàn thành'], {
-            errorMap: () => ({ message: "Trạng thái chỉ có thể là Chưa bắt đầu, Đang thực hiện hoặc Đã hoàn thành" })
-        }),
-
-
-    trang_thai_duyet: z
-        .enum(['Chưa duyệt', 'Đã duyệt'], {
-            errorMap: () => ({ message: "Trạng thái duyệt chỉ có thể là Chưa duyệt hoặc Đã duyệt" })
-        }),
-
-
-
-    giai_doan: z
-        .enum(['Đồ án chuyên ngành', 'Đồ án tốt nghiệp'], {
-            errorMap: () => ({ message: "Giai đoạn chỉ có thể là Đồ án chuyên ngành hoặc Đồ án tốt nghiệp" })
-        }),
-
-
     ten_tieng_viet: z
         .string()
         .min(1, { message: "Tên tiếng việt tối thiểu 1 kí tự" })
