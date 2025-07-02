@@ -14,7 +14,7 @@ export class DeTaiController {
     }
 
     @Get()
-    findAll(@Query() query: { trang_thai?: string }) {
+    findAll(@Query() query: { trang_thai?: string, trang_thai_duyet?: string }) {
         return this.deTaiService.findAll(query);
     }
 
