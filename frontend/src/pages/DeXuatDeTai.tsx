@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/form"
 import { deXuatDeTaiFormSchema } from "@/validations/de_xuat_de_tai.schema";
 import { getAllGiangVien } from "@/services/giang_vien/get_all_giang_vien";
+import { CreateDeTai } from "@/services/de_tai/create_de_tai";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react";
 
 
 
@@ -33,6 +36,9 @@ export function DeXuatDeTai({
     ...props
 }: React.ComponentProps<"div">) {
     const [listGiangVien, setListGiangVien] = useState([])
+    const [success, setSuccess] = useState("")
+
+
     useEffect(() => {
         const fetchListGiangVien = async () => {
             setListGiangVien(await getAllGiangVien())
@@ -44,9 +50,6 @@ export function DeXuatDeTai({
     const form = useForm<z.infer<typeof deXuatDeTaiFormSchema>>({
         resolver: zodResolver(deXuatDeTaiFormSchema),
         defaultValues: {
-            trang_thai: "Chưa bắt đầu",
-            trang_thai_duyet: "Chưa duyệt",
-            giai_doan: "Đồ án chuyên ngành",
             ten_tieng_viet: "Aa",
             ten_tieng_anh: "Az",
             mo_ta: "Aa",
@@ -59,20 +62,8 @@ export function DeXuatDeTai({
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
-        try {
-            const response = await fetch("http://localhost:3000/de_tai", {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values)
-            })
-            console.log(await response.json())
-        } catch (error) {
-            console.log(error)
-        }
-        console.log(values)
+        const response = await CreateDeTai(values)
+        setSuccess(response)
     }
 
 
@@ -228,7 +219,7 @@ export function DeXuatDeTai({
                                                     <FormItem>
                                                         <FormLabel>Số lượng sinh viên</FormLabel>
                                                         <FormControl>
-                                                            <Input {...field} className="w-full" type="number" placeholder="Số lượng" />
+                                                            <Input value={Number(field.value)} onChange={(e) => field.onChange(Number(e.target.value))} className="w-full" type="number" placeholder="Số lượng" />
                                                         </FormControl>
                                                         <FormDescription />
                                                         <FormMessage />
@@ -273,6 +264,42 @@ export function DeXuatDeTai({
                                         Or
                                     </span>
                                 </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4">
+
+                                {success == "Success!" ?
+                                    (
+                                        <Alert className="text-green-400">
+                                            <CheckCircle2Icon />
+                                            <AlertTitle>Đề xuất thành công</AlertTitle>
+                                            <AlertDescription className="text-green-400">
+                                                Đề xuất sẽ được xem xét chấp nhận bởi giáo viên hướng dẫn và duyệt đề tài bởi giáo viên trưởng bộ môn.
+                                            </AlertDescription>
+                                        </Alert>
+                                    )
+                                    :
+                                    success == "Fail!" ? (
+                                        <Alert variant="destructive">
+                                            <AlertCircleIcon />
+                                            <AlertTitle>Đề xuất thất bại</AlertTitle>
+                                            <AlertDescription>
+                                                <p>Mã số đề tài đã tồn tại</p>
+                                            </AlertDescription>
+                                        </Alert>
+                                    )
+                                        :
+                                        success == "Error!" ? (
+                                            <Alert variant="destructive">
+                                                <CloudAlert />
+                                                <AlertTitle>Lỗi hệ thống</AlertTitle>
+                                                <AlertDescription>
+                                                    <p>Vui lòng thử lại sau</p>
+                                                </AlertDescription>
+                                            </Alert>
+                                        )
+                                            : null}
+
                             </div>
                         </form>
                     </Form>
