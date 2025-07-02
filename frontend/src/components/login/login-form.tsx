@@ -44,20 +44,13 @@ export function LoginForm({
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof logInFormSchema>) {
-    try {
-      const response = await LogInService(values.username, values.password)
-      if (response == "Success!") {
-        setSuccess("success")
-        const dataUser = await ProfileService()
-        setRole(dataUser.vai_tro);
-        setIsAuthenticated(true);
-        navigate("/")
-      }
-      else {
-        setSuccess("fail")
-      }
-    } catch {
-      setSuccess("error")
+    const response = await LogInService(values.username, values.password)
+    setSuccess(response)
+    if (response == "Success!") {
+      const dataUser = await ProfileService()
+      setRole(dataUser.vai_tro);
+      setIsAuthenticated(true);
+      navigate("/")
     }
   }
 
@@ -134,7 +127,7 @@ export function LoginForm({
 
                 <div className="grid grid-cols-1 gap-4">
 
-                  {success == "success" ?
+                  {success == "Success!" ?
                     (
                       <Alert className="text-green-400">
                         <CheckCircle2Icon />
@@ -145,7 +138,7 @@ export function LoginForm({
                       </Alert>
                     )
                     :
-                    success == "fail" ? (
+                    success == "Fail!" ? (
                       <Alert variant="destructive">
                         <AlertCircleIcon />
                         <AlertTitle>Đăng nhập thất bại</AlertTitle>
@@ -155,7 +148,7 @@ export function LoginForm({
                       </Alert>
                     )
                       :
-                      success == "error" ? (
+                      success == "Error!" ? (
                         <Alert variant="destructive">
                           <CloudAlert />
                           <AlertTitle>Lỗi hệ thống</AlertTitle>
