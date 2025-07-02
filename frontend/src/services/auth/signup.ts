@@ -12,8 +12,6 @@ export async function SignUpService(data) {
         if (response.ok) {
             return "Success!"
         }
-        const res = await response.json()
-        console.log(res)
         return "Fail!"
     } catch (error) {
         console.log(error)
