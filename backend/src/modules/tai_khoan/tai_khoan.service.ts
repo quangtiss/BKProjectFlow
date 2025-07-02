@@ -7,7 +7,14 @@ export class TaiKhoanService {
   constructor(private prismaService: PrismaService) { }
 
   async findAll() {
-    return await this.prismaService.tai_khoan.findMany();
+    return await this.prismaService.tai_khoan.findMany({
+      include: {
+        sinh_vien: true,
+        giang_vien: true,
+        giao_vu: true,
+        giang_vien_truong_bo_mon: true
+      }
+    });
   }
 
   async findOne(ten_tai_khoan: string): Promise<tai_khoan | null> {
