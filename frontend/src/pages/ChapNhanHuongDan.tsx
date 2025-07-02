@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 // import * as React from "react"
-import { useEffect, useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
     Card,
     CardAction,
@@ -12,49 +12,91 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
     IconChevronLeft,
     IconChevronRight,
     IconChevronsLeft,
     IconChevronsRight,
     IconCircleCheckFilled,
-    IconCircleXFilled,
-} from "@tabler/icons-react"
+    IconCircleXFilled
+} from "@tabler/icons-react";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group"
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
-export const description = "An interactive area chart"
+export const description = "An interactive area chart";
 
 export function ChapNhanHuongDan() {
-    const isMobile = useIsMobile()
-    const [timeRange, setTimeRange] = useState("90d")
+    const isMobile = useIsMobile();
+    const [timeRange, setTimeRange] = useState("90d");
+    const [listDeTaiChuaChapNhan, setListDeTaiChuaChapNhan] = useState([])
+
+
+
+    const handleAccept = async (id, trang_thai) => {
+        try {
+            const response = await fetch(`http://localhost:3000/huong_dan/accept/${id}`, {
+                method: "PATCH",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    trang_thai
+                })
+            })
+            if (response.ok) {
+                setListDeTaiChuaChapNhan(prev =>
+                    prev.filter(item => item.id !== id)
+                );
+            }
+            else {
+                console.log(await response.json())
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     useEffect(() => {
         if (isMobile) {
-            setTimeRange("7d")
+            setTimeRange("7d");
         }
-    }, [isMobile])
+
+        const fetchListDeTaiChuaChapNhan = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/huong_dan/current_user?trang_thai=Chưa chấp nhận", {
+                    method: "GET",
+                    credentials: 'include'
+                })
+                const data = await response.json()
+                console.log(data)
+                setListDeTaiChuaChapNhan(data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        fetchListDeTaiChuaChapNhan()
+    }, [isMobile]);
 
     return (
         <Card className="@container/card">
             <CardHeader>
-                <CardTitle>Chấp nhận hướng dẫn đêt tài do sinh viên đề xuất</CardTitle>
+                <CardTitle>Chấp nhận hướng dẫn đề tài do sinh viên đề xuất</CardTitle>
                 <CardAction>
                     <ToggleGroup
                         type="single"
@@ -92,73 +134,84 @@ export function ChapNhanHuongDan() {
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
 
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>KHMT21</CardTitle>
-                        <CardDescription>
-                            Phát triển hệ thống quản lý đề tài sinh viên
-                        </CardDescription>
-                        <CardAction className="flex flex-row items-center -mr-5">
-                            <Button variant={'outline'}>
-                                Từ chối{" "}<IconCircleXFilled className="text-red-400" />
-                            </Button>
-                            <Button variant={'outline'} className="mx-5">
-                                Chấp nhận{" "}<IconCircleCheckFilled className="text-green-400" />
-                            </Button>
-                        </CardAction>
-                    </CardHeader>
-                    <CardContent>
-                        <Accordion type="single" collapsible>
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Informations</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It adheres to the WAI-ARIA design pattern.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Due</AccordionTrigger>
-                                <AccordionContent>
-                                    209234-23409824
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </CardContent>
-                </Card>
+                {listDeTaiChuaChapNhan.map((huongDan) => {
+                    const date = new Date(huongDan.de_tai.ngay_tao).toLocaleString()
+                    return <div key={huongDan.id} className="mb-10">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{huongDan.de_tai.ma_de_tai + " - " + huongDan.de_tai.ten_tieng_viet}</CardTitle>
+                                <CardDescription>
+                                    {huongDan.de_tai.ten_tieng_anh}
+                                </CardDescription>
+                                <CardAction className="flex flex-row items-center -mr-5">
+                                    <Button variant={"outline"} onClick={() => handleAccept(huongDan.id, "Đã từ chối")}>
+                                        Từ chối <IconCircleXFilled className="text-red-400" />
+                                    </Button>
+                                    <Button variant={"outline"} className="mx-5" onClick={() => handleAccept(huongDan.id, "Đã chấp nhận")}>
+                                        Chấp nhận <IconCircleCheckFilled className="text-green-400" />
+                                    </Button>
+                                </CardAction>
+                            </CardHeader>
+                            <CardContent>
+                                <Accordion type="single" collapsible>
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Thông tin</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            <p className="mb-2">
+                                                <span className="font-bold">Tên tiếng việt:</span>{" "}
+                                                {huongDan.de_tai.ten_tieng_viet}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Tên tiếng anh:</span>{" "}
+                                                {huongDan.de_tai.ten_tieng_anh}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Mã đề tài:</span>{" "}
+                                                {huongDan.de_tai.mo_ta}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Mô tả:</span>{" "}
+                                                {huongDan.de_tai.mo_ta}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Số lượng sinh viên yêu cầu:</span>{" "}
+                                                {huongDan.de_tai.so_luong_sinh_vien}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Nhóm ngành:</span>{" "}
+                                                {huongDan.de_tai.nhom_nganh}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Hệ đào tạo:</span>{" "}
+                                                {huongDan.de_tai.he_dao_tao}
+                                            </p>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="item-2">
+                                        <AccordionTrigger>Người đề xuất</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            <p>{huongDan.de_tai.tai_khoan.vai_tro}: {huongDan.de_tai.tai_khoan.giang_vien?.msgv ||
+                                                huongDan.de_tai.tai_khoan.giao_vu?.msnv ||
+                                                huongDan.de_tai.tai_khoan.sinh_vien?.mssv ||
+                                                huongDan.de_tai.tai_khoan.giang_vien_truong_bo_mon?.msgv}
+                                                - {huongDan.de_tai.tai_khoan.ho + " " + huongDan.de_tai.tai_khoan.ten}</p>
+                                            <p className="italic">{huongDan.de_tai.tai_khoan.email}</p>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="item-3">
+                                        <AccordionTrigger>Ngày tạo</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            {date}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            </CardContent>
+                        </Card>
+                    </div>
+                })}
 
-                <hr className="my-4 border-t border-gray-300" />
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Card Title</CardTitle>
-                        <CardDescription>
-                            Hello
-                        </CardDescription>
-                        <CardAction className="flex flex-row items-center -mr-5">
-                            <Button variant={'outline'}>
-                                Từ chối{" "}<IconCircleXFilled className="text-red-400" />
-                            </Button>
-                            <Button variant={'outline'} className="mx-5">
-                                Chấp nhận{" "}<IconCircleCheckFilled className="text-green-400" />
-                            </Button>
-                        </CardAction>
-                    </CardHeader>
-                    <CardContent>
-                        <Accordion type="single" collapsible>
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Informations</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It adheres to the WAI-ARIA design pattern.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Due</AccordionTrigger>
-                                <AccordionContent>
-                                    209234-23409824
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </CardContent>
-                </Card>
+
             </CardContent>
 
             {/* ----------Footer------------ */}
@@ -172,7 +225,7 @@ export function ChapNhanHuongDan() {
                             </Label>
                             <Select
                                 // value={`${table.getState().pagination.pageSize}`}
-                                value={'5'}
+                                value={"5"}
                             // onValueChange={(value) => {
                             //   table.setPageSize(Number(value))
                             // }}
@@ -242,5 +295,5 @@ export function ChapNhanHuongDan() {
             </div>
             {/* ---------End Footer---------- */}
         </Card>
-    )
+    );
 }
