@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Request } from '@nestjs/common';
 import { HuongDanService } from './huong_dan.service';
 import { UpdateHuongDanDTO } from './dto/update_huong_dan.dto';
+import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('huong_dan')
 export class HuongDanController {
@@ -16,12 +17,20 @@ export class HuongDanController {
     return this.huongDanService.findAll();
   }
 
+  @Roles('Giảng viên')
+  @Get('/current_user')
+  findWithCurrentGiangVien(@Query() query: { trang_thai?: string }, @Request() req) {
+    return this.huongDanService.findWithCurrentGiangVien(query, req.user)
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.huongDanService.findById(+id);
   }
 
-  @Patch(':id')
+
+  @Roles('Giảng viên')
+  @Patch('accept/:id')
   update(@Param('id') id: string, @Body() updateHuongDanData: UpdateHuongDanDTO) {
     return this.huongDanService.update(+id, updateHuongDanData);
   }
