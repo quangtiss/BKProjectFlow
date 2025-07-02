@@ -94,7 +94,7 @@ export function ChapNhanHuongDan() {
     }, [isMobile]);
 
     return (
-        <Card className="@container/card">
+        <div className="p-3"><Card className="@container/card">
             <CardHeader>
                 <CardTitle>Chấp nhận hướng dẫn đề tài do sinh viên đề xuất</CardTitle>
                 <CardAction>
@@ -294,6 +294,6 @@ export function ChapNhanHuongDan() {
                 </div>
             </div>
             {/* ---------End Footer---------- */}
-        </Card>
+        </Card></div>
     );
 }
