@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import { DeTaiService } from '../de_tai/de_tai.service';
 
 @Injectable()
 export class DuyetDeTaiService {
-    constructor(private readonly prismaService: PrismaService) { }
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly deTaiService: DeTaiService
+    ) { }
 
     async findAll() {
         return await this.prismaService.duyet_de_tai.findMany();
@@ -17,10 +21,16 @@ export class DuyetDeTaiService {
 
     }
 
-    async create(data: any) {
-        return await this.prismaService.duyet_de_tai.create(
-            { data }
-        )
+    async create(duyetDeTai: any, idNguoiDuyet: number) {
+        await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" })
+        return await this.prismaService.duyet_de_tai.create({
+            data: {
+                ...duyetDeTai,
+                id_nguoi_duyet: idNguoiDuyet,
+                ngay_duyet: new Date()
+            }
+
+        })
     }
 
     async update(id: number, data: any) {
