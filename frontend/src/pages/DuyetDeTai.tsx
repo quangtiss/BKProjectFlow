@@ -44,17 +44,56 @@ export const description = "An interactive area chart"
 export function DuyetDeTai() {
     const isMobile = useIsMobile()
     const [timeRange, setTimeRange] = useState("90d")
+    const [listDeTaiChuaDuocDuyet, setListDeTaiChuaDuocDuyet] = useState([])
+
+    const handleAccept = async (id_de_tai: number, trang_thai: string) => {
+        try {
+            const response = await fetch('http://localhost:3000/duyet_de_tai', {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id_de_tai,
+                    trang_thai
+                })
+            })
+            if (response.ok) {
+                setListDeTaiChuaDuocDuyet(oldList => oldList.filter(item => item.id != id_de_tai))
+            }
+            else console.log(await response.json())
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         if (isMobile) {
             setTimeRange("7d")
         }
+
+        const fetchDataListDeTaiChuaDuocDuyet = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/de_tai?trang_thai=Đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
+                    method: "GET",
+                    credentials: 'include'
+                })
+                const data = await response.json()
+                if (response.ok) setListDeTaiChuaDuocDuyet(data)
+                else console.log(data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        fetchDataListDeTaiChuaDuocDuyet()
     }, [isMobile])
 
     return (
-        <Card className="@container/card">
+        <div className="p-3"><Card className="@container/card">
             <CardHeader>
-                <CardTitle>Duyệt đề tài do giảng viên và sinh viên đề xuất</CardTitle>
+                <CardTitle>Duyệt đề tài được đề xuất</CardTitle>
                 <CardAction>
                     <ToggleGroup
                         type="single"
@@ -92,73 +131,83 @@ export function DuyetDeTai() {
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
 
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Card Title</CardTitle>
-                        <CardDescription>
-                            Hello
-                        </CardDescription>
-                        <CardAction className="flex flex-row items-center -mr-5">
-                            <Button className="bg-red-400">
-                                <IconCircleXFilled />
-                            </Button>
-                            <Button className="mx-5 bg-green-400">
-                                <IconCircleCheckFilled />
-                            </Button>
-                        </CardAction>
-                    </CardHeader>
-                    <CardContent>
-                        <Accordion type="single" collapsible>
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Informations</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It adheres to the WAI-ARIA design pattern.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Due</AccordionTrigger>
-                                <AccordionContent>
-                                    209234-23409824
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </CardContent>
-                </Card>
+                {listDeTaiChuaDuocDuyet.map((deTai) => {
+                    const date = new Date(deTai.ngay_tao).toLocaleString()
+                    return <div className="mb-10" key={deTai.id}>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{deTai.ma_de_tai + " - " + deTai.ten_tieng_viet}</CardTitle>
+                                <CardDescription>
+                                    {deTai.ten_tieng_anh}
+                                </CardDescription>
+                                <CardAction className="flex flex-row items-center -mr-5">
+                                    <Button className="bg-red-400" onClick={() => handleAccept(deTai.id, "Đã từ chối")}>
+                                        <IconCircleXFilled />
+                                    </Button>
+                                    <Button className="mx-5 bg-green-400" onClick={() => handleAccept(deTai.id, "Đã chấp nhận")}>
+                                        <IconCircleCheckFilled />
+                                    </Button>
+                                </CardAction>
+                            </CardHeader>
+                            <CardContent>
+                                <Accordion type="single" collapsible>
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Thông tin</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            <p className="mb-2">
+                                                <span className="font-bold">Tên tiếng việt:</span>{" "}
+                                                {deTai.ten_tieng_viet}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Tên tiếng anh:</span>{" "}
+                                                {deTai.ten_tieng_anh}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Mã đề tài:</span>{" "}
+                                                {deTai.ma_de_tai}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Mô tả:</span>{" "}
+                                                {deTai.mo_ta}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Số lượng sinh viên yêu cầu:</span>{" "}
+                                                {deTai.so_luong_sinh_vien}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Nhóm ngành:</span>{" "}
+                                                {deTai.nhom_nganh}
+                                            </p>
+                                            <p className="mb-2">
+                                                <span className="font-bold">Hệ đào tạo:</span>{" "}
+                                                {deTai.he_dao_tao}
+                                            </p>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="item-2">
+                                        <AccordionTrigger>Người đề xuất</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            <p>{deTai.tai_khoan.vai_tro}: {deTai.tai_khoan.giang_vien?.msgv ||
+                                                deTai.tai_khoan.giao_vu?.msnv ||
+                                                deTai.tai_khoan.sinh_vien?.mssv ||
+                                                deTai.tai_khoan.giang_vien_truong_bo_mon?.msgv}
+                                                - {deTai.tai_khoan.ho + " " + deTai.tai_khoan.ten}</p>
+                                            <p className="italic">{deTai.tai_khoan.email}</p>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="item-3">
+                                        <AccordionTrigger>Ngày tạo</AccordionTrigger>
+                                        <AccordionContent className="px-4">
+                                            {date}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            </CardContent>
+                        </Card>
+                    </div>
+                })}
 
-                <hr className="my-4 border-t border-gray-300" />
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Card Title</CardTitle>
-                        <CardDescription>
-                            Hello
-                        </CardDescription>
-                        <CardAction className="flex flex-row items-center -mr-5">
-                            <Button className="bg-red-400">
-                                <IconCircleXFilled />
-                            </Button>
-                            <Button className="mx-5 bg-green-400">
-                                <IconCircleCheckFilled />
-                            </Button>
-                        </CardAction>
-                    </CardHeader>
-                    <CardContent>
-                        <Accordion type="single" collapsible>
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Informations</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It adheres to the WAI-ARIA design pattern.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Due</AccordionTrigger>
-                                <AccordionContent>
-                                    209234-23409824
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </CardContent>
-                </Card>
             </CardContent>
 
             {/* ----------Footer------------ */}
@@ -241,6 +290,6 @@ export function DuyetDeTai() {
                 </div>
             </div>
             {/* ---------End Footer---------- */}
-        </Card>
+        </Card></div>
     )
 }
