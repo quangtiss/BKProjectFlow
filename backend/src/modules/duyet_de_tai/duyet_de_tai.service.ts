@@ -9,8 +9,38 @@ export class DuyetDeTaiService {
         private readonly deTaiService: DeTaiService
     ) { }
 
-    async findAll() {
-        return await this.prismaService.duyet_de_tai.findMany();
+    async findAll(query) {
+        return await this.prismaService.duyet_de_tai.findMany({
+            where: query,
+            include: {
+                giang_vien_truong_bo_mon: {
+                    include: {
+                        tai_khoan: true  //Kèm thông tin tài khoản giảng viên trưởng bộ môn duyệt
+                    }
+                },
+                de_tai: {
+                    include: {
+                        tai_khoan: {
+                            include: { // Kèm thông tin người đề xuất
+                                sinh_vien: true,
+                                giang_vien: true,
+                                giao_vu: true,
+                                giang_vien_truong_bo_mon: true
+                            }
+                        },
+                        huong_dan: {
+                            include: {
+                                giang_vien: {
+                                    include: {
+                                        tai_khoan: true  //Kèm thông tin giảng viên chấp nhận hướng dẫn
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            }
+        });
     }
 
 

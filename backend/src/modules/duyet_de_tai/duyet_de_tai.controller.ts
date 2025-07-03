@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Request, Query } from '@nestjs/common';
 import { DuyetDeTaiService } from './duyet_de_tai.service';
 import { Roles } from '../auth/guard/roles.decorator';
 import { CreateDuyetDeTaiDTO } from './dto/create_duyet_de_tai';
@@ -13,8 +13,8 @@ export class DuyetDeTaiController {
     }
 
     @Get()
-    findAll() {
-        return this.duyetDeTaiService.findAll();
+    findAll(@Query() query: { trang_thai?: string }) {
+        return this.duyetDeTaiService.findAll(query);
     }
 
     @Get(':id')
