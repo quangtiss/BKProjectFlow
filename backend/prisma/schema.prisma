@@ -28,6 +28,7 @@ model chu_de {
 model dang_ki {
   id           Int        @id @default(autoincrement())
   ngay_dang_ki DateTime?  @db.Timestamptz(6)
+  trang_thai   String?    @db.VarChar(100)
   id_sinh_vien Int?
   id_de_tai    Int?       @unique
   de_tai       de_tai?    @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -42,7 +43,7 @@ model de_tai {
   giai_doan            String?         @db.VarChar(100)
   ten_tieng_viet       String?         @db.VarChar(255)
   ten_tieng_anh        String?         @db.VarChar(255)
-  mo_ta                String?         @db.VarChar(255)
+  mo_ta                String?
   ma_de_tai            String?         @unique @db.VarChar(100)
   nhom_nganh           String?         @db.VarChar(255)
   he_dao_tao           String?         @db.VarChar(255)
@@ -107,7 +108,8 @@ model giao_vu {
 
 model hoc_ki {
   id            Int          @id @default(autoincrement())
-  ten_hoc_ki    String?      @unique @db.VarChar(100)
+  ten_hoc_ki    String?      @unique @db.VarChar(50)
+  ngay_bat_dau  DateTime?    @db.Timestamptz(6)
   nam_hoc       Int?
   id_nguoi_them Int?
   de_tai        de_tai[]
