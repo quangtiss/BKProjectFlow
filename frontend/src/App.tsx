@@ -1,17 +1,17 @@
-import { Routes, Route } from "react-router-dom"
-import { Toaster } from "@/components/ui/sonner"
-import LoginPage from './pages/LoginPage'
-import ProtectedRoute from "./routes/ProtectedRoute"
-import HomeLayout from "./layouts/HomeLayout"
-import Dashboard from "./pages/Dashboard"
-import Other from "./pages/Other"
-import { ThemeProvider } from "@/components/ui/theme-provider"
-import { DuyetDeTai } from "./pages/DuyetDeTai"
-import Forbidden from "./pages/403"
-import { ChapNhanHuongDan } from "./pages/ChapNhanHuongDan"
-import { DeXuatDeTai } from "./pages/DeXuatDeTai"
-import { SignupPage } from "./pages/SignupPage"
-
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import HomeLayout from "./layouts/HomeLayout";
+import Dashboard from "./pages/Dashboard";
+import Other from "./pages/Other";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { DuyetDeTai } from "./pages/DuyetDeTai";
+import Forbidden from "./pages/403";
+import { ChapNhanHuongDan } from "./pages/ChapNhanHuongDan";
+import { DeXuatDeTai } from "./pages/DeXuatDeTai";
+import { SignupPage } from "./pages/SignupPage";
+import { HocKi } from "./pages/HocKi";
 
 function App() {
   return (
@@ -24,27 +24,31 @@ function App() {
 
         {/* Auth Provide and Role Provide */}
         <Route element={<ProtectedRoute />}>
-          {/* Chia layout chính */}
-          <Route element={<HomeLayout />}>
+          <Route element={<HomeLayout />}> {/*Chia layout chính*/}
+
+
             <Route path="/" element={<Dashboard />} />
             <Route path="/other" element={<Other />} />
             <Route path="/de-xuat-de-tai" element={<DeXuatDeTai />} />
-            {/* Route chỉ cho Role chỉ định */}
-            <Route element={<ProtectedRoute allowedRoles={['Giảng viên trưởng bộ môn']} />}>
+            <Route element={<ProtectedRoute allowedRoles={["Giảng viên trưởng bộ môn"]} />}>
               <Route path="/duyet-de-tai" element={<DuyetDeTai />} />
             </Route>
-            <Route element={<ProtectedRoute allowedRoles={['Giảng viên']} />}>
+            <Route element={<ProtectedRoute allowedRoles={["Giảng viên"]} />}>
               <Route path="/chap-nhan-huong-dan" element={<ChapNhanHuongDan />} />
             </Route>
+            <Route element={<ProtectedRoute allowedRoles={["Giáo vụ"]} />}>
+              <Route path="/hoc-ki" element={<HocKi />} />
+            </Route>
+
+
           </Route>
         </Route>
-
       </Routes>
 
       {/* tạo thông báo */}
       <Toaster position="top-center" richColors />
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;
