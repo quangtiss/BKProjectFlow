@@ -58,11 +58,19 @@ export class CreateDeTaiDTO {
     he_dao_tao: string;
 
 
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     @Min(1, { message: "Vui lòng chọn số sinh viên phù hợp" })
     so_luong_sinh_vien: number;
 
 
+    @Transform(({ value }) => Number(value))
+    @IsNumber()
+    @Min(1, { message: "Vui lòng chọn học kì phù hợp" })
+    id_hoc_ki: number
+
+
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     @Min(1, { message: "Vui lòng chọn giảng viên hướng dẫn phù hợp" })
     id_giang_vien_huong_dan: number
