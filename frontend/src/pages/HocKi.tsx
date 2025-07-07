@@ -49,7 +49,7 @@ import { GetAllHocKi } from "@/services/hoc_ki/get_all_hoc_ki"
 export function HocKi() {
     const [listHocKi, setListHocKi] = useState([])
     const [open, setOpen] = useState(false);
-    const [time, setTime] = useState("10:30:00");
+    const [time, setTime] = useState("00:00:00");
 
     useEffect(() => {
         const fetchListHocKi = async () => {
@@ -133,7 +133,7 @@ export function HocKi() {
                                             control={form.control}
                                             name="ngay_bat_dau"
                                             render={({ field }) => {
-                                                const currentDate = field.value ? new Date(field.value) : new Date();
+                                                const currentDate = field.value ?? new Date();
 
                                                 return (
                                                     <FormItem>
@@ -157,7 +157,7 @@ export function HocKi() {
                                                                         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                                                                             <Calendar
                                                                                 mode="single"
-                                                                                selected={currentDate}
+                                                                                selected={field.value}
                                                                                 captionLayout="dropdown"
                                                                                 onSelect={(selectedDate) => {
                                                                                     if (!selectedDate) return;
@@ -244,7 +244,7 @@ export function HocKi() {
                         listHocKi.map((hocKi) => {
                             const date = new Date(hocKi.ngay_bat_dau).toLocaleString()
                             return (
-                                <TableRow>
+                                <TableRow key={hocKi.id}>
                                     <TableCell className="font-medium">{hocKi.ten_hoc_ki}</TableCell>
                                     <TableCell>{hocKi.nam_hoc + " " + hocKi.nam_hoc + 1}</TableCell>
                                     <TableCell>{date}</TableCell>
