@@ -1,14 +1,17 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Request } from '@nestjs/common';
 import { HocKiService } from './hoc_ki.service';
 import { Roles } from '../auth/guard/roles.decorator';
+import { CreateHocKiDTO } from './dto/create_hoc_ki.dto';
 
 @Controller('hoc_ki')
 export class HocKiController {
     constructor(private readonly hocKiService: HocKiService) { }
 
+    @Roles("Giáo vụ")
     @Post()
-    create(@Body() body) {
-        return this.hocKiService.create(body);
+    create(@Body() dataHocKi: CreateHocKiDTO, @Request() req) {
+        const idNguoiThem = req.user.sub
+        return this.hocKiService.create(dataHocKi, idNguoiThem);
     }
 
     @Get()

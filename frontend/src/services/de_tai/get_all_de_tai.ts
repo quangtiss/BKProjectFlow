@@ -1,6 +1,6 @@
 export async function getAllDeTai() {
     try {
-        const response = await fetch('http://localhost:3000/de_tai', {
+        const response = await fetch('http://localhost:3000/duyet_de_tai?trang_thai=Đã chấp nhận', {
             method: "GET",
             credentials: 'include'
         })

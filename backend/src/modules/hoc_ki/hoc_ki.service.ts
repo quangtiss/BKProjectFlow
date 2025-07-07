@@ -17,12 +17,12 @@ export class HocKiService {
 
     }
 
-    async create(data: any) {
+    async create(data: any, idNguoiThem) {
         return await this.prismaService.hoc_ki.create(
             {
                 data: {
                     ...data,
-                    nam_hoc: parseInt(data.nam_hoc)
+                    id_nguoi_them: idNguoiThem
                 }
             }
         )

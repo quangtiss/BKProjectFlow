@@ -90,7 +90,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 //--------------------------------------------END IMPORT------------------------------------
 
-
 export const schema = z.object({
   id: z.number(),
   ngay_tao: z.date(),
@@ -108,12 +107,12 @@ export const schema = z.object({
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
-    id: "goi-y",
-    header: () => null,
+    id: "purpose",
+    header: "",
     cell: () => <span></span>,
   },
   {
-    accessorKey: "ten-tieng-viet",
+    accessorKey: "ma_de_tai",
     header: "Tên đề tài",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />;
@@ -121,53 +120,47 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Section Type",
-    cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.trang_thai || "Null rồi"}
-        </Badge>
-      </div>
-    ),
+    accessorKey: "so_luong_sinh vien",
+    header: "Sinh viên",
+    cell: ({ row }) => {
+      return row.original.de_tai.so_luong_sinh_vien;
+    },
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "trang_thai_dang_ki",
+    header: "Trạng thái đăng kí",
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.trang_thai === "Done" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconLoader />
-        )}
-        {row.original.trang_thai}
+        <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+        <IconLoader />
       </Badge>
     ),
   },
   {
     accessorKey: "nhom-nganh",
     header: "Nhóm ngành",
-    cell: ({ row }) => (
-      <div className="">
-        {row.original.nhom_nganh}
-      </div>
-    ),
+    cell: ({ row }) => {
+      return row.original.de_tai.nhom_nganh;
+    },
   },
   {
     accessorKey: "he-dao-tao",
     header: "Hệ đào tạo",
-    cell: ({ row }) => (
-      <div className="">
-        {row.original.he_dao_tao}
-      </div>
-    ),
+    cell: ({ row }) => {
+      return row.original.de_tai.he_dao_tao;
+    },
   },
   {
     accessorKey: "giao-vien-huong-dan",
     header: "GVHD",
     cell: ({ row }) => {
-      return "chưa xác định";
+      return (
+        row.original.de_tai.huong_dan[0].giang_vien.msgv +
+        " - " +
+        row.original.de_tai.huong_dan[0].giang_vien.tai_khoan.ho +
+        " " +
+        row.original.de_tai.huong_dan[0].giang_vien.tai_khoan.ten
+      );
     },
   },
   {
@@ -497,7 +490,6 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
   );
 }
 
-
 //Nội dung khi bầm vào từng record
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile();
@@ -506,15 +498,13 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.ten_tieng_viet}
+          {item.de_tai.ma_de_tai} - {item.de_tai.ten_tieng_viet}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.ten_tieng_viet}</DrawerTitle>
-          <DrawerDescription>
-            {item.ten_tieng_anh}
-          </DrawerDescription>
+          <DrawerTitle>{item.de_tai.ma_de_tai} - {item.de_tai.ten_tieng_viet}</DrawerTitle>
+          <DrawerDescription>{item.de_tai.ten_tieng_anh}</DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           {!isMobile && (
@@ -525,9 +515,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   Mô tả
                   <IconTrendingUp className="size-4" />
                 </div>
-                <div className="text-muted-foreground">
-                  {item.mo_ta}
-                </div>
+                <div className="text-muted-foreground">{item.de_tai.mo_ta}</div>
               </div>
               <Separator />
             </>

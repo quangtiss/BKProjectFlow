@@ -97,7 +97,7 @@ export function ChartAreaInteractive() {
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
 
-        <Card>
+        <div className="mb-10"><Card>
           <CardHeader>
             <CardTitle>Card Title</CardTitle>
             <CardAction>
@@ -130,11 +130,10 @@ export function ChartAreaInteractive() {
               </AccordionItem>
             </Accordion>
           </CardContent>
-        </Card>
+        </Card></div>
 
-        <hr className="my-4 border-t border-gray-300" />
 
-        <Card>
+        <div className="mb-10"><Card>
           <CardHeader>
             <CardTitle>Card Title</CardTitle>
             <CardAction>
@@ -165,7 +164,8 @@ export function ChartAreaInteractive() {
               </AccordionItem>
             </Accordion>
           </CardContent>
-        </Card>
+        </Card></div>
+
 
       </CardContent>
 

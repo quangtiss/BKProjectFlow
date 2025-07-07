@@ -16,13 +16,8 @@ export const deXuatDeTaiFormSchema = z.object({
     mo_ta: z
         .string()
         .min(1, { message: "Mô tả tối thiểu 1 kí tự" })
-        .max(1000, { message: "Mô tả tối đa 1000 kí tự" }),
+        .max(8000, { message: "Mô tả tối đa 8000 kí tự" }),
 
-
-    ma_de_tai: z
-        .string()
-        .min(1, { message: "Mã đề tài tối thiểu 1 kí tự" })
-        .max(10, { message: "Mã đề tài tối đa 10 kí tự" }),
 
 
     nhom_nganh: z
@@ -49,4 +44,6 @@ export const deXuatDeTaiFormSchema = z.object({
         })
         .gt(0, { message: "Vui lòng chọn giảng viên phù hợp" }),
 
+
+    list_id_sinh_vien_tham_gia: z.array(z.number())
 })

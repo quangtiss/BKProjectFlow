@@ -6,7 +6,11 @@ export class SinhVienService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async findAll() {
-        return await this.prismaService.sinh_vien.findMany();
+        return await this.prismaService.sinh_vien.findMany({
+            include: {
+                tai_khoan: true
+            }
+        });
     }
 
 

@@ -27,7 +27,23 @@ import { getAllGiangVien } from "@/services/giang_vien/get_all_giang_vien";
 import { CreateDeTai } from "@/services/de_tai/create_de_tai";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react";
-
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { Badge } from "@/components/ui/badge";
+import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
 
 
 
@@ -37,11 +53,23 @@ export function DeXuatDeTai({
 }: React.ComponentProps<"div">) {
     const [listGiangVien, setListGiangVien] = useState([])
     const [success, setSuccess] = useState("")
-
+    const [listGiangVien2, setListGiangVien2] = useState([{
+        label: "",
+        value: "",
+        selected: false
+    }])
 
     useEffect(() => {
         const fetchListGiangVien = async () => {
-            setListGiangVien(await getAllGiangVien())
+            const allGiangVien = await getAllGiangVien()
+            setListGiangVien(allGiangVien)
+            const allSinhVien = await getAllSinhVien()
+            setListGiangVien2(allSinhVien.map((sinhVien) => (
+                {
+                    label: sinhVien.mssv + " - " + sinhVien.tai_khoan.ho + " " + sinhVien.tai_khoan.ten,
+                    value: String(sinhVien.id_tai_khoan),
+                    selected: false
+                })))
         }
         fetchListGiangVien()
     }, [])
@@ -53,21 +81,20 @@ export function DeXuatDeTai({
             ten_tieng_viet: "Aa",
             ten_tieng_anh: "Az",
             mo_ta: "Aa",
-            ma_de_tai: "MT",
             nhom_nganh: "Khoa học Máy tính",
             he_dao_tao: "Chính quy",
             so_luong_sinh_vien: 3,
+            id_giang_vien_huong_dan: undefined,
+            list_id_sinh_vien_tham_gia: []
         },
     })
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
-        const response = await CreateDeTai(values)
-        setSuccess(response)
+        // const response = await CreateDeTai(values)
+        // setSuccess(response)
+        console.log(values)
     }
-
-
-
 
     return (
         <div className="bg-background flex min-h-svh flex-col items-center gap-6 p-6 md:p-10">
@@ -126,22 +153,7 @@ export function DeXuatDeTai({
                                             )}
                                         />
                                     </div>
-                                    <div className="grid gap-3">
-                                        <FormField
-                                            control={form.control}
-                                            name="ma_de_tai"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Mã đề tài {'('}Tùy chọn{')'}</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Aa" {...field} />
-                                                    </FormControl>
-                                                    <FormDescription />
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
+
                                     <div className="grid gap-3">
                                         <FormField
                                             control={form.control}
@@ -150,7 +162,7 @@ export function DeXuatDeTai({
                                                 <FormItem>
                                                     <FormLabel>Mô tả</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Aa" {...field} />
+                                                        <Textarea {...field} />
                                                     </FormControl>
                                                     <FormDescription />
                                                     <FormMessage />
@@ -236,9 +248,10 @@ export function DeXuatDeTai({
                                                 <FormItem>
                                                     <FormLabel>Chọn giảng viên hướng dẫn</FormLabel>
                                                     <FormControl>
-                                                        <Select value={String(field.value)} onValueChange={(val) => field.onChange(Number(val))}><SelectTrigger className="w-full">
-                                                            <SelectValue placeholder="Chọn giảng viên hướng dẫn" />
-                                                        </SelectTrigger>
+                                                        <Select value={field.value ? String(field.value) : ""} onValueChange={(val) => field.onChange(Number(val))}>
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Chọn giảng viên hướng dẫn" />
+                                                            </SelectTrigger>
                                                             <SelectContent>
                                                                 {listGiangVien.map((giangVien) => {
                                                                     return <SelectItem key={giangVien.id_tai_khoan} value={String(giangVien.id_tai_khoan)}>{giangVien.msgv} - {giangVien.tai_khoan.ho + " " + giangVien.tai_khoan.ten}</SelectItem>
@@ -246,6 +259,102 @@ export function DeXuatDeTai({
                                                             </SelectContent>
                                                         </Select>
                                                     </FormControl>
+                                                    <FormDescription />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+
+                                    <div className="grid gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="list_id_sinh_vien_tham_gia"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Chọn sinh viên đăng kí tham gia</FormLabel>
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <FormControl>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    role="combobox"
+                                                                    className={cn(
+                                                                        "w-full justify-between h-auto",
+                                                                        !field.value?.length && "text-muted-foreground"
+                                                                    )}
+                                                                >
+                                                                    <div className="flex flex-wrap gap-1 max-w-full overflow-hidden">
+                                                                        {field.value?.length
+                                                                            ?
+                                                                            field.value.map((id) => {
+                                                                                const gv = listGiangVien2.find((g) => Number(g.value) === id);
+                                                                                return (
+                                                                                    <Badge key={id} variant="secondary" className="mr-1 truncate">
+                                                                                        {gv?.label}
+                                                                                    </Badge>
+                                                                                );
+                                                                            })
+                                                                            : "Chọn sinh viên (Tùy chọn)"}
+                                                                    </div>
+
+                                                                    <ChevronsUpDown className="opacity-50" />
+                                                                </Button>
+                                                            </FormControl>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
+                                                            <Command>
+                                                                <CommandInput
+                                                                    placeholder="Search framework..."
+                                                                    className="h-9"
+                                                                />
+                                                                <CommandList>
+                                                                    <CommandEmpty>Không có sinh viên.</CommandEmpty>
+                                                                    <CommandGroup>
+                                                                        {listGiangVien2.map((giangVien) => (
+                                                                            <CommandItem
+                                                                                value={giangVien.label}
+                                                                                key={giangVien.value}
+                                                                                onSelect={() => {
+                                                                                    const selectedId = Number(giangVien.value);
+                                                                                    const current = form.getValues("list_id_sinh_vien_tham_gia") || [];
+
+                                                                                    const isSelected = current.includes(selectedId);
+
+                                                                                    const newValue = isSelected
+                                                                                        ? current.filter((id) => id !== selectedId) // bỏ chọn
+                                                                                        : [...current, selectedId]; // thêm vào
+
+                                                                                    form.setValue("list_id_sinh_vien_tham_gia", newValue, {
+                                                                                        shouldValidate: true,
+                                                                                        shouldDirty: true,
+                                                                                    });
+                                                                                    setListGiangVien2((prevList) =>
+                                                                                        prevList.map((item) =>
+                                                                                            Number(item.value) === selectedId
+                                                                                                ? { ...item, selected: !isSelected }
+                                                                                                : item
+                                                                                        )
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {giangVien.label}
+                                                                                <Check
+                                                                                    className={cn(
+                                                                                        "ml-auto",
+                                                                                        giangVien.selected === true
+                                                                                            ? "opacity-100"
+                                                                                            : "opacity-0"
+                                                                                    )}
+                                                                                />
+                                                                            </CommandItem>
+                                                                        ))}
+                                                                    </CommandGroup>
+                                                                </CommandList>
+                                                            </Command>
+                                                        </PopoverContent>
+                                                    </Popover>
                                                     <FormDescription />
                                                     <FormMessage />
                                                 </FormItem>
@@ -309,6 +418,6 @@ export function DeXuatDeTai({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
