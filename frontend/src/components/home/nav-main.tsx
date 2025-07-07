@@ -62,10 +62,10 @@ export function NavMain() {
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Analytics'}>
+          <SidebarMenuItem key={'Analytics'} onClick={() => navigate('/hoc-ki')}>
             <SidebarMenuButton tooltip={'Analytics'}>
               <IconChartBar />
-              <span>Analytics</span>
+              <span>Học kì</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
