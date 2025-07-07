@@ -32,18 +32,43 @@ export const deXuatDeTaiFormSchema = z.object({
         }),
 
 
-    so_luong_sinh_vien: z
-        .number()
-        .gt(0, { message: "Vui lòng chọn số sinh viên phù hợp" }),
+    so_luong_sinh_vien: z.preprocess(
+        (val) => Number(val),
+        z.number().gt(0, { message: "Vui lòng chọn số sinh viên phù hợp" })
+    ),
 
 
-    id_giang_vien_huong_dan: z
-        .number({
+    id_giang_vien_huong_dan: z.preprocess(
+        (val) => {
+            if (val === undefined || val === null || val === "") return undefined;
+            return Number(val);
+        },
+        z.number({
             required_error: 'Vui lòng chọn giảng viên hướng dẫn',
             invalid_type_error: 'Giảng viên phải là một số',
         })
-        .gt(0, { message: "Vui lòng chọn giảng viên phù hợp" }),
+            .gt(0, { message: "Vui lòng chọn giảng viên phù hợp" })),
 
 
-    list_id_sinh_vien_tham_gia: z.array(z.number())
+    id_hoc_ki: z.preprocess(
+        (val) => {
+            if (val === undefined || val === null || val === "") return undefined;
+            return Number(val);
+        },
+        z.number({
+            required_error: 'Vui lòng chọn học kì',
+            invalid_type_error: 'ID học kì phải là một số',
+        })
+            .gt(0, { message: "Vui lòng chọn học kì phù hợp" })),
+
+
+    list_id_sinh_vien_tham_gia: z.preprocess(
+        (val) => {
+            if (!Array.isArray(val)) return [];
+            return val.map((v) => Number(v));
+        },
+        z.array(z.number({
+            invalid_type_error: "Phần tử danh sách ID sinh viên phải là số",
+        }))
+    ),
 })
