@@ -1,6 +1,6 @@
 export async function getAllGiangVien() {
     try {
-        const response = await fetch('http://localhost:3000/giang_vien/with_more_information', {
+        const response = await fetch('http://localhost:3000/giang_vien', {
             method: "GET",
             credentials: 'include'
         })
