@@ -3,18 +3,21 @@ import { z } from "zod"
 export const deXuatDeTaiFormSchema = z.object({
     ten_tieng_viet: z
         .string()
+        .trim()
         .min(1, { message: "Tên tiếng việt tối thiểu 1 kí tự" })
         .max(50, { message: "Tên tiếng việt tối đa 50 kí tự" }),
 
 
     ten_tieng_anh: z
         .string()
+        .trim()
         .min(1, { message: "Tên tiếng anh tối thiểu 1 kí tự" })
         .max(50, { message: "Tên tiếng anh tối đa 50 kí tự" }),
 
 
     mo_ta: z
         .string()
+        .trim()
         .min(1, { message: "Mô tả tối thiểu 1 kí tự" })
         .max(8000, { message: "Mô tả tối đa 8000 kí tự" }),
 
