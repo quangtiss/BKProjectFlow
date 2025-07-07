@@ -108,7 +108,7 @@ model giao_vu {
 
 model hoc_ki {
   id            Int          @id @default(autoincrement())
-  ten_hoc_ki    String?      @unique @db.VarChar(50)
+  ten_hoc_ki    Int?         @unique
   ngay_bat_dau  DateTime?    @db.Timestamptz(6)
   nam_hoc       Int?
   id_nguoi_them Int?
