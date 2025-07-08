@@ -10,7 +10,7 @@ type ProtectedRouteProps = {
 export default function ProtectedRoute({
     allowedRoles
 }: ProtectedRouteProps) {
-    const { isAuthenticated, loading, role } = useAuth();
+    const { isAuthenticated, loading, user } = useAuth();
 
     if (loading) {
         // return <div>Loading...</div>
@@ -21,7 +21,7 @@ export default function ProtectedRoute({
         return <Navigate to="/login" replace />;
     }
 
-    if (allowedRoles && !allowedRoles.includes(role || '')) {
+    if (allowedRoles && (!user || !allowedRoles.includes(user.auth.role || ''))) {
         return <Navigate to="/403" replace />;
     }
 
