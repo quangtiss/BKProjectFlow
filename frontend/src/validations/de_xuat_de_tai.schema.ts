@@ -75,3 +75,7 @@ export const deXuatDeTaiFormSchema = z.object({
         }))
     ),
 })
+    .refine((data) => data.list_id_sinh_vien_tham_gia.length <= data.so_luong_sinh_vien, {
+        message: "Số lượng sinh viên tham gia vượt quá số lượng cho phép",
+        path: ["list_id_sinh_vien_tham_gia"],
+    });
