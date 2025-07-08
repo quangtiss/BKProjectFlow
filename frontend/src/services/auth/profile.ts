@@ -6,10 +6,7 @@ export async function ProfileService() {
         });
         if (response.ok) {
             const data = await response.json();
-            return {
-                ...data.tai_khoan,
-                fullName: data.tai_khoan.ho + " " + data.tai_khoan.ten
-            }
+            return data;
         } else console.log("Get profile error :(((");
     } catch (error) {
         console.log(error);
