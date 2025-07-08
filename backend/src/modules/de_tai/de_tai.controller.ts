@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Request, Query } from '@nestjs/common';
 import { DeTaiService } from './de_tai.service';
 import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
-import { UpdateTrangThaiDTO } from './dto/update_trang_thai.dto';
+import { UpdateTrangThaiDTO } from './dto/update_de_tai_trang_thaidto';
 
 @Controller('de_tai')
 export class DeTaiController {

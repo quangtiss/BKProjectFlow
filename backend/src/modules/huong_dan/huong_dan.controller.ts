@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Request } from '@nestjs/common';
 import { HuongDanService } from './huong_dan.service';
-import { UpdateTrangThaiHuongDanDTO } from './dto/update_trang_thai.dto';
+import { UpdateTrangThaiHuongDanDTO } from './dto/update_huong_dan_trang_thai.dto';
 import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('huong_dan')
