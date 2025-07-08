@@ -11,22 +11,22 @@ type AuthContextType = {
     isAuthenticated: boolean;
     loading: boolean;
     setIsAuthenticated: (value: boolean) => void;
-    role: string | null;
-    setRole: (value: string | null) => void
+    user: object | null;
+    setUser: (value: object | null) => void
 };
 
 const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     loading: true,
     setIsAuthenticated: () => { },
-    role: null,
-    setRole: () => { }
+    user: null,
+    setUser: () => { }
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [role, setRole] = useState<string | null>(null);
+    const [user, setUser] = useState<object | null>(null);
 
     useEffect(() => {
         const isLogin = async () => {
@@ -38,14 +38,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (response.ok) {
                     const data = await response.json()
                     setIsAuthenticated(true)
-                    setRole(data.auth.role)
+                    setUser(data)
                 }
                 else {
-                    setRole(null)
+                    setUser(null)
                     setIsAuthenticated(false)
                 }
             } catch {
-                setRole(null)
+                setUser(null)
                 setIsAuthenticated(false)
             } finally {
                 setLoading(false)
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, role, setRole }}>
+        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, user, setUser }}>
             {children}
         </AuthContext.Provider>
     );
