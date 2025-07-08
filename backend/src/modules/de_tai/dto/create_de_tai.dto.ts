@@ -3,8 +3,8 @@ import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
     // @IsOptional()
-    // @IsIn(['Chưa chấp nhận', 'Thực hiện', 'Bảo lưu', 'Hoàn thành'],
-    //     { message: "Trạng thái chỉ có thể là Chưa chấp nhận, Thực hiện, Bảo lưu hoặc Hoàn thành" })
+    // @IsIn(['GVHD chưa chấp nhận', 'GVHD đã từ chối', 'GVHD đã chấp nhận', 'Thực hiện', 'Bảo lưu', 'Hoàn thành'],
+    //     { message: "Trạng thái chỉ có thể là GVHD chưa chấp nhận, GVHD đã từ chối, GVHD đã chấp nhận,  Thực hiện, Bảo lưu hoặc Hoàn thành" })
     // trang_thai: string;
 
 
