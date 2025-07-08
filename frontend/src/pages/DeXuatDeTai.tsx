@@ -44,6 +44,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
+import { GetAllHocKi } from "@/services/hoc_ki/get_all_hoc_ki";
 
 
 
@@ -52,19 +53,24 @@ export function DeXuatDeTai({
     ...props
 }: React.ComponentProps<"div">) {
     const [listGiangVien, setListGiangVien] = useState([])
-    const [success, setSuccess] = useState("")
-    const [listGiangVien2, setListGiangVien2] = useState([{
+    const [listHocKi, setListHocKi] = useState([])
+    const [listSinhVien, setListSinhVien] = useState([{
         label: "",
         value: "",
         selected: false
     }])
+    const [success, setSuccess] = useState("")
+
+
 
     useEffect(() => {
         const fetchListGiangVien = async () => {
+            const allHocKi = await GetAllHocKi()
             const allGiangVien = await getAllGiangVien()
-            setListGiangVien(allGiangVien)
             const allSinhVien = await getAllSinhVien()
-            setListGiangVien2(allSinhVien.map((sinhVien) => (
+            setListHocKi(allHocKi)
+            setListGiangVien(allGiangVien)
+            setListSinhVien(allSinhVien.map((sinhVien) => (
                 {
                     label: sinhVien.mssv + " - " + sinhVien.tai_khoan.ho + " " + sinhVien.tai_khoan.ten,
                     value: String(sinhVien.id_tai_khoan),
@@ -84,6 +90,7 @@ export function DeXuatDeTai({
             nhom_nganh: "Khoa học Máy tính",
             he_dao_tao: "Chính quy",
             so_luong_sinh_vien: 3,
+            id_hoc_ki: undefined,
             id_giang_vien_huong_dan: undefined,
             list_id_sinh_vien_tham_gia: []
         },
@@ -170,7 +177,33 @@ export function DeXuatDeTai({
                                             )}
                                         />
                                     </div>
-                                    <div className="grid gap-3 sm:grid-cols-3">
+                                    <div className="gap-3 w-full grid sm:grid-cols-[1fr_2fr_2fr_1fr]">
+
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="id_hoc_ki"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Học kì</FormLabel>
+                                                        <FormControl>
+                                                            <Select value={field.value ? String(field.value) : ""} onValueChange={field.onChange}>
+                                                                <SelectTrigger className="w-full">
+                                                                    <SelectValue placeholder="Chọn học kì" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {listHocKi.map((hocKi) => {
+                                                                        return <SelectItem key={hocKi.id} value={String(hocKi.id)}>{hocKi.ten_hoc_ki}</SelectItem>
+                                                                    })}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </FormControl>
+                                                        <FormDescription />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
 
                                         <div className="w-full">
                                             <FormField
@@ -178,7 +211,7 @@ export function DeXuatDeTai({
                                                 name="nhom_nganh"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Chọn nhóm ngành</FormLabel>
+                                                        <FormLabel>Nhóm ngành</FormLabel>
                                                         <FormControl>
                                                             <Select value={field.value} onValueChange={field.onChange}>
                                                                 <SelectTrigger className="w-full">
@@ -203,7 +236,7 @@ export function DeXuatDeTai({
                                                 name="he_dao_tao"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Chọn hệ đào tạo</FormLabel>
+                                                        <FormLabel>Hệ đào tạo</FormLabel>
                                                         <FormControl>
                                                             <Select value={field.value} onValueChange={field.onChange}>
                                                                 <SelectTrigger className="w-full">
@@ -229,9 +262,9 @@ export function DeXuatDeTai({
                                                 name="so_luong_sinh_vien"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Số lượng sinh viên</FormLabel>
+                                                        <FormLabel>Sinh viên</FormLabel>
                                                         <FormControl>
-                                                            <Input value={Number(field.value)} onChange={(e) => field.onChange(Number(e.target.value))} className="w-full" type="number" placeholder="Số lượng" />
+                                                            <Input {...field} type="number" placeholder="Số lượng" />
                                                         </FormControl>
                                                         <FormDescription />
                                                         <FormMessage />
@@ -246,9 +279,9 @@ export function DeXuatDeTai({
                                             name="id_giang_vien_huong_dan"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Chọn giảng viên hướng dẫn</FormLabel>
+                                                    <FormLabel>Giảng viên hướng dẫn</FormLabel>
                                                     <FormControl>
-                                                        <Select value={field.value ? String(field.value) : ""} onValueChange={(val) => field.onChange(Number(val))}>
+                                                        <Select value={field.value ? String(field.value) : ""} onValueChange={field.onChange}>
                                                             <SelectTrigger className="w-full">
                                                                 <SelectValue placeholder="Chọn giảng viên hướng dẫn" />
                                                             </SelectTrigger>
@@ -273,7 +306,7 @@ export function DeXuatDeTai({
                                             name="list_id_sinh_vien_tham_gia"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Chọn sinh viên đăng kí tham gia</FormLabel>
+                                                    <FormLabel>Sinh viên đăng kí tham gia</FormLabel>
                                                     <Popover>
                                                         <PopoverTrigger asChild>
                                                             <FormControl>
@@ -289,7 +322,7 @@ export function DeXuatDeTai({
                                                                         {field.value?.length
                                                                             ?
                                                                             field.value.map((id) => {
-                                                                                const gv = listGiangVien2.find((g) => Number(g.value) === id);
+                                                                                const gv = listSinhVien.find((g) => Number(g.value) === id);
                                                                                 return (
                                                                                     <Badge key={id} variant="secondary" className="mr-1 truncate">
                                                                                         {gv?.label}
@@ -312,12 +345,12 @@ export function DeXuatDeTai({
                                                                 <CommandList>
                                                                     <CommandEmpty>Không có sinh viên.</CommandEmpty>
                                                                     <CommandGroup>
-                                                                        {listGiangVien2.map((giangVien) => (
+                                                                        {listSinhVien.map((sinhVien) => (
                                                                             <CommandItem
-                                                                                value={giangVien.label}
-                                                                                key={giangVien.value}
+                                                                                value={sinhVien.label}
+                                                                                key={sinhVien.value}
                                                                                 onSelect={() => {
-                                                                                    const selectedId = Number(giangVien.value);
+                                                                                    const selectedId = Number(sinhVien.value);
                                                                                     const current = form.getValues("list_id_sinh_vien_tham_gia") || [];
 
                                                                                     const isSelected = current.includes(selectedId);
@@ -330,7 +363,7 @@ export function DeXuatDeTai({
                                                                                         shouldValidate: true,
                                                                                         shouldDirty: true,
                                                                                     });
-                                                                                    setListGiangVien2((prevList) =>
+                                                                                    setListSinhVien((prevList) =>
                                                                                         prevList.map((item) =>
                                                                                             Number(item.value) === selectedId
                                                                                                 ? { ...item, selected: !isSelected }
@@ -339,11 +372,11 @@ export function DeXuatDeTai({
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {giangVien.label}
+                                                                                {sinhVien.label}
                                                                                 <Check
                                                                                     className={cn(
                                                                                         "ml-auto",
-                                                                                        giangVien.selected === true
+                                                                                        sinhVien.selected === true
                                                                                             ? "opacity-100"
                                                                                             : "opacity-0"
                                                                                     )}
