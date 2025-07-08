@@ -30,7 +30,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  const { setIsAuthenticated, setRole } = useAuth(); // Set biến xem đã đăng nhập chưa// Set biến xem role là gì
+  const { setIsAuthenticated, setUser } = useAuth(); // Set biến xem đã đăng nhập chưa// Set biến xem role là gì
   const [showPassword, setShowPassword] = useState(false)
   const [success, setSuccess] = useState("")
 
@@ -48,7 +48,7 @@ export function LoginForm({
     setSuccess(response)
     if (response == "Success!") {
       const dataUser = await ProfileService()
-      setRole(dataUser.vai_tro);
+      setUser(dataUser)
       setIsAuthenticated(true);
       navigate("/")
     }
