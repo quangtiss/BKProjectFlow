@@ -43,30 +43,16 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth();
-  const { setRole } = useAuth();
+  const { setIsAuthenticated, setUser } = useAuth();
 
   const LogOut = async () => {
     try {
       await LogOutService()
-      setRole(null)
+      setUser(null)
       setIsAuthenticated(false)
       navigate('/login')
     } catch (error) {
       console.log("Lỗi khi gọi service Logout: ", error)
-    }
-  }
-
-  const testFetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/auth/profile", {
-        method: "GET",
-        credentials: "include"
-      })
-      if (response.ok) console.log(await response.json())
-      else console.log("Chưa đăng nhập")
-    } catch (error) {
-      console.log("Lỗi khi test fetch data: ", error)
     }
   }
 
@@ -114,7 +100,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={testFetchData}>
+              <DropdownMenuItem>
                 <IconUserCircle />
                 Tài khoản
               </DropdownMenuItem>
