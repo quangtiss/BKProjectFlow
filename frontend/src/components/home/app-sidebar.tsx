@@ -1,6 +1,4 @@
 // import * as React from "react"
-import { useState, useEffect } from "react"
-import { ProfileService } from "@/services/auth/profile"
 import { IconInnerShadowTop } from "@tabler/icons-react"
 import { NavDocuments } from "@/components/home/nav-documents"
 import { NavMain } from "@/components/home/nav-main"
@@ -17,27 +15,12 @@ import {
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
+import { useAuth } from "@/routes/auth-context"
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },)
+  const { user } = useAuth()
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const profileData = await ProfileService()
-      setUser({
-        name: profileData?.fullName || "Chưa rõ tên",
-        email: profileData?.email,
-        avatar: "/avatars/shadcn.jpg",
-      })
-    }
-    fetchProfile()
-  }, [])
-
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -62,7 +45,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={{
+          name: user.tai_khoan.ho + " " + user.tai_khoan.ten || "Chưa rõ tên",
+          email: user.tai_khoan.email || "",
+          avatar: "/avatars/shadcn.jpg",
+        }} />
       </SidebarFooter>
     </Sidebar>
   )
