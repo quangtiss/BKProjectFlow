@@ -1,4 +1,4 @@
-import { IsString, IsIn, MinLength, MaxLength, IsNumber, Min, IsArray, IsInt, IsOptional } from "class-validator";
+import { IsString, IsIn, MinLength, MaxLength, Min, IsArray, IsInt, IsOptional } from "class-validator";
 import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
@@ -41,11 +41,11 @@ export class CreateDeTaiDTO {
     mo_ta: string;
 
 
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-    @IsString()
-    @MinLength(1, { message: "Mã đề tài tối thiểu 1 kí tự" })
-    @MaxLength(10, { message: "Mã đề tài tối đa 10 kí tự" })
-    ma_de_tai: string;
+    // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    // @IsString()
+    // @MinLength(1, { message: "Mã đề tài tối thiểu 1 kí tự" })
+    // @MaxLength(10, { message: "Mã đề tài tối đa 10 kí tự" })
+    // ma_de_tai: string;
 
 
     @IsIn(['Khoa học Máy tính', 'Kĩ thuật Máy tính', 'Đa ngành'],
@@ -59,19 +59,19 @@ export class CreateDeTaiDTO {
 
 
     @Transform(({ value }) => Number(value))
-    @IsNumber()
+    @IsInt({ message: "Vui lòng chọn số sinh viên phù hợp" })
     @Min(1, { message: "Vui lòng chọn số sinh viên phù hợp" })
     so_luong_sinh_vien: number;
 
 
     @Transform(({ value }) => Number(value))
-    @IsNumber()
+    @IsInt({ message: "Vui lòng chọn học kì phù hợp" })
     @Min(1, { message: "Vui lòng chọn học kì phù hợp" })
     id_hoc_ki: number
 
 
     @Transform(({ value }) => Number(value))
-    @IsNumber()
+    @IsInt({ message: "Vui lòng chọn giảng viên hướng dẫn phù hợp" })
     @Min(1, { message: "Vui lòng chọn giảng viên hướng dẫn phù hợp" })
     id_giang_vien_huong_dan: number
 
