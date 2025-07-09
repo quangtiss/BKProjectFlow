@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
@@ -16,8 +17,9 @@ export class DangKiService {
         });
     }
 
-    async create(data: any) {
-        return await this.prismaService.dang_ki.create(
+    async create(data: any, tx?: Prisma.TransactionClient) {
+        const client = tx ?? this.prismaService;
+        return await client.dang_ki.create(
             { data }
         )
     }

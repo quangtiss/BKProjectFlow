@@ -1,6 +1,7 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class HuongDanService {
@@ -46,8 +47,9 @@ export class HuongDanService {
         });
     }
 
-    async create(data: any) {
-        return await this.prismaService.huong_dan.create(
+    async create(data: any, tx?: Prisma.TransactionClient) {
+        const client = tx ?? this.prismaService;
+        return await client.huong_dan.create(
             { data }
         )
     }
