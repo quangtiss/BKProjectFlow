@@ -1,4 +1,4 @@
-import { IsString, IsIn, MinLength, MaxLength, IsNumber, Min, IsOptional } from "class-validator";
+import { IsString, IsIn, MinLength, MaxLength, IsNumber, Min, IsArray, IsInt, IsOptional } from "class-validator";
 import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
@@ -74,4 +74,14 @@ export class CreateDeTaiDTO {
     @IsNumber()
     @Min(1, { message: "Vui lòng chọn giảng viên hướng dẫn phù hợp" })
     id_giang_vien_huong_dan: number
+
+
+    @IsOptional()
+    @IsArray({ message: "Danh sách ID sinh viên phải ở dạng mảng." })
+    @Transform(({ value }) => {
+        if (!Array.isArray(value)) return [];
+        return value.map((v) => Number(v));
+    })
+    @IsInt({ each: true, message: "ID sinh viên phải là số nguyên" })
+    list_id_sinh_vien_tham_gia: number[];
 }
