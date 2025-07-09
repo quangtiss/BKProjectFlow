@@ -48,7 +48,7 @@ export function DuyetDeTai() {
 
     const handleAccept = async (id_de_tai: number, trang_thai: string) => {
         try {
-            const response = await fetch('http://localhost:3000/duyet_de_tai', {
+            const response = await fetch('http://localhost:3000/duyet-de-tai', {
                 method: "POST",
                 credentials: 'include',
                 headers: {
@@ -75,7 +75,7 @@ export function DuyetDeTai() {
 
         const fetchDataListDeTaiChuaDuocDuyet = async () => {
             try {
-                const response = await fetch('http://localhost:3000/de_tai?trang_thai=Đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
+                const response = await fetch('http://localhost:3000/de-tai?trang_thai=Đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
                     method: "GET",
                     credentials: 'include'
                 })

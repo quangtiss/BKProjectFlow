@@ -1,6 +1,6 @@
 export async function CreateHocKi(data: object) {
     try {
-        const response = await fetch("http://localhost:3000/hoc_ki", {
+        const response = await fetch("http://localhost:3000/hoc-ki", {
             method: "POST",
             credentials: "include",
             headers: {

@@ -1,6 +1,6 @@
 export async function CreateDeTai(values: object) {
     try {
-        const response = await fetch("http://localhost:3000/de_tai", {
+        const response = await fetch("http://localhost:3000/de-tai", {
             method: "POST",
             credentials: 'include',
             headers: {
