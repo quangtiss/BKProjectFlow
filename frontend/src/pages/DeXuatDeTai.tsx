@@ -45,6 +45,7 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
 import { GetAllHocKi } from "@/services/hoc_ki/get_all_hoc_ki";
+import { useAuth } from "@/routes/auth-context";
 
 
 
@@ -52,6 +53,7 @@ export function DeXuatDeTai({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const { user } = useAuth()
     const [listGiangVien, setListGiangVien] = useState([])
     const [listHocKi, setListHocKi] = useState([])
     const [listSinhVien, setListSinhVien] = useState([{
@@ -74,7 +76,7 @@ export function DeXuatDeTai({
                 {
                     label: sinhVien.mssv + " - " + sinhVien.tai_khoan.ho + " " + sinhVien.tai_khoan.ten,
                     value: String(sinhVien.id_tai_khoan),
-                    selected: false
+                    selected: user.auth.role === "Sinh viên" && sinhVien.id_tai_khoan === user.auth.sub ? true : false
                 })))
         }
         fetchListGiangVien()
@@ -91,15 +93,15 @@ export function DeXuatDeTai({
             he_dao_tao: "Chính quy",
             so_luong_sinh_vien: 3,
             id_hoc_ki: undefined,
-            id_giang_vien_huong_dan: undefined,
-            list_id_sinh_vien_tham_gia: []
+            id_giang_vien_huong_dan: user.auth.role === "Giảng viên" ? user.auth.sub : undefined,
+            list_id_sinh_vien_tham_gia: user.auth.role === "Sinh viên" ? [user.auth.sub] : []
         },
     })
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
-        // const response = await CreateDeTai(values)
-        // setSuccess(response)
+        const response = await CreateDeTai(values)
+        setSuccess(response)
         console.log(values)
     }
 
@@ -426,7 +428,7 @@ export function DeXuatDeTai({
                                             <AlertCircleIcon />
                                             <AlertTitle>Đề xuất thất bại</AlertTitle>
                                             <AlertDescription>
-                                                <p>Mã số đề tài đã tồn tại</p>
+                                                <p>Sinh viên không thể có trong danh sách đăng kí của nhiều đồ án</p>
                                             </AlertDescription>
                                         </Alert>
                                     )
