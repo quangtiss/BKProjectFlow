@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { MoiLienQuanService } from './moi_lien_quan.service';
 
-@Controller('moi_lien_quan')
+@Controller('moi-lien-quan')
 export class MoiLienQuanController {
   constructor(private readonly moiLienQuanService: MoiLienQuanService) { }
 

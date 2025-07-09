@@ -3,7 +3,7 @@ import { HocKiService } from './hoc_ki.service';
 import { Roles } from '../auth/guard/roles.decorator';
 import { CreateHocKiDTO } from './dto/create_hoc_ki.dto';
 
-@Controller('hoc_ki')
+@Controller('hoc-ki')
 export class HocKiController {
     constructor(private readonly hocKiService: HocKiService) { }
 

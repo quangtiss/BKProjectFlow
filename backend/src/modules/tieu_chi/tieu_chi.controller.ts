@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { TieuChiService } from './tieu_chi.service';
 
-@Controller('tieu_chi')
+@Controller('tieu-chi')
 export class TieuChiController {
   constructor(private readonly tieuChiService: TieuChiService) { }
 

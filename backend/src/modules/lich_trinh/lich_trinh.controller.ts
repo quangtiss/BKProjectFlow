@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { LichTrinhService } from './lich_trinh.service';
 
-@Controller('lich_trinh')
+@Controller('lich-trinh')
 export class LichTrinhController {
   constructor(private readonly lichTrinhService: LichTrinhService) { }
 

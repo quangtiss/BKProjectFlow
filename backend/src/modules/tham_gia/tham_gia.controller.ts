@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { ThamGiaService } from './tham_gia.service';
 
-@Controller('tham_gia')
+@Controller('tham-gia')
 export class ThamGiaController {
   constructor(private readonly thamGiaService: ThamGiaService) { }
 

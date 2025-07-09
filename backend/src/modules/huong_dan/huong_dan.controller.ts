@@ -3,7 +3,7 @@ import { HuongDanService } from './huong_dan.service';
 import { UpdateTrangThaiHuongDanDTO } from './dto/update_huong_dan_trang_thai.dto';
 import { Roles } from '../auth/guard/roles.decorator';
 
-@Controller('huong_dan')
+@Controller('huong-dan')
 export class HuongDanController {
   constructor(private readonly huongDanService: HuongDanService) { }
 
@@ -18,7 +18,7 @@ export class HuongDanController {
   }
 
   @Roles('Giảng viên')
-  @Get('/current_user')
+  @Get('/current-user')
   findWithCurrentGiangVien(@Query() query: { trang_thai?: string }, @Request() req) {
     return this.huongDanService.findWithCurrentGiangVien(query, req.user)
   }

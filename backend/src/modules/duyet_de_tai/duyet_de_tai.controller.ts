@@ -3,7 +3,7 @@ import { DuyetDeTaiService } from './duyet_de_tai.service';
 import { Roles } from '../auth/guard/roles.decorator';
 import { CreateDuyetDeTaiDTO } from './dto/create_duyet_de_tai';
 
-@Controller('duyet_de_tai')
+@Controller('duyet-de-tai')
 export class DuyetDeTaiController {
     constructor(private readonly duyetDeTaiService: DuyetDeTaiService) { }
 

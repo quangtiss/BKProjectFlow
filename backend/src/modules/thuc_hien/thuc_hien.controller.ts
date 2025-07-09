@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { ThucHienService } from './thuc_hien.service';
 
-@Controller('thuc_hien')
+@Controller('thuc-hien')
 export class ThucHienController {
   constructor(private readonly thucHienService: ThucHienService) { }
 

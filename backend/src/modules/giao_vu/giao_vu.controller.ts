@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { GiaoVuService } from './giao_vu.service';
 
-@Controller('giao_vu')
+@Controller('giao-vu')
 export class GiaoVuController {
   constructor(private readonly giaoVuService: GiaoVuService) { }
 

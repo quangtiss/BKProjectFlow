@@ -2,7 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Patch, Request, Body, Post, Delet
 import { TaiKhoanService } from './tai_khoan.service';
 import { UpdateTaiKhoanDTO } from './dto/update_tai_khoan';
 
-@Controller('tai_khoan')
+@Controller('tai-khoan')
 export class TaiKhoanController {
   constructor(private readonly taiKhoanService: TaiKhoanService) { }
 

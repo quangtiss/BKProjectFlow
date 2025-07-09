@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { TinNhanService } from './tin_nhan.service';
 
-@Controller('tin_nhan')
+@Controller('tin-nhan')
 export class TinNhanController {
   constructor(private readonly tinNhanService: TinNhanService) { }
 

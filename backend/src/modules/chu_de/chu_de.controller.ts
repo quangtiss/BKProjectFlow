@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { ChuDeService } from './chu_de.service';
 
-@Controller('chu_de')
+@Controller('chu-de')
 export class ChuDeController {
     constructor(private readonly chuDeService: ChuDeService) { }
 

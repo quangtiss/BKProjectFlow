@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { MauDanhGiaService } from './mau_danh_gia.service';
 
-@Controller('mau_danh_gia')
+@Controller('mau-danh-gia')
 export class MauDanhGiaController {
   constructor(private readonly mauDanhGiaService: MauDanhGiaService) { }
 

@@ -3,7 +3,7 @@ import { DeTaiService } from './de_tai.service';
 import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
 import { UpdateTrangThaiDTO } from './dto/update_de_tai_trang_thaidto';
 
-@Controller('de_tai')
+@Controller('de-tai')
 export class DeTaiController {
     constructor(private readonly deTaiService: DeTaiService) { }
 
@@ -29,7 +29,7 @@ export class DeTaiController {
         return this.deTaiService.update(+id, body);
     }
 
-    @Patch('/trang_thai/:id')
+    @Patch('/trang-thai/:id')
     updateTrangThai(@Param('id') id: string, @Body() updateTrangThaiData: UpdateTrangThaiDTO) {
         return this.deTaiService.update(+id, updateTrangThaiData);
     }

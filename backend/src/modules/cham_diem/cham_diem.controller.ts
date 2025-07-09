@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { ChamDiemService } from './cham_diem.service';
 
-@Controller('cham_diem')
+@Controller('cham-diem')
 export class ChamDiemController {
     constructor(private readonly chamDiemService: ChamDiemService) { }
 

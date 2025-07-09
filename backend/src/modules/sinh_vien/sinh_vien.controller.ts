@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/commo
 import { SinhVienService } from './sinh_vien.service';
 import { CreateSinhVienDTO } from './dto/create_sinh_vien.dto';
 
-@Controller('sinh_vien')
+@Controller('sinh-vien')
 export class SinhVienController {
   constructor(private readonly sinhVienService: SinhVienService) { }
 
