@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const hocKiChema = z.object({
-    ten_hoc_ki: z.preprocess(
+    ten_hoc_ky: z.preprocess(
         (val) => {
             const parsed = Number(val);
             return isNaN(parsed) ? undefined : parsed;

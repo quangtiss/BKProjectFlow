@@ -40,10 +40,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { hocKiChema } from "@/validations/hoc_ki.schema"
-import { CreateHocKi } from "@/services/hoc_ki/create_hoc_ki"
+import { hocKiChema } from "@/validations/hoc_ky.schema"
+import { CreateHocKi } from "@/services/hoc_ky/create_hoc_ky"
 import { toast } from "sonner"
-import { GetAllHocKi } from "@/services/hoc_ki/get_all_hoc_ki"
+import { GetAllHocKi } from "@/services/hoc_ky/get_all_hoc_ky"
 
 
 export function HocKi() {
@@ -63,7 +63,7 @@ export function HocKi() {
     const form = useForm<z.infer<typeof hocKiChema>>({
         resolver: zodResolver(hocKiChema),
         defaultValues: {
-            ten_hoc_ki: 211,
+            ten_hoc_ky: 211,
             nam_hoc: 2021,
             ngay_bat_dau: new Date(new Date().setHours(0, 0, 0, 0))
         },
@@ -72,8 +72,8 @@ export function HocKi() {
 
     async function onSubmit(values: z.infer<typeof hocKiChema>) {
         const response = await CreateHocKi(values)
-        if (response === "Succcess!") toast("Thành công tạo học kỳ " + values.ten_hoc_ki)
-        else toast("Thất bại tạo học kỳ " + values.ten_hoc_ki)
+        if (response === "Succcess!") toast("Thành công tạo học kỳ " + values.ten_hoc_ky)
+        else toast("Thất bại tạo học kỳ " + values.ten_hoc_ky)
     }
 
 
@@ -99,7 +99,7 @@ export function HocKi() {
                                     <div className="grid gap-3">
                                         <FormField
                                             control={form.control}
-                                            name="ten_hoc_ki"
+                                            name="ten_hoc_ky"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Tên học kỳ</FormLabel>
@@ -245,7 +245,7 @@ export function HocKi() {
                             const date = new Date(hocKi.ngay_bat_dau).toLocaleString()
                             return (
                                 <TableRow key={hocKi.id}>
-                                    <TableCell className="font-medium">{hocKi.ten_hoc_ki}</TableCell>
+                                    <TableCell className="font-medium">{hocKi.ten_hoc_ky}</TableCell>
                                     <TableCell>{hocKi.nam_hoc + " " + hocKi.nam_hoc + 1}</TableCell>
                                     <TableCell>{date}</TableCell>
                                     <TableCell className="text-right">

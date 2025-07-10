@@ -67,7 +67,7 @@ export class CreateDeTaiDTO {
     @Transform(({ value }) => Number(value))
     @IsInt({ message: "Vui lòng chọn học kỳ phù hợp" })
     @Min(1, { message: "Vui lòng chọn học kỳ phù hợp" })
-    id_hoc_ki: number
+    id_hoc_ky: number
 
 
     @Transform(({ value }) => Number(value))

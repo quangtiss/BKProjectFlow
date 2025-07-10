@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
-import { DangKiService } from './dang_ki.service';
+import { DangKiService } from './dang_ky.service';
 
-@Controller('dang-ki')
+@Controller('dang-ky')
 export class DangKiController {
   constructor(private readonly dangKiService: DangKiService) { }
 

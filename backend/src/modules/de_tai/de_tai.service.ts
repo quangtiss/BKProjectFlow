@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { DangKiService } from '../dang_ki/dang_ki.service';
+import { DangKiService } from '../dang_ky/dang_ky.service';
 import { HuongDanService } from '../huong_dan/huong_dan.service';
 import { Prisma } from '@prisma/client';
 
@@ -83,7 +83,7 @@ export class DeTaiService {
             await Promise.all(
                 list_id_sinh_vien_tham_gia.map((idSinhVien: number) =>
                     this.dangKiService.create({
-                        ngay_dang_ki: new Date(),
+                        ngay_dang_ky: new Date(),
                         trang_thai: user.sub === idSinhVien ? "Đã chấp nhận" : "Chưa chấp nhận",
                         id_sinh_vien: idSinhVien,
                         id_de_tai: deTai.id

@@ -37,7 +37,7 @@ function App() {
               <Route path="/chap-nhan-huong-dan" element={<ChapNhanHuongDan />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["Giáo vụ"]} />}>
-              <Route path="/hoc-ki" element={<HocKi />} />
+              <Route path="/hoc-ky" element={<HocKi />} />
             </Route>
 
 

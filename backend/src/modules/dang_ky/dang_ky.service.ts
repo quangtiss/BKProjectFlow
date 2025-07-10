@@ -1,30 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
-export class HocKiService {
+export class DangKiService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async findAll() {
-        return await this.prismaService.hoc_ki.findMany();
+        return await this.prismaService.dang_ky.findMany();
     }
 
 
     async findById(id: number) {
-        return await this.prismaService.hoc_ki.findUnique({
+        return await this.prismaService.dang_ky.findUnique({
             where: { id },
         });
-
     }
 
-    async create(data: any, idNguoiThem) {
-        return await this.prismaService.hoc_ki.create(
-            {
-                data: {
-                    ...data,
-                    id_nguoi_them: idNguoiThem
-                }
-            }
+    async create(data: any, tx?: Prisma.TransactionClient) {
+        const client = tx ?? this.prismaService;
+        return await client.dang_ky.create(
+            { data }
         )
     }
 
@@ -33,14 +29,14 @@ export class HocKiService {
             // Không có gì để cập nhật
             return null;
         }
-        return await this.prismaService.hoc_ki.update({
+        return await this.prismaService.dang_ky.update({
             where: { id: id },
             data: data
         })
     }
 
     async delete(id: number) {
-        return this.prismaService.hoc_ki.delete({
+        return this.prismaService.dang_ky.delete({
             where: { id }
         })
     }

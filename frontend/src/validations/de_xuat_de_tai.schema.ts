@@ -53,7 +53,7 @@ export const deXuatDeTaiFormSchema = z.object({
             .gt(0, { message: "Vui lòng chọn giảng viên phù hợp" })),
 
 
-    id_hoc_ki: z.preprocess(
+    id_hoc_ky: z.preprocess(
         (val) => {
             if (val === undefined || val === null || val === "") return undefined;
             return Number(val);

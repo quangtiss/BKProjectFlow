@@ -7,7 +7,7 @@ export class CreateHocKiDTO {
     @IsNumber({}, { message: "Tên học kỳ phải là một số" })
     @Min(100, { message: "Tên học kỳ chỉ được có 3 chữ số" })
     @Max(999, { message: "Tên học kỳ chỉ được có 3 chữ số" })
-    ten_hoc_ki: string;
+    ten_hoc_ky: string;
 
 
     @IsDate({ message: 'Ngày bắt đầu không hợp lệ. Định dạng phải là ngày hợp lệ (ISO 8601).' })

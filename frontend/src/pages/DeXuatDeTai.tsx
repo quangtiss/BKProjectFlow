@@ -44,7 +44,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
-import { GetAllHocKi } from "@/services/hoc_ki/get_all_hoc_ki";
+import { GetAllHocKi } from "@/services/hoc_ky/get_all_hoc_ky";
 import { useAuth } from "@/routes/auth-context";
 
 
@@ -92,7 +92,7 @@ export function DeXuatDeTai({
             nhom_nganh: "Khoa học Máy tính",
             he_dao_tao: "Chính quy",
             so_luong_sinh_vien: 3,
-            id_hoc_ki: undefined,
+            id_hoc_ky: undefined,
             id_giang_vien_huong_dan: user.auth.role === "Giảng viên" ? user.auth.sub : undefined,
             list_id_sinh_vien_tham_gia: user.auth.role === "Sinh viên" ? [user.auth.sub] : []
         },
@@ -184,7 +184,7 @@ export function DeXuatDeTai({
                                         <div className="w-full">
                                             <FormField
                                                 control={form.control}
-                                                name="id_hoc_ki"
+                                                name="id_hoc_ky"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>học kỳ</FormLabel>
@@ -195,7 +195,7 @@ export function DeXuatDeTai({
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     {listHocKi.map((hocKi) => {
-                                                                        return <SelectItem key={hocKi.id} value={String(hocKi.id)}>{hocKi.ten_hoc_ki}</SelectItem>
+                                                                        return <SelectItem key={hocKi.id} value={String(hocKi.id)}>{hocKi.ten_hoc_ky}</SelectItem>
                                                                     })}
                                                                 </SelectContent>
                                                             </Select>

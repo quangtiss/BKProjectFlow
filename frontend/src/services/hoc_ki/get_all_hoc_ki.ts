@@ -1,6 +1,6 @@
 export async function GetAllHocKi() {
     try {
-        const response = await fetch("http://localhost:3000/hoc-ki", {
+        const response = await fetch("http://localhost:3000/hoc-ky", {
             method: "GET",
             credentials: "include"
         })

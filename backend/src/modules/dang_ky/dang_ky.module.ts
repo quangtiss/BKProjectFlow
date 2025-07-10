@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DangKiService } from './dang_ki.service';
-import { DangKiController } from './dang_ki.controller';
+import { DangKiService } from './dang_ky.service';
+import { DangKiController } from './dang_ky.controller';
 import { PrismaModule } from 'prisma/prisma.module';
 
 @Module({
