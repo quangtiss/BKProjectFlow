@@ -228,7 +228,7 @@ export function HocKy() {
                 <TableCaption></TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[50px] font-extrabold">học kỳ</TableHead>
+                        <TableHead className="w-[50px] font-extrabold">Học kỳ</TableHead>
                         <TableHead className="font-extrabold">Năm học</TableHead>
                         <TableHead className="font-extrabold">Thời gian</TableHead>
                         <TableHead className="text-right font-extrabold">Chỉnh sửa</TableHead>
