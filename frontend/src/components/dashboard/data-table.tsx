@@ -128,7 +128,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "trang_thai_dang_ki",
-    header: "Trạng thái đăng kí",
+    header: "Trạng thái đăng ký",
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />

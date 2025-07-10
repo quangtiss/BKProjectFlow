@@ -48,8 +48,8 @@ export class CreateDeTaiDTO {
     // ma_de_tai: string;
 
 
-    @IsIn(['Khoa học Máy tính', 'Kĩ thuật Máy tính', 'Đa ngành'],
-        { message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kĩ thuật Máy tính hoặc Đa ngành" })
+    @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Đa ngành'],
+        { message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Đa ngành" })
     nhom_nganh: string;
 
 

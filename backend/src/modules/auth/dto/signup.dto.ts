@@ -30,8 +30,8 @@ export class SignUpDTO extends CreateTaiKhoanDTO {
 
 
     @ValidateIf(o => o.vai_tro === 'Sinh viên')
-    @IsIn(['Khoa học Máy tính', 'Kĩ thuật Máy tính'],
-        { message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kĩ thuật Máy tính" }
+    @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính'],
+        { message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kỹ thuật Máy tính" }
     )
     nganh: string
 
@@ -54,8 +54,8 @@ export class SignUpDTO extends CreateTaiKhoanDTO {
 
 
     @ValidateIf(o => o.vai_tro === 'Giảng viên' || o.vai_tro === "Giảng viên trưởng bộ môn")
-    @IsIn(['Hệ thống thông tin', 'Hệ thống mạng', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kĩ thuật máy tính'], {
-        message: 'Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống mạng, Công nghệ phần mềm, Khoa học máy tính hoặc Kĩ thuật máy tính',
+    @IsIn(['Hệ thống thông tin', 'Hệ thống và mạng máy tính', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kỹ thuật máy tính'], {
+        message: 'Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống và mạng máy tính, Công nghệ phần mềm, Khoa học máy tính hoặc Kỹ thuật máy tính',
     })
     to_chuyen_nganh: string
 

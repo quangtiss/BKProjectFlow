@@ -221,7 +221,7 @@ export function DeXuatDeTai({
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
-                                                                    <SelectItem value="Kĩ thuật Máy tính">Kĩ thuật Máy tính</SelectItem>
+                                                                    <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
                                                                     <SelectItem value="Đa ngành">Đa ngành</SelectItem>
                                                                 </SelectContent>
                                                             </Select>
@@ -308,7 +308,7 @@ export function DeXuatDeTai({
                                             name="list_id_sinh_vien_tham_gia"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Sinh viên đăng kí tham gia</FormLabel>
+                                                    <FormLabel>Sinh viên đăng ký tham gia</FormLabel>
                                                     <Popover>
                                                         <PopoverTrigger asChild>
                                                             <FormControl>
@@ -428,7 +428,7 @@ export function DeXuatDeTai({
                                             <AlertCircleIcon />
                                             <AlertTitle>Đề xuất thất bại</AlertTitle>
                                             <AlertDescription>
-                                                <p>Sinh viên không thể có trong danh sách đăng kí của nhiều đồ án</p>
+                                                <p>Sinh viên không thể có trong danh sách đăng ký của nhiều đồ án</p>
                                             </AlertDescription>
                                         </Alert>
                                     )

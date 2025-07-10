@@ -24,8 +24,8 @@ export class CreateSinhVienDTO {
     he_dao_tao: string
 
 
-    @IsIn(['Khoa học Máy tính', 'Kĩ thuật Máy tính'],
-        { message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kĩ thuật Máy tính" }
+    @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính'],
+        { message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kỹ thuật Máy tính" }
     )
     nganh: string
 

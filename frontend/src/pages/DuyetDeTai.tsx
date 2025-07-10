@@ -75,7 +75,7 @@ export function DuyetDeTai() {
 
         const fetchDataListDeTaiChuaDuocDuyet = async () => {
             try {
-                const response = await fetch('http://localhost:3000/de-tai?trang_thai=Đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
+                const response = await fetch('http://localhost:3000/de-tai?trang_thai=GVHD đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
                     method: "GET",
                     credentials: 'include'
                 })

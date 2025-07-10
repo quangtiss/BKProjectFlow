@@ -24,8 +24,8 @@ export const deXuatDeTaiFormSchema = z.object({
 
 
     nhom_nganh: z
-        .enum(['Khoa học Máy tính', 'Kĩ thuật Máy tính', 'Đa ngành'], {
-            errorMap: () => ({ message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kĩ thuật Máy tính hoặc Đa ngành" })
+        .enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Đa ngành'], {
+            errorMap: () => ({ message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Đa ngành" })
         }),
 
 

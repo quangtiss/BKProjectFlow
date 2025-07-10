@@ -332,7 +332,7 @@ export function SignupPage({
                                                                         </SelectTrigger>
                                                                         <SelectContent>
                                                                             <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
-                                                                            <SelectItem value="Kĩ thuật Máy tính">Kĩ thuật Máy tính</SelectItem>
+                                                                            <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </FormControl>
@@ -487,9 +487,9 @@ export function SignupPage({
                                                                         <SelectContent>
                                                                             <SelectItem value="Hệ thống thông tin">Hệ thống thông tin</SelectItem>
                                                                             <SelectItem value="Công nghệ phần mềm">Công nghệ phần mềm</SelectItem>
-                                                                            <SelectItem value="Hệ thống mạng">Hệ thống mạng</SelectItem>
+                                                                            <SelectItem value="Hệ thống và mạng máy tính">Hệ thống và mạng máy tính</SelectItem>
                                                                             <SelectItem value="Khoa học máy tính">Khoa học máy tính</SelectItem>
-                                                                            <SelectItem value="Kĩ thuật máy tính">Kĩ thuật máy tính</SelectItem>
+                                                                            <SelectItem value="Kỹ thuật máy tính">Kỹ thuật máy tính</SelectItem>
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </FormControl>

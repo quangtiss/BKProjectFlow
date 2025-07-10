@@ -51,7 +51,7 @@ export class DeTaiService {
         const prefix =
             dataDeTai.nhom_nganh === "Khoa học Máy tính"
                 ? "KH"
-                : dataDeTai.nhom_nganh === "Kĩ thuật Máy tính"
+                : dataDeTai.nhom_nganh === "Kỹ thuật Máy tính"
                     ? "KT"
                     : "DN";
 

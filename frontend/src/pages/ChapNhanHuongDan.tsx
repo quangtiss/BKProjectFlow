@@ -47,7 +47,7 @@ export function ChapNhanHuongDan() {
 
     const handleAccept = async (id, trang_thai) => {
         try {
-            const response = await fetch(`http://localhost:3000/huong-dan/accept/${id}`, {
+            const response = await fetch(`http://localhost:3000/huong-dan/trang-thai/${id}`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -78,7 +78,7 @@ export function ChapNhanHuongDan() {
 
         const fetchListDeTaiChuaChapNhan = async () => {
             try {
-                const response = await fetch("http://localhost:3000/huong-dan/current-user?trang_thai=Chưa chấp nhận", {
+                const response = await fetch("http://localhost:3000/huong-dan/giang-vien?trang_thai=Chưa chấp nhận", {
                     method: "GET",
                     credentials: 'include'
                 })

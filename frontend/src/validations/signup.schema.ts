@@ -88,8 +88,8 @@ export const signUpFormSchema = z.object({
         errorMap: () => ({ message: "Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp" })
     }),
 
-    nganh: z.enum(['Khoa học Máy tính', 'Kĩ thuật Máy tính'], {
-        errorMap: () => ({ message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kĩ thuật Máy tính" })
+    nganh: z.enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính'], {
+        errorMap: () => ({ message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kỹ thuật Máy tính" })
     }),
 
     ngon_ngu: z.enum(['Tiếng Việt', 'Tiếng Pháp', 'Tiếng Nhật', 'Tiếng Anh'], {
@@ -103,8 +103,8 @@ export const signUpFormSchema = z.object({
         .min(7, { message: "Mã số giảng viên tối thiểu 7 kí tự" })
         .max(14, { message: "Mã số giảng viên tối đa 14 kí tự" }),
 
-    to_chuyen_nganh: z.enum(['Hệ thống thông tin', 'Hệ thống mạng', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kĩ thuật máy tính'], {
-        errorMap: () => ({ message: "Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống mạng, Công nghệ phần mềm, Khoa học máy tính hoặc Kĩ thuật máy tính" })
+    to_chuyen_nganh: z.enum(['Hệ thống thông tin', 'Hệ thống và mạng máy tính', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kỹ thuật máy tính'], {
+        errorMap: () => ({ message: "Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống và mạng máy tính, Công nghệ phần mềm, Khoa học máy tính hoặc Kỹ thuật máy tính" })
     }),
 
     //Giáo vụ

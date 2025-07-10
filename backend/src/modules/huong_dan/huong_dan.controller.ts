@@ -18,21 +18,16 @@ export class HuongDanController {
   }
 
   @Roles('Giảng viên')
-  @Get('/current-user')
-  findWithCurrentGiangVien(@Query() query: { trang_thai?: string }, @Request() req) {
-    return this.huongDanService.findWithCurrentGiangVien(query, req.user)
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.huongDanService.findById(+id);
+  @Get('/giang-vien')
+  findByCurrentIdGiangVien(@Request() req, @Query() query: { trang_thai?: string }) {
+    return this.huongDanService.findByCurrentIdGiangVien(req.user.sub, query);
   }
 
 
   @Roles('Giảng viên')
-  @Patch('accept/:id')
-  update(@Param('id') id: string, @Body() updateHuongDanData: UpdateTrangThaiHuongDanDTO) {
-    return this.huongDanService.update(+id, updateHuongDanData);
+  @Patch('trang-thai/:id')
+  update(@Param('id') idHuongDan: string, @Body() updateHuongDanData: UpdateTrangThaiHuongDanDTO, @Request() req) {
+    return this.huongDanService.update(+idHuongDan, updateHuongDanData, req.user.sub);
   }
 
   @Delete(':id')
