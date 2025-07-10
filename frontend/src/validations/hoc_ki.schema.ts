@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const hocKiChema = z.object({
+export const HocKyChema = z.object({
     ten_hoc_ky: z.preprocess(
         (val) => {
             const parsed = Number(val);

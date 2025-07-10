@@ -40,28 +40,28 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { hocKiChema } from "@/validations/hoc_ky.schema"
-import { CreateHocKi } from "@/services/hoc_ky/create_hoc_ky"
+import { HocKyChema } from "@/validations/hoc_ky.schema"
+import { CreateHocKy } from "@/services/hoc_ky/create_hoc_ky"
 import { toast } from "sonner"
-import { GetAllHocKi } from "@/services/hoc_ky/get_all_hoc_ky"
+import { GetAllHocKy } from "@/services/hoc_ky/get_all_hoc_ky"
 
 
-export function HocKi() {
-    const [listHocKi, setListHocKi] = useState([])
+export function HocKy() {
+    const [listHocKy, setListHocKy] = useState([])
     const [open, setOpen] = useState(false);
     const [time, setTime] = useState("00:00:00");
 
     useEffect(() => {
-        const fetchListHocKi = async () => {
-            const data = await GetAllHocKi();
-            if (data) setListHocKi(data)
+        const fetchListHocKy = async () => {
+            const data = await GetAllHocKy();
+            if (data) setListHocKy(data)
         }
-        fetchListHocKi()
+        fetchListHocKy()
     }, [])
 
 
-    const form = useForm<z.infer<typeof hocKiChema>>({
-        resolver: zodResolver(hocKiChema),
+    const form = useForm<z.infer<typeof HocKyChema>>({
+        resolver: zodResolver(HocKyChema),
         defaultValues: {
             ten_hoc_ky: 211,
             nam_hoc: 2021,
@@ -70,8 +70,8 @@ export function HocKi() {
     })
 
 
-    async function onSubmit(values: z.infer<typeof hocKiChema>) {
-        const response = await CreateHocKi(values)
+    async function onSubmit(values: z.infer<typeof HocKyChema>) {
+        const response = await CreateHocKy(values)
         if (response === "Succcess!") toast("Thành công tạo học kỳ " + values.ten_hoc_ky)
         else toast("Thất bại tạo học kỳ " + values.ten_hoc_ky)
     }
@@ -235,18 +235,18 @@ export function HocKi() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {listHocKi.length === 0 ?
+                    {listHocKy.length === 0 ?
                         <TableRow>
                             <TableCell colSpan={4} className="text-center text-muted-foreground">
                                 Không tìm thấy kết quả.
                             </TableCell>
                         </TableRow> :
-                        listHocKi.map((hocKi) => {
-                            const date = new Date(hocKi.ngay_bat_dau).toLocaleString()
+                        listHocKy.map((HocKy) => {
+                            const date = new Date(HocKy.ngay_bat_dau).toLocaleString()
                             return (
-                                <TableRow key={hocKi.id}>
-                                    <TableCell className="font-medium">{hocKi.ten_hoc_ky}</TableCell>
-                                    <TableCell>{hocKi.nam_hoc + " " + hocKi.nam_hoc + 1}</TableCell>
+                                <TableRow key={HocKy.id}>
+                                    <TableCell className="font-medium">{HocKy.ten_hoc_ky}</TableCell>
+                                    <TableCell>{HocKy.nam_hoc + " " + HocKy.nam_hoc + 1}</TableCell>
                                     <TableCell>{date}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="icon">

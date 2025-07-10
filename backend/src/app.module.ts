@@ -8,7 +8,7 @@ import { TaiKhoanModule } from './modules/tai_khoan/tai_khoan.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { RolesGuard } from './modules/auth/guard/roles.guard';
-import { HocKiModule } from './modules/hoc_ky/hoc_ky.module';
+import { HocKyModule } from './modules/hoc_ky/hoc_ky.module';
 import { DeTaiModule } from './modules/de_tai/de_tai.module';
 import { ChamDiemModule } from './modules/cham_diem/cham_diem.module';
 import { ChuDeModule } from './modules/chu_de/chu_de.module';
@@ -48,7 +48,7 @@ import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
     GiangVienModule,
     GiangVienTruongBoMonModule,
     GiaoVuModule,
-    HocKiModule,
+    HocKyModule,
     HoiDongModule,
     HuongDanModule,
     KetQuaModule,

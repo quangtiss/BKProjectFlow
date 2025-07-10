@@ -1,4 +1,4 @@
-export async function CreateHocKi(data: object) {
+export async function CreateHocKy(data: object) {
     try {
         const response = await fetch("http://localhost:3000/hoc-ky", {
             method: "POST",

@@ -1,7 +1,7 @@
 import { IsString, IsNumber, IsDate, Min, Max, Length } from "class-validator";
 import { Type } from "class-transformer";
 
-export class CreateHocKiDTO {
+export class CreateHocKyDTO {
 
     @Type(() => Number)
     @IsNumber({}, { message: "Tên học kỳ phải là một số" })

@@ -44,7 +44,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
-import { GetAllHocKi } from "@/services/hoc_ky/get_all_hoc_ky";
+import { GetAllHocKy } from "@/services/hoc_ky/get_all_hoc_ky";
 import { useAuth } from "@/routes/auth-context";
 
 
@@ -55,7 +55,7 @@ export function DeXuatDeTai({
 }: React.ComponentProps<"div">) {
     const { user } = useAuth()
     const [listGiangVien, setListGiangVien] = useState([])
-    const [listHocKi, setListHocKi] = useState([])
+    const [listHocKy, setListHocKy] = useState([])
     const [listSinhVien, setListSinhVien] = useState([{
         label: "",
         value: "",
@@ -67,10 +67,10 @@ export function DeXuatDeTai({
 
     useEffect(() => {
         const fetchListGiangVien = async () => {
-            const allHocKi = await GetAllHocKi()
+            const allHocKy = await GetAllHocKy()
             const allGiangVien = await getAllGiangVien()
             const allSinhVien = await getAllSinhVien()
-            setListHocKi(allHocKi)
+            setListHocKy(allHocKy)
             setListGiangVien(allGiangVien)
             setListSinhVien(allSinhVien.map((sinhVien) => (
                 {
@@ -194,8 +194,8 @@ export function DeXuatDeTai({
                                                                     <SelectValue placeholder="Chọn học kỳ" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    {listHocKi.map((hocKi) => {
-                                                                        return <SelectItem key={hocKi.id} value={String(hocKi.id)}>{hocKi.ten_hoc_ky}</SelectItem>
+                                                                    {listHocKy.map((HocKy) => {
+                                                                        return <SelectItem key={HocKy.id} value={String(HocKy.id)}>{HocKy.ten_hoc_ky}</SelectItem>
                                                                     })}
                                                                 </SelectContent>
                                                             </Select>

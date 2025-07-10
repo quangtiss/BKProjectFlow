@@ -1,4 +1,4 @@
-export async function GetAllHocKi() {
+export async function GetAllHocKy() {
     try {
         const response = await fetch("http://localhost:3000/hoc-ky", {
             method: "GET",

@@ -1,36 +1,36 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Request } from '@nestjs/common';
-import { HocKiService } from './hoc_ky.service';
+import { HocKyService } from './hoc_ky.service';
 import { Roles } from '../auth/guard/roles.decorator';
-import { CreateHocKiDTO } from './dto/create_hoc_ky.dto';
+import { CreateHocKyDTO } from './dto/create_hoc_ky.dto';
 
 @Controller('hoc-ky')
-export class HocKiController {
-    constructor(private readonly hocKiService: HocKiService) { }
+export class HocKyController {
+    constructor(private readonly HocKyService: HocKyService) { }
 
     @Roles("Giáo vụ")
     @Post()
-    create(@Body() dataHocKi: CreateHocKiDTO, @Request() req) {
+    create(@Body() dataHocKy: CreateHocKyDTO, @Request() req) {
         const idNguoiThem = req.user.sub
-        return this.hocKiService.create(dataHocKi, idNguoiThem);
+        return this.HocKyService.create(dataHocKy, idNguoiThem);
     }
 
     @Get()
     findAll() {
-        return this.hocKiService.findAll();
+        return this.HocKyService.findAll();
     }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.hocKiService.findById(+id);
+        return this.HocKyService.findById(+id);
     }
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() body) {
-        return this.hocKiService.update(+id, body);
+        return this.HocKyService.update(+id, body);
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
-        return this.hocKiService.delete(+id);
+        return this.HocKyService.delete(+id);
     }
 }

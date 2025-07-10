@@ -11,7 +11,7 @@ import Forbidden from "./pages/403";
 import { ChapNhanHuongDan } from "./pages/ChapNhanHuongDan";
 import { DeXuatDeTai } from "./pages/DeXuatDeTai";
 import { SignupPage } from "./pages/SignupPage";
-import { HocKi } from "./pages/HocKi";
+import { HocKy } from "./pages/HocKy";
 
 function App() {
   return (
@@ -37,7 +37,7 @@ function App() {
               <Route path="/chap-nhan-huong-dan" element={<ChapNhanHuongDan />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["Giáo vụ"]} />}>
-              <Route path="/hoc-ky" element={<HocKi />} />
+              <Route path="/hoc-ky" element={<HocKy />} />
             </Route>
 
 
