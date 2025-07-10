@@ -3,8 +3,8 @@ import { z } from "zod";
 export const logInFormSchema = z.object({
     username: z
         .string()
-        .min(2, { message: "Tên tài khoản tối thiểu 2 kí tự" })
-        .max(15, { message: "Tên tài khoản tối đa 15 kí tự" })
+        .min(2, { message: "Tên tài khoản tối thiểu 2 ký tự" })
+        .max(15, { message: "Tên tài khoản tối đa 15 ký tự" })
         .regex(/^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$/, {
             message: "Tên tài khoản phải có ít nhất 1 chữ cái và chỉ được chứa chữ cái, chữ số và dấu gạch dưới",
         }),

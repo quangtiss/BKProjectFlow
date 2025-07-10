@@ -4,22 +4,22 @@ export const deXuatDeTaiFormSchema = z.object({
     ten_tieng_viet: z
         .string()
         .trim()
-        .min(1, { message: "Tên tiếng việt tối thiểu 1 kí tự" })
-        .max(50, { message: "Tên tiếng việt tối đa 50 kí tự" }),
+        .min(1, { message: "Tên tiếng việt tối thiểu 1 ký tự" })
+        .max(50, { message: "Tên tiếng việt tối đa 50 ký tự" }),
 
 
     ten_tieng_anh: z
         .string()
         .trim()
-        .min(1, { message: "Tên tiếng anh tối thiểu 1 kí tự" })
-        .max(50, { message: "Tên tiếng anh tối đa 50 kí tự" }),
+        .min(1, { message: "Tên tiếng anh tối thiểu 1 ký tự" })
+        .max(50, { message: "Tên tiếng anh tối đa 50 ký tự" }),
 
 
     mo_ta: z
         .string()
         .trim()
-        .min(1, { message: "Mô tả tối thiểu 1 kí tự" })
-        .max(8000, { message: "Mô tả tối đa 8000 kí tự" }),
+        .min(1, { message: "Mô tả tối thiểu 1 ký tự" })
+        .max(8000, { message: "Mô tả tối đa 8000 ký tự" }),
 
 
 
@@ -59,10 +59,10 @@ export const deXuatDeTaiFormSchema = z.object({
             return Number(val);
         },
         z.number({
-            required_error: 'Vui lòng chọn học kì',
-            invalid_type_error: 'ID học kì phải là một số',
+            required_error: 'Vui lòng chọn học kỳ',
+            invalid_type_error: 'ID học kỳ phải là một số',
         })
-            .gt(0, { message: "Vui lòng chọn học kì phù hợp" })),
+            .gt(0, { message: "Vui lòng chọn học kỳ phù hợp" })),
 
 
     list_id_sinh_vien_tham_gia: z.preprocess(

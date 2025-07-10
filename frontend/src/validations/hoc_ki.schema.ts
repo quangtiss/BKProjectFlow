@@ -7,9 +7,9 @@ export const hocKiChema = z.object({
             return isNaN(parsed) ? undefined : parsed;
         },
         z
-            .number({ invalid_type_error: 'Tên học kì phải là một số' })
-            .min(111, { message: 'Tên học kì chỉ được có 3 chữ số' })
-            .max(999, { message: 'Tên học kì chỉ được có 3 chữ số' })
+            .number({ invalid_type_error: 'Tên học kỳ phải là một số' })
+            .min(111, { message: 'Tên học kỳ chỉ được có 3 chữ số' })
+            .max(999, { message: 'Tên học kỳ chỉ được có 3 chữ số' })
     ),
 
     ngay_bat_dau: z.preprocess(

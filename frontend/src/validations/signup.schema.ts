@@ -3,8 +3,8 @@ import { z } from "zod";
 export const signUpFormSchema = z.object({
     ten_tai_khoan: z
         .string()
-        .min(2, { message: "Tên tài khoản tối thiểu 2 kí tự" })
-        .max(15, { message: "Tên tài khoản tối đa 15 kí tự" })
+        .min(2, { message: "Tên tài khoản tối thiểu 2 ký tự" })
+        .max(15, { message: "Tên tài khoản tối đa 15 ký tự" })
         .regex(/^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$/, {
             message: "Tên tài khoản phải có ít nhất 1 chữ cái và chỉ được chứa chữ cái, chữ số và dấu gạch dưới",
         }),
@@ -24,18 +24,18 @@ export const signUpFormSchema = z.object({
 
     ho: z
         .string()
-        .min(1, { message: "Họ tối thiểu 1 kí tự" })
-        .max(50, { message: 'Họ tối đa 50 kí tự' }),
+        .min(1, { message: "Họ tối thiểu 1 ký tự" })
+        .max(50, { message: 'Họ tối đa 50 ký tự' }),
 
     ten: z
         .string()
-        .min(1, { message: 'Tên tối thiểu 1 kí tự' })
-        .max(15, { message: 'Tên tối đa 15 kí tự' }),
+        .min(1, { message: 'Tên tối thiểu 1 ký tự' })
+        .max(15, { message: 'Tên tối đa 15 ký tự' }),
 
     // sdt: z
     //     .string()
-    //     .min(1, { message: 'Số điện thoại tối thiểu 1 kí tự' })
-    //     .max(20, { message: 'Số điện thoại tối đa 20 kí tự' })
+    //     .min(1, { message: 'Số điện thoại tối thiểu 1 ký tự' })
+    //     .max(20, { message: 'Số điện thoại tối đa 20 ký tự' })
     //     .regex(
     //         /^0\d{9,10}$/,
     //         {
@@ -44,26 +44,26 @@ export const signUpFormSchema = z.object({
 
     // cccd: z
     //     .string()
-    //     .min(2, { message: 'Số CCCD tối thiểu 2 kí tự' })
-    //     .max(30, { message: 'Số CCCD tối đa 30 kí tự' }),
+    //     .min(2, { message: 'Số CCCD tối thiểu 2 ký tự' })
+    //     .max(30, { message: 'Số CCCD tối đa 30 ký tự' }),
 
     // ngay_sinh: z
     //     .string()
-    //     .min(2, { message: 'Ngày sinh tối thiểu 2 kí tự' })
-    //     .max(20, { message: 'Ngày sinh tối đa 15 kí tự' }),
+    //     .min(2, { message: 'Ngày sinh tối thiểu 2 ký tự' })
+    //     .max(20, { message: 'Ngày sinh tối đa 15 ký tự' }),
 
     email: z
         .string()
-        .min(2, { message: 'Email tối thiểu 2 kí tự' })
-        .max(50, { message: 'Email tối đa 50 kí tự' })
+        .min(2, { message: 'Email tối thiểu 2 ký tự' })
+        .max(50, { message: 'Email tối đa 50 ký tự' })
         .regex(/^[a-zA-Z0-9._%+-]+@hcmut\.edu\.vn$/, {
             message: 'Email phải có định dạng @hcmut.edu.vn',
         }),
 
     // dia_chi: z
     //     .string()
-    //     .min(2, { message: 'Địa chỉ tối thiểu 2 kí tự' })
-    //     .max(50, { message: 'Địa chỉ tối đa 50 kí tự' }),
+    //     .min(2, { message: 'Địa chỉ tối thiểu 2 ký tự' })
+    //     .max(50, { message: 'Địa chỉ tối đa 50 ký tự' }),
 
     // gioi_tinh: z.enum(["Nam", "Nữ"], {
     //     errorMap: () => ({ message: "Giới tính chỉ được là Nam hoặc Nữ" }),
@@ -77,8 +77,8 @@ export const signUpFormSchema = z.object({
 
     mssv: z
         .string()
-        .min(7, { message: "Mã số sinh viên tối thiểu 7 kí tự" })
-        .max(14, { message: "Mã số sinh viên tối đa 14 kí tự" }),
+        .min(7, { message: "Mã số sinh viên tối thiểu 7 ký tự" })
+        .max(14, { message: "Mã số sinh viên tối đa 14 ký tự" }),
 
     nam_dao_tao: z
         .string()
@@ -100,8 +100,8 @@ export const signUpFormSchema = z.object({
 
     msgv: z
         .string()
-        .min(7, { message: "Mã số giảng viên tối thiểu 7 kí tự" })
-        .max(14, { message: "Mã số giảng viên tối đa 14 kí tự" }),
+        .min(7, { message: "Mã số giảng viên tối thiểu 7 ký tự" })
+        .max(14, { message: "Mã số giảng viên tối đa 14 ký tự" }),
 
     to_chuyen_nganh: z.enum(['Hệ thống thông tin', 'Hệ thống và mạng máy tính', 'Công nghệ phần mềm', 'Khoa học máy tính', 'Kỹ thuật máy tính'], {
         errorMap: () => ({ message: "Tổ chuyên ngành chỉ có thể là Hệ thống thông tin, Hệ thống và mạng máy tính, Công nghệ phần mềm, Khoa học máy tính hoặc Kỹ thuật máy tính" })
@@ -111,8 +111,8 @@ export const signUpFormSchema = z.object({
 
     msnv: z
         .string()
-        .min(7, { message: "Mã số nhân viên tối thiểu 7 kí tự" })
-        .max(14, { message: "Mã số nhân viên tối đa 14 kí tự" }),
+        .min(7, { message: "Mã số nhân viên tối thiểu 7 ký tự" })
+        .max(14, { message: "Mã số nhân viên tối đa 14 ký tự" }),
 
     chuc_vu: z.enum(['Nhân viên thông tin', 'Nhân viên kiểm soát'], {
         errorMap: () => ({ message: "Chức vụ chỉ có thể là Nhân viên thông tin hoặc Nhân viên kiểm soát" })

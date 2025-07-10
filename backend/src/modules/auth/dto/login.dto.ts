@@ -4,8 +4,8 @@ import { Transform } from 'class-transformer';
 export class LogInDTO {
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString({ message: 'Tên tài khoản phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Tên tài khoản tối thiểu 2 kí tự' })
-    @MaxLength(15, { message: 'Tên tài khoản tối đa 15 kí tự' })
+    @MinLength(2, { message: 'Tên tài khoản tối thiểu 2 ký tự' })
+    @MaxLength(15, { message: 'Tên tài khoản tối đa 15 ký tự' })
     @Matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$/, {
         message: 'Tên tài khoản phải có ít nhất 1 chữ cái và chỉ được chứa chữ cái, chữ số và dấu gạch dưới',
     })

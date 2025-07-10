@@ -187,11 +187,11 @@ export function DeXuatDeTai({
                                                 name="id_hoc_ki"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Học kì</FormLabel>
+                                                        <FormLabel>học kỳ</FormLabel>
                                                         <FormControl>
                                                             <Select value={field.value ? String(field.value) : ""} onValueChange={field.onChange}>
                                                                 <SelectTrigger className="w-full">
-                                                                    <SelectValue placeholder="Chọn học kì" />
+                                                                    <SelectValue placeholder="Chọn học kỳ" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     {listHocKi.map((hocKi) => {

@@ -13,6 +13,6 @@ export class CreateDuyetDeTaiDTO {
 
     @IsOptional()
     @IsString()
-    @MaxLength(1000, { message: "Ghi chú không thể vượt quá 1000 kí tự" })
+    @MaxLength(1000, { message: "Ghi chú không thể vượt quá 1000 ký tự" })
     ghi_chu: string
 }

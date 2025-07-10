@@ -4,9 +4,9 @@ import { Type } from "class-transformer";
 export class CreateHocKiDTO {
 
     @Type(() => Number)
-    @IsNumber({}, { message: "Tên học kì phải là một số" })
-    @Min(100, { message: "Tên học kì chỉ được có 3 chữ số" })
-    @Max(999, { message: "Tên học kì chỉ được có 3 chữ số" })
+    @IsNumber({}, { message: "Tên học kỳ phải là một số" })
+    @Min(100, { message: "Tên học kỳ chỉ được có 3 chữ số" })
+    @Max(999, { message: "Tên học kỳ chỉ được có 3 chữ số" })
     ten_hoc_ki: string;
 
 

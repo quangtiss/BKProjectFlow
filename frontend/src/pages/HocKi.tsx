@@ -72,8 +72,8 @@ export function HocKi() {
 
     async function onSubmit(values: z.infer<typeof hocKiChema>) {
         const response = await CreateHocKi(values)
-        if (response === "Succcess!") toast("Thành công tạo học kì " + values.ten_hoc_ki)
-        else toast("Thất bại tạo học kì " + values.ten_hoc_ki)
+        if (response === "Succcess!") toast("Thành công tạo học kỳ " + values.ten_hoc_ki)
+        else toast("Thất bại tạo học kỳ " + values.ten_hoc_ki)
     }
 
 
@@ -83,16 +83,16 @@ export function HocKi() {
                 <Dialog>
 
                     <DialogTrigger asChild>
-                        <Button variant="outline"><IconTablePlus />Thêm học kì</Button>
+                        <Button variant="outline"><IconTablePlus />Thêm học kỳ</Button>
                     </DialogTrigger>
 
                     <DialogContent className="sm:max-w-[425px]">
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 <DialogHeader>
-                                    <DialogTitle>Tạo học kì</DialogTitle>
+                                    <DialogTitle>Tạo học kỳ</DialogTitle>
                                     <DialogDescription>
-                                        Tạo học kì với tên học kì khác nhau
+                                        Tạo học kỳ với tên học kỳ khác nhau
                                     </DialogDescription>
                                 </DialogHeader>
                                 <div className="grid gap-4">
@@ -102,7 +102,7 @@ export function HocKi() {
                                             name="ten_hoc_ki"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Tên học kì</FormLabel>
+                                                    <FormLabel>Tên học kỳ</FormLabel>
                                                     <FormControl>
                                                         <Input type="number" placeholder="XXX" {...field} />
                                                     </FormControl>
@@ -228,7 +228,7 @@ export function HocKi() {
                 <TableCaption></TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[50px] font-extrabold">Học kì</TableHead>
+                        <TableHead className="w-[50px] font-extrabold">học kỳ</TableHead>
                         <TableHead className="font-extrabold">Năm học</TableHead>
                         <TableHead className="font-extrabold">Thời gian</TableHead>
                         <TableHead className="text-right font-extrabold">Chỉnh sửa</TableHead>

@@ -22,29 +22,29 @@ export class CreateDeTaiDTO {
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
-    @MinLength(1, { message: "Tên tiếng việt tối thiểu 1 kí tự" })
-    @MaxLength(50, { message: "Tên tiếng việt tối đa 50 kí tự" })
+    @MinLength(1, { message: "Tên tiếng việt tối thiểu 1 ký tự" })
+    @MaxLength(50, { message: "Tên tiếng việt tối đa 50 ký tự" })
     ten_tieng_viet: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
-    @MinLength(1, { message: "Tên tiếng anh tối thiểu 1 kí tự" })
-    @MaxLength(50, { message: "Tên tiếng anh tối đa 50 kí tự" })
+    @MinLength(1, { message: "Tên tiếng anh tối thiểu 1 ký tự" })
+    @MaxLength(50, { message: "Tên tiếng anh tối đa 50 ký tự" })
     ten_tieng_anh: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
-    @MinLength(1, { message: "Mô tả tối thiểu 1 kí tự" })
-    @MaxLength(1000, { message: "Mô tả tối đa 1000 kí tự" })
+    @MinLength(1, { message: "Mô tả tối thiểu 1 ký tự" })
+    @MaxLength(1000, { message: "Mô tả tối đa 1000 ký tự" })
     mo_ta: string;
 
 
     // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     // @IsString()
-    // @MinLength(1, { message: "Mã đề tài tối thiểu 1 kí tự" })
-    // @MaxLength(10, { message: "Mã đề tài tối đa 10 kí tự" })
+    // @MinLength(1, { message: "Mã đề tài tối thiểu 1 ký tự" })
+    // @MaxLength(10, { message: "Mã đề tài tối đa 10 ký tự" })
     // ma_de_tai: string;
 
 
@@ -65,8 +65,8 @@ export class CreateDeTaiDTO {
 
 
     @Transform(({ value }) => Number(value))
-    @IsInt({ message: "Vui lòng chọn học kì phù hợp" })
-    @Min(1, { message: "Vui lòng chọn học kì phù hợp" })
+    @IsInt({ message: "Vui lòng chọn học kỳ phù hợp" })
+    @Min(1, { message: "Vui lòng chọn học kỳ phù hợp" })
     id_hoc_ki: number
 
 
