@@ -48,6 +48,7 @@ import { GetAllHocKy } from "@/services/hoc_ky/get_all_hoc_ky"
 
 export function HocKy() {
     const [listHocKy, setListHocKy] = useState([])
+    const [reload, setReload] = useState(false)
     const [open, setOpen] = useState(false);
     const [time, setTime] = useState("00:00:00");
 
@@ -57,7 +58,7 @@ export function HocKy() {
             if (data) setListHocKy(data)
         }
         fetchListHocKy()
-    }, [])
+    }, [reload])
 
 
     const form = useForm<z.infer<typeof HocKyChema>>({
@@ -72,7 +73,10 @@ export function HocKy() {
 
     async function onSubmit(values: z.infer<typeof HocKyChema>) {
         const response = await CreateHocKy(values)
-        if (response === "Succcess!") toast("Thành công tạo học kỳ " + values.ten_hoc_ky)
+        if (response === "Succcess!") {
+            toast("Thành công tạo học kỳ " + values.ten_hoc_ky)
+            setReload((prev) => !prev)
+        }
         else toast("Thất bại tạo học kỳ " + values.ten_hoc_ky)
     }
 
