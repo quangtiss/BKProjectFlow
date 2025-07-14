@@ -29,7 +29,7 @@ model dang_ky {
   id           Int        @id @default(autoincrement())
   ngay_dang_ky DateTime?  @db.Timestamptz(6)
   trang_thai   String?    @db.VarChar(100)
-  id_sinh_vien Int?       @unique
+  id_sinh_vien Int?
   id_de_tai    Int?
   de_tai       de_tai?    @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sinh_vien    sinh_vien? @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
@@ -209,7 +209,7 @@ model sinh_vien {
   nganh        String?        @db.VarChar(100)
   ngon_ngu     String?        @db.VarChar(100)
   id_tai_khoan Int?           @unique
-  dang_ky      dang_ky?
+  dang_ky      dang_ky[]
   ket_qua      ket_qua?
   moi_quan_tam moi_quan_tam[]
   tai_khoan    tai_khoan?     @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
