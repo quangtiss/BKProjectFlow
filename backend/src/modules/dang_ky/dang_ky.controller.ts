@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from '@nestjs/common';
 import { DangKiService } from './dang_ky.service';
+import { QueryDangKy } from './dto/query_dang_ky.dto';
 
 @Controller('dang-ky')
 export class DangKiController {
@@ -11,8 +12,8 @@ export class DangKiController {
   }
 
   @Get()
-  findAll() {
-    return this.dangKiService.findAll();
+  findAll(@Query() query: QueryDangKy) {
+    return this.dangKiService.findAll(query);
   }
 
   @Get(':id')

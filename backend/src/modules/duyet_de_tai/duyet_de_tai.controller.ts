@@ -2,6 +2,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Request, Query } fro
 import { DuyetDeTaiService } from './duyet_de_tai.service';
 import { Roles } from '../auth/guard/roles.decorator';
 import { CreateDuyetDeTaiDTO } from './dto/create_duyet_de_tai';
+import { QueryDuyetDeTaiDTO } from './dto/query_duyet_de_tai.dto';
 
 @Controller('duyet-de-tai')
 export class DuyetDeTaiController {
@@ -13,7 +14,7 @@ export class DuyetDeTaiController {
     }
 
     @Get()
-    findAll(@Query() query: { trang_thai?: string }) {
+    findAll(@Query() query: QueryDuyetDeTaiDTO) {
         return this.duyetDeTaiService.findAll(query);
     }
 

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Request, Query } fro
 import { DeTaiService } from './de_tai.service';
 import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
 import { UpdateTrangThaiDTO } from './dto/update_de_tai_trang_thaidto';
+import { QueryDeTai } from './dto/query_de_tai.dto';
 
 @Controller('de-tai')
 export class DeTaiController {
@@ -14,7 +15,7 @@ export class DeTaiController {
     }
 
     @Get()
-    findAll(@Query() query: { trang_thai?: string, trang_thai_duyet?: string }) {
+    findAll(@Query() query: QueryDeTai) {
         return this.deTaiService.findAll(query);
     }
 

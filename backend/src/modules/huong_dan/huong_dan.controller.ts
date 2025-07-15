@@ -2,6 +2,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Request } fro
 import { HuongDanService } from './huong_dan.service';
 import { UpdateTrangThaiHuongDanDTO } from './dto/update_huong_dan_trang_thai.dto';
 import { Roles } from '../auth/guard/roles.decorator';
+import { QueryHuongDanDTO } from './dto/query_huong_dan.dto';
 
 @Controller('huong-dan')
 export class HuongDanController {
@@ -19,7 +20,7 @@ export class HuongDanController {
 
   @Roles('Giảng viên')
   @Get('/giang-vien')
-  findByCurrentIdGiangVien(@Request() req, @Query() query: { trang_thai?: string }) {
+  findByCurrentIdGiangVien(@Request() req, @Query() query: QueryHuongDanDTO) {
     return this.huongDanService.findByCurrentIdGiangVien(req.user.sub, query);
   }
 
