@@ -6,8 +6,24 @@ import { PrismaService } from 'prisma/prisma.service';
 export class DangKiService {
     constructor(private readonly prismaService: PrismaService) { }
 
-    async findAll() {
-        return await this.prismaService.dang_ky.findMany();
+    async findAll(query: object) {
+        return await this.prismaService.dang_ky.findMany({
+            where: query,
+            include: {
+                de_tai: {
+                    include: {
+                        tai_khoan: {
+                            include: {
+                                sinh_vien: true,
+                                giang_vien: true,
+                                giao_vu: true,
+                                giang_vien_truong_bo_mon: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
