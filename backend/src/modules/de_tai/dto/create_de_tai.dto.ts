@@ -2,22 +2,6 @@ import { IsString, IsIn, MinLength, MaxLength, Min, IsArray, IsInt, IsOptional }
 import { Transform } from "class-transformer";
 
 export class CreateDeTaiDTO {
-    // @IsOptional()
-    // @IsIn(['GVHD chưa chấp nhận', 'GVHD đã từ chối', 'GVHD đã chấp nhận', 'Thực hiện', 'Bảo lưu', 'Hoàn thành'],
-    //     { message: "Trạng thái chỉ có thể là GVHD chưa chấp nhận, GVHD đã từ chối, GVHD đã chấp nhận,  Thực hiện, Bảo lưu hoặc Hoàn thành" })
-    // trang_thai: string;
-
-
-    // @IsOptional()
-    // @IsIn(['Chưa duyệt', 'Đã duyệt'],
-    //     { message: "Trạng thái duyệt chỉ có thể là Chưa duyệt hoặc Đã duyệt" })
-    // trang_thai_duyet: string;
-
-
-    // @IsOptional()
-    // @IsIn(['Đồ án chuyên ngành', 'Đồ án tốt nghiệp'],
-    //     { message: "Giai đoạn chỉ có thể là Đồ án chuyên ngành hoặc Đồ án tốt nghiệp" })
-    // giai_doan: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
@@ -39,13 +23,6 @@ export class CreateDeTaiDTO {
     @MinLength(1, { message: "Mô tả tối thiểu 1 ký tự" })
     @MaxLength(1000, { message: "Mô tả tối đa 1000 ký tự" })
     mo_ta: string;
-
-
-    // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-    // @IsString()
-    // @MinLength(1, { message: "Mã đề tài tối thiểu 1 ký tự" })
-    // @MaxLength(10, { message: "Mã đề tài tối đa 10 ký tự" })
-    // ma_de_tai: string;
 
 
     @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Đa ngành'],
