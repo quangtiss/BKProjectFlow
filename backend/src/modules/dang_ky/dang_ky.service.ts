@@ -27,9 +27,26 @@ export class DangKiService {
     }
 
 
-    async findById(id: number) {
-        return await this.prismaService.dang_ky.findUnique({
-            where: { id },
+    async findByCurrentSinhVien(id: number, query: object) {
+        return await this.prismaService.dang_ky.findMany({
+            where: {
+                id_sinh_vien: id,
+                ...query
+            },
+            include: {
+                de_tai: {
+                    include: {
+                        tai_khoan: {
+                            include: {
+                                sinh_vien: true,
+                                giang_vien: true,
+                                giao_vu: true,
+                                giang_vien_truong_bo_mon: true
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -40,13 +57,19 @@ export class DangKiService {
         )
     }
 
-    async update(id: number, data: any) {
+    async update(id: number, data: any, idSinhVien: number) {
         if (!data || Object.keys(data).length === 0) {
             // Không có gì để cập nhật
             return null;
         }
+        const dangKy = await this.prismaService.dang_ky.findUnique({
+            where: { id }
+        })
+        if (dangKy?.id_sinh_vien !== idSinhVien) {
+            throw new Error("Bạn không có quyền")
+        }
         return await this.prismaService.dang_ky.update({
-            where: { id: id },
+            where: { id },
             data: data
         })
     }
