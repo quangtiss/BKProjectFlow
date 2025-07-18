@@ -70,10 +70,10 @@ export function NavMain() {
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Projects'}>
+          <SidebarMenuItem key={'Projects'} onClick={() => navigate('/chap-nhan-de-tai')}>
             <SidebarMenuButton tooltip={'Projects'}>
               <IconFolder />
-              <span>Projects</span>
+              <span>Lời mời đề tài</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
