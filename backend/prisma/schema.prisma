@@ -48,6 +48,7 @@ model de_tai {
   nhom_nganh           String?         @db.VarChar(255)
   he_dao_tao           String?         @db.VarChar(255)
   so_luong_sinh_vien   Int?
+  so_sinh_vien_dang_ky Int?
   id_tai_khoan_de_xuat Int?
   id_hoc_ky            Int?
   id_hoi_dong          Int?
