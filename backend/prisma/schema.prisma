@@ -69,34 +69,28 @@ model de_tai {
 }
 
 model duyet_de_tai {
-  id                       Int                       @id @default(autoincrement())
+  id                       Int         @id @default(autoincrement())
   id_nguoi_duyet           Int?
-  id_de_tai                Int?                      @unique
-  ngay_duyet               DateTime?                 @db.Timestamptz(6)
-  trang_thai               String?                   @db.VarChar(100)
-  ghi_chu                  String?                   @db.VarChar(255)
-  de_tai                   de_tai?                   @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  giang_vien_truong_bo_mon giang_vien_truong_bo_mon? @relation(fields: [id_nguoi_duyet], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  id_de_tai                Int?        @unique
+  ngay_duyet               DateTime?   @db.Timestamptz(6)
+  trang_thai               String?     @db.VarChar(100)
+  ghi_chu                  String?     @db.VarChar(255)
+  de_tai                   de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  giang_vien_truong_bo_mon giang_vien? @relation(fields: [id_nguoi_duyet], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model giang_vien {
-  msgv            String      @id @db.VarChar(255)
-  to_chuyen_nganh String?     @db.VarChar(255)
-  id_tai_khoan    Int?        @unique
-  cham_diem       cham_diem[]
-  chinh_sua       chinh_sua[]
-  tai_khoan       tai_khoan?  @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  huong_dan       huong_dan[]
-  nhiem_vu        nhiem_vu[]
-  tham_gia        tham_gia[]
-}
-
-model giang_vien_truong_bo_mon {
-  msgv            String         @id @db.VarChar(255)
-  to_chuyen_nganh String?        @db.VarChar(255)
-  id_tai_khoan    Int?           @unique
-  duyet_de_tai    duyet_de_tai[]
-  tai_khoan       tai_khoan?     @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  msgv                        String         @id @db.VarChar(255)
+  to_chuyen_nganh             String?        @db.VarChar(255)
+  is_giang_vien_truong_bo_mon Boolean?
+  id_tai_khoan                Int?           @unique
+  cham_diem                   cham_diem[]
+  chinh_sua                   chinh_sua[]
+  duyet_de_tai                duyet_de_tai[]
+  tai_khoan                   tai_khoan?     @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  huong_dan                   huong_dan[]
+  nhiem_vu                    nhiem_vu[]
+  tham_gia                    tham_gia[]
 }
 
 model giao_vu {
@@ -220,25 +214,24 @@ model sinh_vien {
 }
 
 model tai_khoan {
-  id                                         Int                       @id @default(autoincrement())
-  ten_tai_khoan                              String?                   @unique @db.VarChar(255)
-  mat_khau                                   String?                   @db.VarChar(255)
-  ten                                        String?                   @db.VarChar(255)
-  ho                                         String?                   @db.VarChar(255)
-  sdt                                        String?                   @unique @db.VarChar(255)
-  cccd                                       String?                   @unique @db.VarChar(255)
-  ngay_sinh                                  DateTime?                 @db.Date
-  email                                      String?                   @unique @db.VarChar(255)
-  dia_chi                                    String?                   @db.VarChar(255)
-  gioi_tinh                                  String?                   @db.VarChar(100)
-  vai_tro                                    String                    @db.VarChar(100)
+  id                                         Int         @id @default(autoincrement())
+  ten_tai_khoan                              String?     @unique @db.VarChar(255)
+  mat_khau                                   String?     @db.VarChar(255)
+  ten                                        String?     @db.VarChar(255)
+  ho                                         String?     @db.VarChar(255)
+  sdt                                        String?     @unique @db.VarChar(255)
+  cccd                                       String?     @unique @db.VarChar(255)
+  ngay_sinh                                  DateTime?   @db.Date
+  email                                      String?     @unique @db.VarChar(255)
+  dia_chi                                    String?     @db.VarChar(255)
+  gioi_tinh                                  String?     @db.VarChar(100)
+  vai_tro                                    String      @db.VarChar(100)
   de_tai                                     de_tai[]
   giang_vien                                 giang_vien?
-  giang_vien_truong_bo_mon                   giang_vien_truong_bo_mon?
   giao_vu                                    giao_vu?
   sinh_vien                                  sinh_vien?
   tin_nhan                                   tin_nhan[]
-  tin_nhan_tin_nhan_id_nguoi_nhanTotai_khoan tin_nhan[]                @relation("tin_nhan_id_nguoi_nhanTotai_khoan")
+  tin_nhan_tin_nhan_id_nguoi_nhanTotai_khoan tin_nhan[]  @relation("tin_nhan_id_nguoi_nhanTotai_khoan")
   tuong_tac                                  tuong_tac[]
 }
 
