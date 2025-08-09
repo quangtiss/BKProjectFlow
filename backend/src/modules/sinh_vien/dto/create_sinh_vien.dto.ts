@@ -18,8 +18,8 @@ export class CreateSinhVienDTO {
     nam_dao_tao: string;
 
 
-    @IsIn(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'], {
-        message: 'Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp',
+    @IsIn(['Chính quy', 'Văn bằng 2', 'Vừa làm vừa học', 'Song ngành', 'Đào tạo từ xa', 'Chất lượng cao tăng cường tiếng Nhật', 'Chất lượng cao'], {
+        message: 'Hệ đào tạo chỉ có thể là Chính quy, Văn bằng 2, Vừa làm vừa học, Song ngành, Đào tạo từ xa, Chất lượng cao tăng cường tiếng Nhật hoặc Chất lượng cao',
     })
     he_dao_tao: string
 
