@@ -21,18 +21,33 @@ export class CreateDeTaiDTO {
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
     @MinLength(1, { message: "Mô tả tối thiểu 1 ký tự" })
-    @MaxLength(1000, { message: "Mô tả tối đa 1000 ký tự" })
+    @MaxLength(8000, { message: "Mô tả tối đa 8000 ký tự" })
     mo_ta: string;
 
 
-    @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Đa ngành'],
-        { message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Đa ngành" })
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString()
+    @MinLength(1, { message: "Yêu cầu nội dung và số liệu ban đầu tối thiểu 1 ký tự" })
+    @MaxLength(8000, { message: "Yêu cầu nội dung và số liệu ban đầu tối đa 8000 ký tự" })
+    yeu_cau_va_so_lieu: string;
+
+
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @IsString()
+    @MinLength(1, { message: "Tài liệu tham khảo tối thiểu 1 ký tự" })
+    @MaxLength(8000, { message: "Tài liệu tham khảo tối đa 8000 ký tự" })
+    tai_lieu_tham_khao: string;
+
+
+    @IsIn(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Liên ngành CS-CE'],
+        { message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Liên ngành CS-CE" })
     nhom_nganh: string;
 
 
-    @IsIn(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'],
-        { message: "Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp" })
-    he_dao_tao: string;
+    @IsIn(['Tiếng Việt', 'Tiếng Anh'], {
+        message: 'Hệ đào tạo chỉ có thể là Tiếng Việt hoặc Tiếng Anh',
+    })
+    he_dao_tao: string
 
 
     @Transform(({ value }) => Number(value))
