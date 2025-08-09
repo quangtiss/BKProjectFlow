@@ -119,7 +119,7 @@ export class DeTaiService {
                     trang_thai_duyet: "Chưa duyệt",
                     giai_doan: "Đồ án chuyên ngành",
                     id_tai_khoan_de_xuat: user.sub,
-                    so_sinh_vien_dang_ky: list_id_sinh_vien_tham_gia.includes(user.sub) ? 1 : 0,
+                    so_sinh_vien_dang_ky: 0
                 }
             })
             const maDeTai = `${prefix}${deTai.id.toString().padStart(4, "0")}`;
