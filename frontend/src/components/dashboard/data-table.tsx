@@ -73,6 +73,8 @@ import { Input } from "../ui/input";
 import { useAuth } from "@/routes/auth-context";
 import { toast } from "sonner";
 import { getAllDeTai } from "@/services/de_tai/get_all_de_tai";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 //--------------------------------------------END IMPORT------------------------------------
 
@@ -208,36 +210,103 @@ export function DataTable() {
       ),
     },
   ];
+  const [textInput, setTextInput] = useState("")
   const [searchingWord, setSearchingWord] = useState<string>("");
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setSearchingWord(searchingWord);
-    }, 5000); // ⏱️ Đợi 1000ms
+      setSearchingWord(textInput);
+    }, 500); // ⏱️ Đợi 1000ms
 
     return () => clearTimeout(timeout); // 🧹 Clear timeout nếu searchingWord thay đổi sớm
-  }, [searchingWord]);
+  }, [textInput]);
+
+
+  const [filters, setFilters] = useState({
+    soSinhVien: "",          // number
+    daDangKy: false,         // checkbox
+    trangThai: "",           // select
+    nhomNganh: "",
+    heDaoTao: "",
+    giangVienId: "",
+  });
+
+  const resetFilter = () => {
+    setFilters({
+      soSinhVien: "",          // number
+      daDangKy: false,         // checkbox
+      trangThai: "",           // select
+      nhomNganh: "",
+      heDaoTao: "",
+      giangVienId: "",
+    })
+  }
+
   const filteredData = useMemo(() => {
     const keyword = searchingWord.toLowerCase().trim();
 
     return data.filter((row: any) => {
-      const combined = [
-        row.de_tai.ma_de_tai,
-        row.de_tai.ten_de_tai,
-        row.de_tai.so_sinh_vien_dang_ky + "/" + row.de_tai.so_luong_sinh_vien,
-        row.de_tai.nhom_nganh,
-        row.de_tai.he_dao_tao,
-        row.de_tai.huong_dan?.[0]?.giang_vien?.msgv,
-        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ho,
-        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ten,
-      ]
-        .filter(Boolean) // loại bỏ undefined/null
-        .join(" ")
-        .toLowerCase();
+      const combined = (
+        row.de_tai.ma_de_tai +
+        row.de_tai.ten_tieng_viet + row.de_tai.ten_tieng_anh +
+        row.de_tai.so_sinh_vien_dang_ky + "/" + row.de_tai.so_luong_sinh_vien +
+        row.de_tai.nhom_nganh +
+        row.de_tai.he_dao_tao +
+        row.de_tai.huong_dan?.[0]?.giang_vien?.msgv +
+        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ho + " " +
+        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ten
+      ).toLowerCase().trim();
 
-      return combined.includes(keyword);
+      const matchKeyword = combined.includes(keyword);
+
+      // ---- 2. Filter điều kiện ----
+      const matchSoSinhVien = filters.soSinhVien
+        ? row.de_tai.so_luong_sinh_vien >= parseInt(filters.soSinhVien)
+        : true;
+
+      const matchDaDangKy = filters.daDangKy
+        ? row.de_tai.so_sinh_vien_dang_ky > 0
+        : true;
+
+      const matchTrangThai = filters.trangThai
+        ? (filters.trangThai === "Đã đầy"
+          ? row.de_tai.so_sinh_vien_dang_ky >= row.de_tai.so_luong_sinh_vien
+          : row.de_tai.so_sinh_vien_dang_ky < row.de_tai.so_luong_sinh_vien)
+        : true;
+
+      const matchNhomNganh = filters.nhomNganh
+        ? row.de_tai.nhom_nganh === filters.nhomNganh
+        : true;
+
+      const matchHeDaoTao = filters.heDaoTao
+        ? row.de_tai.he_dao_tao === filters.heDaoTao
+        : true;
+
+      const matchGiangVien = filters.giangVienId
+        ? row.de_tai.huong_dan?.[0]?.giang_vien?.id_tai_khoan === filters.giangVienId
+        : true;
+
+
+      return (
+        matchKeyword &&
+        matchSoSinhVien &&
+        matchDaDangKy &&
+        matchTrangThai &&
+        matchNhomNganh &&
+        matchHeDaoTao &&
+        matchGiangVien
+      );
     });
-  }, [data, searchingWord]);
+  }, [data, searchingWord, filters]);
 
+
+  const uniqueGiaoVien = Array.from(
+    new Map(
+      data
+        .map(row => row?.de_tai?.huong_dan?.[0]?.giang_vien)
+        .filter(Boolean)
+        .map(gv => [gv.id_tai_khoan, gv]) // dùng Map để loại trùng
+    ).values()
+  );
 
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -288,8 +357,8 @@ export function DataTable() {
           <Input
             type="search"
             placeholder="Tìm kiếm..."
-            value={searchingWord}
-            onChange={(e) => setSearchingWord(e.target.value)}
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
             className="h-8 pl-4 pr-10"
           />
           <IconSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
@@ -328,10 +397,166 @@ export function DataTable() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
-            <ListFilter />
-            <span className="hidden lg:inline">Bộ lọc</span>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant={'outline'} size={'sm'}>
+                <ListFilter />
+                <span className="hidden lg:inline">Bộ lọc</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-90">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label htmlFor="so-sinh-vien-yeu-cau">Số sinh viên yêu cầu</Label>
+                    <Input
+                      id="so-sinh-vien-yeu-cau"
+                      className="col-span-2 h-8"
+                      type="number"
+                      min={1}
+                      value={filters.soSinhVien}
+                      onChange={(e) =>
+                        setFilters({ ...filters, soSinhVien: e.target.value })
+                      }
+                    />
+                  </div>
+                  <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+                    <Checkbox
+                      id="toggle-2"
+                      className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                      checked={filters.daDangKy}
+                      onCheckedChange={(checked) =>
+                        setFilters({ ...filters, daDangKy: checked === true })
+                      }
+                    />
+                    <div className="grid gap-1.5 font-normal">
+                      <p className="text-sm leading-none font-medium">
+                        Đã có sinh viên đăng ký
+                      </p>
+                      {/* <p className="text-muted-foreground text-sm">
+                        You can enable or disable notifications at any time.
+                      </p> */}
+                    </div>
+                  </Label>
+                </div>
+
+
+
+                <div className="grid gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label>Trạng thái đăng ký</Label>
+                    <Select
+                      value={filters.trangThai}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, trangThai: value })
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Còn đăng ký">
+                          <IconLoader className="mr-1" size={16} /> Còn đăng ký
+                        </SelectItem>
+                        <SelectItem value="Đã đầy">
+                          <IconCircleCheckFilled
+                            className="fill-green-500 dark:fill-green-400 mr-1"
+                            size={16}
+                          />{" "}Đã đầy
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+
+
+
+                <div className="grid gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label>Nhóm ngành</Label>
+                    <Select
+                      value={filters.nhomNganh}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, nhomNganh: value })
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
+                        <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
+                        <SelectItem value="Liên ngành CS-CE">Liên ngành CS-CE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+
+
+
+                <div className="grid gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label>Hệ đào tạo</Label>
+                    <Select
+                      value={filters.heDaoTao}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, heDaoTao: value })
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Tiếng Việt">Tiếng Việt</SelectItem>
+                        <SelectItem value="Tiếng Anh">Tiếng Anh</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+
+
+
+                <div className="grid gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label>Giảng viên hướng dẫn</Label>
+                    <Select
+                      value={filters.giangVienId}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, giangVienId: value })
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {uniqueGiaoVien.map((gv) => (
+                          <SelectItem key={gv.id_tai_khoan} value={gv.id_tai_khoan}>
+                            {gv.msgv + " - " + gv.tai_khoan?.ho + " " + gv.tai_khoan?.ten}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+
+
+
+                <div className="grid gap-2">
+                  <Button className="w-full" variant={'destructive'} onClick={resetFilter}>
+                    Đặt lại bộ lọc
+                  </Button>
+                </div>
+
+
+
+
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <TabsContent
@@ -539,56 +764,15 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
         )
       } else {
         const dataError = await response.json()
-        if (dataError.message === 'Sinh viên không thuộc cùng nhóm ngành của đề tài')
-          toast((
-            <div className="flex flex-row items-center w-full gap-5" >
-              <AlertCircleIcon className="text-red-600" />
-              <div className="flex flex-col" >
-                <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-                < div >Sinh viên không thuộc cùng nhóm ngành của đề tài</div>
-              </div>
+        toast((
+          <div className="flex flex-row items-center w-full gap-5" >
+            <AlertCircleIcon className="text-red-600" />
+            <div className="flex flex-col" >
+              <div className="text-lg text-red-600" > Đăng ký thất bại </div>
+              < div >{dataError.message}</div>
             </div>
-          ))
-        else if (dataError.message === 'Sinh viên không phù hợp với hệ đào tạo đã đăng ký')
-          toast((
-            <div className="flex flex-row items-center w-full gap-5" >
-              <AlertCircleIcon className="text-red-600" />
-              <div className="flex flex-col" >
-                <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-                <div>Sinh viên không phù hợp với hệ đào tạo đã đăng ký</div>
-              </div>
-            </div>
-          ))
-        else if (dataError.message === 'Sinh viên không nằm trong cùng chương nhóm hệ đào tạo được làm chung')
-          toast((
-            <div className="flex flex-row items-center w-full gap-5" >
-              <AlertCircleIcon className="text-red-600" />
-              <div className="flex flex-col" >
-                <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-                <div>Sinh viên không nằm trong cùng nhóm hệ đào tạo được làm chung</div>
-              </div>
-            </div>
-          ))
-        else if (dataError.message === 'Số lượng sinh viên đăng ký đề tài đã đầy')
-          toast((
-            <div className="flex flex-row items-center w-full gap-5" >
-              <AlertCircleIcon className="text-red-600" />
-              <div className="flex flex-col" >
-                <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-                <div>Số lượng sinh viên đăng ký đề tài đã đầy</div>
-              </div>
-            </div>
-          ))
-        else {
-          toast((
-            <div className="flex flex-row items-center w-full gap-5" >
-              <AlertCircleIcon className="text-red-600" />
-              <div className="flex flex-col" >
-                <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-              </div>
-            </div>
-          ))
-        }
+          </div>
+        ))
         console.error(dataError)
       }
     } catch (error) {
@@ -764,9 +948,9 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
           </div>
         </div>
         <DrawerFooter>
-          {select ? <Button disabled className="border-1 border-green-600" variant={'ghost'}><Check className="text-green-600" />Đã đăng ký</Button>
+          {user?.auth?.role === "Sinh viên" && (select ? <Button disabled className="border-1 border-green-600" variant={'ghost'}><Check className="text-green-600" />Đã đăng ký</Button>
             :
-            <Button onClick={dangKyDeTai}>Đăng ký</Button>}
+            <Button onClick={dangKyDeTai}>Đăng ký</Button>)}
           <DrawerClose asChild>
             <Button variant="outline">Đóng</Button>
           </DrawerClose>
