@@ -12,7 +12,6 @@ export class TaiKhoanService {
         sinh_vien: true,
         giang_vien: true,
         giao_vu: true,
-        giang_vien_truong_bo_mon: true
       }
     });
   }
@@ -26,6 +25,11 @@ export class TaiKhoanService {
   async findById(id: number): Promise<tai_khoan | any> {
     return await this.prismaService.tai_khoan.findUnique({
       where: { id },
+      include: {
+        sinh_vien: true,
+        giang_vien: true,
+        giao_vu: true
+      }
     });
 
   }
