@@ -2,49 +2,40 @@
 
 // import * as React from "react"
 import { useEffect, useState } from "react"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { useIsMobile } from "@/hooks/use-mobile"
 import {
     Card,
     CardAction,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import {
-    IconChevronLeft,
-    IconChevronRight,
-    IconChevronsLeft,
-    IconChevronsRight,
     IconCircleCheckFilled,
     IconCircleXFilled,
+    IconLoader,
+    IconXboxXFilled,
 } from "@tabler/icons-react"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group"
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
+import { AlertCircleIcon, CheckCircle2Icon, CloudAlert, User } from "lucide-react"
+import { useAuth } from "@/routes/auth-context"
+import { toast } from "sonner"
 
 export const description = "An interactive area chart"
 
 export function DuyetDeTai() {
-    const isMobile = useIsMobile()
-    const [timeRange, setTimeRange] = useState("90d")
     const [listDeTaiChuaDuocDuyet, setListDeTaiChuaDuocDuyet] = useState([])
+    const { user } = useAuth()
 
     const handleAccept = async (id_de_tai: number, trang_thai: string) => {
         try {
@@ -60,19 +51,43 @@ export function DuyetDeTai() {
                 })
             })
             if (response.ok) {
+                toast((
+                    <div className="flex flex-row items-center w-full gap-5" >
+                        <CheckCircle2Icon className="text-green-600" />
+                        <div className="flex flex-col" >
+                            <div className="text-lg text-green-600" > {trang_thai} duyệt đề tài </div>
+                        </div>
+                    </div>)
+                )
                 setListDeTaiChuaDuocDuyet(oldList => oldList.filter(item => item.id != id_de_tai))
             }
-            else console.log(await response.json())
+            else {
+                toast((
+                    <div className="flex flex-row items-center w-full gap-5" >
+                        <AlertCircleIcon className="text-red-600" />
+                        <div className="flex flex-col" >
+                            <div className="text-lg text-red-600" > {trang_thai} duyệt đề tài thất bại </div>
+                            < div > Vui lòng thử lại sau </div>
+                        </div>
+                    </div>
+                ))
+                console.log(await response.json())
+            }
         } catch (error) {
+            toast((
+                <div className="flex flex-row items-center w-full gap-5" >
+                    <CloudAlert className="text-yellow-600" />
+                    <div className="flex flex-col" >
+                        <div className="text-lg text-yellow-600" > Lỗi hệ thống </div>
+                        < div > Vui lòng thử lại sau </div>
+                    </div>
+                </div>
+            ))
             console.log(error)
         }
     }
 
     useEffect(() => {
-        if (isMobile) {
-            setTimeRange("7d")
-        }
-
         const fetchDataListDeTaiChuaDuocDuyet = async () => {
             try {
                 const response = await fetch('http://localhost:3000/de-tai?trang_thai=GVHD đã chấp nhận&trang_thai_duyet=Chưa duyệt', {
@@ -80,59 +95,26 @@ export function DuyetDeTai() {
                     credentials: 'include'
                 })
                 const data = await response.json()
-                if (response.ok) setListDeTaiChuaDuocDuyet(data)
+                if (response.ok) setListDeTaiChuaDuocDuyet(data.filter((deTai) => deTai.huong_dan[0].giang_vien.to_chuyen_nganh === user.tai_khoan.giang_vien.to_chuyen_nganh))
                 else console.log(data)
             } catch (error) {
                 console.log(error)
             }
         }
 
+
         fetchDataListDeTaiChuaDuocDuyet()
-    }, [isMobile])
+    }, [])
 
     return (
         <div className="p-3"><Card className="@container/card">
             <CardHeader>
-                <CardTitle>Duyệt đề tài được đề xuất</CardTitle>
+                <CardTitle></CardTitle>
                 <CardAction>
-                    <ToggleGroup
-                        type="single"
-                        value={timeRange}
-                        onValueChange={setTimeRange}
-                        variant="outline"
-                        className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
-                    >
-                        <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
-                        <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
-                        <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
-                    </ToggleGroup>
-                    <Select value={timeRange} onValueChange={setTimeRange}>
-                        <SelectTrigger
-                            className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-                            size="sm"
-                            aria-label="Select a value"
-                        >
-                            <SelectValue placeholder="Last 3 months" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-xl">
-                            <SelectItem value="90d" className="rounded-lg">
-                                Last 3 months
-                            </SelectItem>
-                            <SelectItem value="30d" className="rounded-lg">
-                                Last 30 days
-                            </SelectItem>
-                            <SelectItem value="7d" className="rounded-lg">
-                                Last 7 days
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
                 </CardAction>
             </CardHeader>
-            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-
-
+            <CardContent className="px-3">
                 {listDeTaiChuaDuocDuyet.map((deTai) => {
-                    const date = new Date(deTai.ngay_tao).toLocaleString()
                     return <div className="mb-10" key={deTai.id}>
                         <Card>
                             <CardHeader>
@@ -140,156 +122,155 @@ export function DuyetDeTai() {
                                 <CardDescription>
                                     {deTai.ten_tieng_anh}
                                 </CardDescription>
-                                <CardAction className="flex flex-row items-center -mr-5">
-                                    <Button className="bg-red-400" onClick={() => handleAccept(deTai.id, "Đã từ chối")}>
+                                <CardAction>
+                                    <Button variant='ghost' className="text-red-400" onClick={() => handleAccept(deTai.id, "Đã từ chối")}>
                                         <IconCircleXFilled />
-                                    </Button>
-                                    <Button className="mx-5 bg-green-400" onClick={() => handleAccept(deTai.id, "Đã chấp nhận")}>
-                                        <IconCircleCheckFilled />
                                     </Button>
                                 </CardAction>
                             </CardHeader>
                             <CardContent>
                                 <Accordion type="single" collapsible>
                                     <AccordionItem value="item-1">
-                                        <AccordionTrigger>Thông tin</AccordionTrigger>
-                                        <AccordionContent className="px-4">
-                                            <p className="mb-2">
-                                                <span className="font-bold">Tên tiếng việt:</span>{" "}
-                                                {deTai.ten_tieng_viet}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Tên tiếng anh:</span>{" "}
-                                                {deTai.ten_tieng_anh}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Mã đề tài:</span>{" "}
-                                                {deTai.ma_de_tai}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Mô tả:</span>{" "}
-                                                {deTai.mo_ta}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Số lượng sinh viên yêu cầu:</span>{" "}
-                                                {deTai.so_luong_sinh_vien}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Nhóm ngành:</span>{" "}
-                                                {deTai.nhom_nganh}
-                                            </p>
-                                            <p className="mb-2">
-                                                <span className="font-bold">Hệ đào tạo:</span>{" "}
-                                                {deTai.he_dao_tao}
-                                            </p>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                    <AccordionItem value="item-2">
-                                        <AccordionTrigger>Người đề xuất</AccordionTrigger>
-                                        <AccordionContent className="px-4">
-                                            <p>{deTai.tai_khoan.vai_tro}: {deTai.tai_khoan.giang_vien?.msgv ||
-                                                deTai.tai_khoan.giao_vu?.msnv ||
-                                                deTai.tai_khoan.sinh_vien?.mssv ||
-                                                deTai.tai_khoan.giang_vien_truong_bo_mon?.msgv}
-                                                - {deTai.tai_khoan.ho + " " + deTai.tai_khoan.ten}</p>
-                                            <p className="italic">{deTai.tai_khoan.email}</p>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                    <AccordionItem value="item-3">
-                                        <AccordionTrigger>Ngày tạo</AccordionTrigger>
-                                        <AccordionContent className="px-4">
-                                            {date}
+                                        <AccordionTrigger>Thông tin chi tiết</AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="flex flex-col gap-4 overflow-y-auto text-sm">
+                                                <Separator className="border-1" />
+                                                <div className="grid grid-cols-2">
+                                                    <div className="flex flex-col gap-5">
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Mã đề tài
+                                                            </div>
+                                                            <div className="text-muted-foreground">{deTai.ma_de_tai}</div>
+                                                        </div>
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Hệ đào tạo
+                                                            </div>
+                                                            <div className="text-muted-foreground">{deTai.he_dao_tao}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col gap-5">
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Giai đoạn
+                                                            </div>
+                                                            <div className="text-muted-foreground">{deTai.giai_doan}</div>
+                                                        </div>
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Nhóm ngành
+                                                            </div>
+                                                            <div className="text-muted-foreground">{deTai.nhom_nganh}</div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Giảng viên hướng dẫn
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <ScrollArea className="h-auto max-h-[150px] w-auto rounded-md border px-2">
+                                                            {deTai.huong_dan.map((huongDan) => (
+                                                                <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
+                                                                    <User className="mr-2 scale-75" />
+                                                                    <div className="w-full">
+                                                                        <div className="text-sm">
+                                                                            {huongDan.giang_vien.msgv + " - " + huongDan.giang_vien.tai_khoan.ho + " " + huongDan.giang_vien.tai_khoan.ten}
+                                                                            {huongDan.trang_thai === "Đã chấp nhận" ? (
+                                                                                <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                                            ) : huongDan.trang_thai === "Chưa chấp nhận" ? (
+                                                                                <Badge variant={'secondary'}><IconLoader />Chưa chấp nhận</Badge>
+                                                                            ) : (
+                                                                                <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </ScrollArea>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Số sinh viên đăng ký
+                                                        </div>
+                                                        <div className="text-muted-foreground">{deTai.so_sinh_vien_dang_ky}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Số sinh viên yêu cầu
+                                                        </div>
+                                                        <div className="text-muted-foreground">{deTai.so_luong_sinh_vien}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
+                                                        {deTai.dang_ky.map((sinhVienDangKy) => (
+                                                            <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
+                                                                <User className="mr-2 scale-75" />
+                                                                <div className="w-full">
+                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
+                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </ScrollArea>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Mô tả
+                                                    </div>
+                                                    <div className="text-muted-foreground">{deTai.mo_ta}</div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Yêu cầu nội dung và số liệu ban đầu
+                                                    </div>
+                                                    <div className="text-muted-foreground">{deTai.yeu_cau_va_so_lieu}</div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Tài liệu tham khảo
+                                                    </div>
+                                                    <div className="text-muted-foreground">{deTai.tai_lieu_tham_khao}</div>
+                                                </div>
+                                                <Separator className="border-1" />
+                                                <div className="grid grid-cols-2">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Ngày đề xuất
+                                                        </div>
+                                                        <div className="text-muted-foreground">{new Date(deTai.ngay_tao).toLocaleString()}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Người đề xuất
+                                                        </div>
+                                                        <div className="text-muted-foreground">{deTai.tai_khoan.vai_tro}:
+                                                            {(deTai.tai_khoan.sinh_vien?.mssv || deTai.tai_khoan.giang_vien?.msgv) + " - " + deTai.tai_khoan.ho + " " + deTai.tai_khoan.ten}</div>
+                                                        <div className="text-muted-foreground">{deTai.tai_khoan.email}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Accordion>
                             </CardContent>
+                            <CardFooter className="flex flex-row justify-end gap-10">
+                                <Button variant='outline' className="text-green-600" onClick={() => handleAccept(deTai.id, "Đã chấp nhận")}>
+                                    <IconCircleCheckFilled /> Duyệt
+                                </Button>
+                            </CardFooter>
                         </Card>
                     </div>
                 })}
 
 
             </CardContent>
-
-            {/* ----------Footer------------ */}
-            <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
-                <div className="flex items-center justify-between px-4">
-                    <div className="text-muted-foreground hidden flex-1 text-sm lg:flex"></div>
-                    <div className="flex w-full items-center gap-8 lg:w-fit">
-                        <div className="hidden items-center gap-2 lg:flex">
-                            <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                                Rows per page
-                            </Label>
-                            <Select
-                                // value={`${table.getState().pagination.pageSize}`}
-                                value={'5'}
-                            // onValueChange={(value) => {
-                            //   table.setPageSize(Number(value))
-                            // }}
-                            >
-                                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                                    <SelectValue
-                                    // placeholder={table.getState().pagination.pageSize}
-                                    />
-                                </SelectTrigger>
-                                <SelectContent side="top">
-                                    {[5, 10].map((pageSize) => (
-                                        <SelectItem key={pageSize} value={`${pageSize}`}>
-                                            {pageSize}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex w-fit items-center justify-center text-sm font-medium">
-                            {/* Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()} */}
-                            Page A of B
-                        </div>
-                        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-                            <Button
-                                variant="outline"
-                                className="hidden h-8 w-8 p-0 lg:flex"
-                            // onClick={() => table.setPageIndex(0)}
-                            // disabled={!table.getCanPreviousPage()}
-                            >
-                                <span className="sr-only">Go to first page</span>
-                                <IconChevronsLeft />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="size-8"
-                                size="icon"
-                            // onClick={() => table.previousPage()}
-                            // disabled={!table.getCanPreviousPage()}
-                            >
-                                <span className="sr-only">Go to previous page</span>
-                                <IconChevronLeft />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="size-8"
-                                size="icon"
-                            // onClick={() => table.nextPage()}
-                            // disabled={!table.getCanNextPage()}
-                            >
-                                <span className="sr-only">Go to next page</span>
-                                <IconChevronRight />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="hidden size-8 lg:flex"
-                                size="icon"
-                            // onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                            // disabled={!table.getCanNextPage()}
-                            >
-                                <span className="sr-only">Go to last page</span>
-                                <IconChevronsRight />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* ---------End Footer---------- */}
         </Card></div>
     )
 }
