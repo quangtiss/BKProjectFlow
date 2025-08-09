@@ -8,7 +8,11 @@ export async function CreateDeTai(values: object) {
             },
             body: JSON.stringify(values)
         })
-        if (response.ok) return "Success!"
+        const data = await response.json()
+        if (response.ok) {
+            return data
+        }
+        console.log(data)
         return "Fail!"
     } catch (error) {
         console.log(error)
