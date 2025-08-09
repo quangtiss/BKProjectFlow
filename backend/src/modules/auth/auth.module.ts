@@ -7,7 +7,6 @@ import { jwtConstants } from './guard/constants';
 import { SinhVienModule } from '../sinh_vien/sinh_vien.module';
 import { GiaoVuModule } from '../giao_vu/giao_vu.module';
 import { GiangVienModule } from '../giang_vien/giang_vien.module';
-import { GiangVienTruongBoMonModule } from '../giang_vien_truong_bo_mon/giang_vien_truong_bo_mon.module';
 
 @Module({
   imports: [
@@ -15,7 +14,6 @@ import { GiangVienTruongBoMonModule } from '../giang_vien_truong_bo_mon/giang_vi
     SinhVienModule,
     GiangVienModule,
     GiaoVuModule,
-    GiangVienTruongBoMonModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

@@ -4,7 +4,6 @@ import { Response } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { SinhVienService } from "../sinh_vien/sinh_vien.service";
 import { GiangVienService } from "../giang_vien/giang_vien.service";
-import { GiangVienTruongBoMonService } from "../giang_vien_truong_bo_mon/giang_vien_truong_bo_mon.service";
 import { GiaoVuService } from "../giao_vu/giao_vu.service";
 
 @Injectable()
@@ -13,7 +12,6 @@ export class AuthService {
     private taiKhoanService: TaiKhoanService,
     private sinhVienService: SinhVienService,
     private giangVienService: GiangVienService,
-    private giangVienTruongBoMonService: GiangVienTruongBoMonService,
     private giaoVuService: GiaoVuService,
     private jwtService: JwtService
   ) { }
@@ -91,7 +89,7 @@ export class AuthService {
         break;
 
       case "Giảng viên trưởng bộ môn":
-        const giang_vien_truong_bo_mon = await this.giangVienTruongBoMonService.findByMaSo(msgv);
+        const giang_vien_truong_bo_mon = await this.giangVienService.findByMaSo(msgv);
         if (giang_vien_truong_bo_mon) throw new Error("MSGV đã tồn tại");
         break;
     }
@@ -116,21 +114,14 @@ export class AuthService {
       };
       return await this.giaoVuService.create(dataGiaoVu);
     }
-    else if (dataTaiKhoan.vai_tro === "Giảng viên") {
+    else {
       const dataGiangVien = {
         msgv,
         to_chuyen_nganh,
+        is_giang_vien_truong_bo_mon: dataTaiKhoan.vai_tro === "Giảng viên trưởng bộ môn",
         id_tai_khoan: taiKhoan.id,
       };
       return await this.giangVienService.create(dataGiangVien);
-    }
-    else {
-      const dataGiangVienTruongBoMon = {
-        msgv,
-        to_chuyen_nganh,
-        id_tai_khoan: taiKhoan.id,
-      };
-      return await this.giangVienTruongBoMonService.create(dataGiangVienTruongBoMon);
     }
   }
 
