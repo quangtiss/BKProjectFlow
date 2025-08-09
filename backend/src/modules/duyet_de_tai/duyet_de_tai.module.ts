@@ -1,12 +1,18 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { DuyetDeTaiController } from './duyet_de_tai.controller';
 import { DuyetDeTaiService } from './duyet_de_tai.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { DeTaiModule } from '../de_tai/de_tai.module';
+import { UtilsModule } from '../a_utils/utils.module';
 
 @Module({
-  imports: [PrismaModule, DeTaiModule],
+  imports: [
+    PrismaModule,
+    forwardRef(() => DeTaiModule),
+    UtilsModule
+  ],
   controllers: [DuyetDeTaiController],
-  providers: [DuyetDeTaiService]
+  providers: [DuyetDeTaiService],
+  exports: [DuyetDeTaiService]
 })
 export class DuyetDeTaiModule { }

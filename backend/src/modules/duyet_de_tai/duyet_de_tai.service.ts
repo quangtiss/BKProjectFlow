@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
+import { Prisma } from '@prisma/client';
+import { UtilsService } from '../a_utils/utils.service';
 
 @Injectable()
 export class DuyetDeTaiService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly deTaiService: DeTaiService
+        @Inject(forwardRef(() => DeTaiService))
+        private readonly deTaiService: DeTaiService,
+        private readonly utilsService: UtilsService
     ) { }
 
     async findAll(query) {
@@ -25,7 +29,6 @@ export class DuyetDeTaiService {
                                 sinh_vien: true,
                                 giang_vien: true,
                                 giao_vu: true,
-                                giang_vien_truong_bo_mon: true
                             }
                         },
                         huong_dan: {
@@ -51,9 +54,11 @@ export class DuyetDeTaiService {
 
     }
 
-    async create(duyetDeTai: any, idNguoiDuyet: number) {
-        await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" })
-        return await this.prismaService.duyet_de_tai.create({
+    async create(duyetDeTai: any, idNguoiDuyet: number, tx?: Prisma.TransactionClient) {
+        const client = tx || this.prismaService
+        const deTai = await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" }, tx)
+        this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
+        return await client.duyet_de_tai.create({
             data: {
                 ...duyetDeTai,
                 id_nguoi_duyet: idNguoiDuyet,
