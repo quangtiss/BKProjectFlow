@@ -2,11 +2,10 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/routes/auth-context"
 import { LogInService } from "@/services/auth/login"
-import { ProfileService } from "@/services/auth/profile"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Eye, EyeOff, CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,7 +29,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  const { setIsAuthenticated, setUser } = useAuth(); // Set biến xem đã đăng nhập chưa// Set biến xem role là gì
+  const { isAuthenticated, refreshContext } = useAuth(); // Set biến xem đã đăng nhập chưa// Set biến xem role là gì
   const [showPassword, setShowPassword] = useState(false)
   const [success, setSuccess] = useState("")
 
@@ -42,15 +41,21 @@ export function LoginForm({
     },
   })
 
+  const [pendingRedirect, setPendingRedirect] = useState(false);
+
+  useEffect(() => {
+    if (pendingRedirect && isAuthenticated) {
+      navigate("/");
+    }
+  }, [pendingRedirect, isAuthenticated]);
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof logInFormSchema>) {
     const response = await LogInService(values.username, values.password)
     setSuccess(response)
     if (response == "Success!") {
-      const dataUser = await ProfileService()
-      setUser(dataUser)
-      setIsAuthenticated(true);
-      navigate("/")
+      setPendingRedirect(true);
+      refreshContext();
     }
   }
 
@@ -129,10 +134,10 @@ export function LoginForm({
 
                   {success == "Success!" ?
                     (
-                      <Alert className="text-green-400">
+                      <Alert className="text-green-500">
                         <CheckCircle2Icon />
                         <AlertTitle>Đăng nhập thành công</AlertTitle>
-                        <AlertDescription className="text-green-400">
+                        <AlertDescription className="text-green-500">
                           Đang chuyển hướng, vui lòng chờ ...
                         </AlertDescription>
                       </Alert>
