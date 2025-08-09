@@ -23,8 +23,8 @@ export class SignUpDTO extends CreateTaiKhoanDTO {
 
 
     @ValidateIf(o => o.vai_tro === 'Sinh viên')
-    @IsIn(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'], {
-        message: 'Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp',
+    @IsIn(['Chính quy', 'Văn bằng 2', 'Vừa làm vừa học', 'Song ngành', 'Đào tạo từ xa', 'Chất lượng cao tăng cường tiếng Nhật', 'Chất lượng cao'], {
+        message: 'Hệ đào tạo chỉ có thể là Chính quy, Văn bằng 2, Vừa làm vừa học, Song ngành, Đào tạo từ xa, Chất lượng cao tăng cường tiếng Nhật hoặc Chất lượng cao',
     })
     he_dao_tao: string
 
@@ -37,8 +37,8 @@ export class SignUpDTO extends CreateTaiKhoanDTO {
 
 
     @ValidateIf(o => o.vai_tro === 'Sinh viên')
-    @IsIn(['Tiếng Việt', 'Tiếng Pháp', 'Tiếng Nhật', 'Tiếng Anh'], {
-        message: 'Ngôn ngữ chỉ có thể là Tiếng Việt, Tiếng Pháp, Tiếng Nhật hoặc Tiếng Anh',
+    @IsIn(['Tiếng Việt', 'Tiếng Anh'], {
+        message: 'Ngôn ngữ chỉ có thể là Tiếng Việt hoặc Tiếng Anh',
     })
     ngon_ngu: string
 
@@ -72,7 +72,7 @@ export class SignUpDTO extends CreateTaiKhoanDTO {
 
 
     @ValidateIf(o => o.vai_tro === 'Giáo vụ')
-    @IsIn(['Nhân viên thông tin', 'Nhân viên kiểm soát'],
-        { message: "Chức vụ chỉ có thể là Nhân viên thông tin hoặc Nhân viên kiểm soát" })
+    @IsIn(['Nhân viên thông tin'],
+        { message: "Chức vụ chỉ có thể là Nhân viên thông tin" })
     chuc_vu: string
 }
