@@ -3,11 +3,13 @@ import { DeTaiService } from './de_tai.service';
 import { CreateDeTaiDTO } from './dto/create_de_tai.dto';
 import { UpdateTrangThaiDTO } from './dto/update_de_tai_trang_thaidto';
 import { QueryDeTai } from './dto/query_de_tai.dto';
+import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('de-tai')
 export class DeTaiController {
     constructor(private readonly deTaiService: DeTaiService) { }
 
+    @Roles('Sinh viên', 'Giảng viên', 'Giảng viên trưởng bộ môn')
     @Post()
     create(@Body() createDeTai: CreateDeTaiDTO, @Request() req) {
         const user = req.user
