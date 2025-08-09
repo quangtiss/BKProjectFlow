@@ -43,13 +43,12 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  const { setIsAuthenticated, setUser } = useAuth();
+  const { refreshContext } = useAuth();
 
   const LogOut = async () => {
     try {
       await LogOutService()
-      setUser(null)
-      setIsAuthenticated(false)
+      refreshContext()
       navigate('/login')
     } catch (error) {
       console.log("Lỗi khi gọi service Logout: ", error)
