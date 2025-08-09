@@ -84,16 +84,16 @@ export const signUpFormSchema = z.object({
         .string()
         .regex(/^[1-9][0-9]{3}$/, { message: "Năm đào tạo phải bao gồm 4 chữ số" }),
 
-    he_dao_tao: z.enum(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'], {
-        errorMap: () => ({ message: "Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp" })
+    he_dao_tao: z.enum(['Chính quy', 'Văn bằng 2', 'Vừa làm vừa học', 'Song ngành', 'Đào tạo từ xa', 'Chất lượng cao tăng cường tiếng Nhật', 'Chất lượng cao'], {
+        errorMap: () => ({ message: "Hệ đào tạo chỉ có thể là Chính quy, Văn bằng 2, Vừa làm vừa học, Song ngành, Đào tạo từ xa, Chất lượng cao tăng cường tiếng Nhật hoặc Chất lượng cao" })
     }),
 
     nganh: z.enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính'], {
         errorMap: () => ({ message: "Ngành chỉ có thể là Khoa học Máy tính hoặc Kỹ thuật Máy tính" })
     }),
 
-    ngon_ngu: z.enum(['Tiếng Việt', 'Tiếng Pháp', 'Tiếng Nhật', 'Tiếng Anh'], {
-        errorMap: () => ({ message: "Ngôn ngữ chỉ có thể là Tiếng Việt, Tiếng Pháp, Tiếng Nhật hoặc Tiếng Anh" })
+    ngon_ngu: z.enum(['Tiếng Việt', 'Tiếng Anh'], {
+        errorMap: () => ({ message: "Ngôn ngữ chỉ có thể là Tiếng Việt hoặc Tiếng Anh" })
     }),
 
     //Giảng viên và giảng viên trường bộ môn
@@ -114,8 +114,8 @@ export const signUpFormSchema = z.object({
         .min(7, { message: "Mã số nhân viên tối thiểu 7 ký tự" })
         .max(14, { message: "Mã số nhân viên tối đa 14 ký tự" }),
 
-    chuc_vu: z.enum(['Nhân viên thông tin', 'Nhân viên kiểm soát'], {
-        errorMap: () => ({ message: "Chức vụ chỉ có thể là Nhân viên thông tin hoặc Nhân viên kiểm soát" })
+    chuc_vu: z.enum(['Nhân viên thông tin'], {
+        errorMap: () => ({ message: "Chức vụ chỉ có thể là Nhân viên thông tin" })
     }),
 
 
