@@ -15,7 +15,6 @@ import { ChuDeModule } from './modules/chu_de/chu_de.module';
 import { DangKiModule } from './modules/dang_ky/dang_ky.module';
 import { DuyetDeTaiModule } from './modules/duyet_de_tai/duyet_de_tai.module';
 import { GiangVienModule } from './modules/giang_vien/giang_vien.module';
-import { GiangVienTruongBoMonModule } from './modules/giang_vien_truong_bo_mon/giang_vien_truong_bo_mon.module';
 import { GiaoVuModule } from './modules/giao_vu/giao_vu.module';
 import { HoiDongModule } from './modules/hoi_dong/hoi_dong.module';
 import { ChinhSuaModule } from './modules/chinh_sua/chinh_sua.module';
@@ -32,6 +31,9 @@ import { ThamGiaModule } from './modules/tham_gia/tham_gia.module';
 import { ThucHienModule } from './modules/thuc_hien/thuc_hien.module';
 import { TieuChiModule } from './modules/tieu_chi/tieu_chi.module';
 import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
+import { ThongBaoModule } from './modules/thong_bao/thong_bao.module';
+import { TuongTacModule } from './modules/tuong_tac/tuong_tac.module';
+import { UtilsModule } from './modules/a_utils/utils.module';
 
 @Module({
   imports: [
@@ -46,7 +48,6 @@ import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
     DeTaiModule,
     DuyetDeTaiModule,
     GiangVienModule,
-    GiangVienTruongBoMonModule,
     GiaoVuModule,
     HocKyModule,
     HoiDongModule,
@@ -63,7 +64,10 @@ import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
     ThamGiaModule,
     ThucHienModule,
     TieuChiModule,
-    TinNhanModule
+    TinNhanModule,
+    ThongBaoModule,
+    TuongTacModule,
+    UtilsModule
   ],
   controllers: [AppController],
   providers: [ // Áp dụng global cho kiểm soát yêu cầu đăng nhập Auth và quản lý Role nào được dùng api nào
