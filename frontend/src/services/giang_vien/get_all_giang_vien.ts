@@ -1,11 +1,18 @@
 export async function getAllGiangVien() {
     try {
-        const response = await fetch('http://localhost:3000/giang-vien', {
+        const res = await fetch('http://localhost:3000/giang-vien', {
             method: "GET",
             credentials: 'include'
         })
-        return await response.json()
+
+        if (!res.ok) {
+            throw new Error("Không thể lấy dữ liệu giảng viên")
+        }
+
+        const allGiangVien = await res.json()
+        return allGiangVien
     } catch (error) {
-        console.log(error)
+        console.error("Lỗi khi lấy giảng viên:", error)
+        throw error
     }
 }
