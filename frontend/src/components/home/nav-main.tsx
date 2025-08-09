@@ -15,10 +15,14 @@ import {
   IconFolder,
   IconUsers
 } from "@tabler/icons-react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useAuth } from "@/routes/auth-context"
+import { Badge } from "@/components/ui/badge"
 
 export function NavMain() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { notifications } = useAuth()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -45,10 +49,17 @@ export function NavMain() {
         </SidebarMenu>
         <SidebarMenu>
 
-          <SidebarMenuItem key={'Dashboard'} onClick={() => { navigate('/chap-nhan-huong-dan') }}>
+
+          <SidebarMenuItem key={'Dashboard'} onClick={() => { navigate('/de-tai-cua-toi') }}>
             <SidebarMenuButton tooltip={'Dashboard'}>
               <IconDashboard />
-              <span>Hướng dẫn đề tài</span>
+              <div className="flex flex-row justify-between w-full">
+                <div>Đề tài của tôi</div>
+                {location.pathname !== "/de-tai-cua-toi" && notifications?.de_tai_chua_chap_nhan !== 0 &&
+                  <Badge className="bg-red-500 h-5 min-w-5 round-full px-1 text-accent-foreground">
+                    {notifications?.de_tai_chua_chap_nhan}
+                  </Badge>}
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
@@ -57,7 +68,13 @@ export function NavMain() {
             onClick={() => navigate('/duyet-de-tai')}>
             <SidebarMenuButton tooltip={'Lifecycle'}>
               <IconListDetails />
-              <span>Duyệt đề tài</span>
+              <div className="flex flex-row justify-between w-full">
+                <div>Duyệt đề tài</div>
+                {location.pathname !== "/duyet-de-tai" && notifications?.de_tai_chua_duyet !== 0 &&
+                  <Badge className="bg-red-500 h-5 min-w-5 round-full px-1 text-accent-foreground">
+                    {notifications?.de_tai_chua_duyet}
+                  </Badge>}
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
@@ -70,10 +87,10 @@ export function NavMain() {
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Projects'} onClick={() => navigate('/chap-nhan-de-tai')}>
+          <SidebarMenuItem key={'Projects'}>
             <SidebarMenuButton tooltip={'Projects'}>
               <IconFolder />
-              <span>Lời mời đề tài</span>
+              <span>Projects</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
