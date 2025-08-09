@@ -513,10 +513,10 @@ export function SignupPage({
 
                                             {success == "Success!" ?
                                                 (
-                                                    <Alert className="text-green-400">
+                                                    <Alert className="text-green-500">
                                                         <CheckCircle2Icon />
                                                         <AlertTitle>Đăng ký thành công</AlertTitle>
-                                                        <AlertDescription className="text-green-400">
+                                                        <AlertDescription className="text-green-500">
                                                             Đang chuyển hướng, vui lòng chờ ...
                                                         </AlertDescription>
                                                     </Alert>
