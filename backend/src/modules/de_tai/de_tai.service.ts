@@ -89,8 +89,6 @@ export class DeTaiService {
 
 
         return await this.prismaService.$transaction(async (tx) => {
-            const isDuyet = user.role === 'Giảng viên trưởng bộ môn' && user.sub === id_giang_vien_huong_dan;
-
             const listSinhVienThamGia = await Promise.all(
                 list_id_sinh_vien_tham_gia.map((idSinhVien: number) => this.sinhVienService.findById(idSinhVien))
             )
@@ -126,14 +124,6 @@ export class DeTaiService {
             })
             const maDeTai = `${prefix}${deTai.id.toString().padStart(4, "0")}`;
             const deTaiUpdated = await this.update(deTai.id, { ma_de_tai: maDeTai }, tx)
-
-
-            if (isDuyet) {
-                await this.duyetDeTaiService.create({
-                    id_de_tai: deTaiUpdated?.id,
-                    trang_thai: "Đã chấp nhận"
-                }, user.sub, tx)
-            }
 
 
             await this.huongDanService.create({
