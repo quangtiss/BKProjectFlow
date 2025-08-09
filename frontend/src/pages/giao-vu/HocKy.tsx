@@ -124,7 +124,7 @@ export function HocKy() {
                                                 <FormItem>
                                                     <FormLabel>Năm học</FormLabel>
                                                     <FormControl>
-                                                        <Input type="number" {...field} placeholder="XXXX" />
+                                                        <Input min={1900} max={3000} type="number" {...field} placeholder="XXXX" />
                                                     </FormControl>
                                                     <FormDescription />
                                                     <FormMessage />
@@ -215,9 +215,9 @@ export function HocKy() {
                                 </div>
                                 <DialogFooter>
                                     <DialogClose asChild>
-                                        <Button variant="outline">Cancel</Button>
+                                        <Button variant="outline">Thoát</Button>
                                     </DialogClose>
-                                    <Button type="submit">Save changes</Button>
+                                    <Button type="submit">Tạo học kì</Button>
                                 </DialogFooter>
                             </form>
                         </Form>
@@ -250,7 +250,7 @@ export function HocKy() {
                             return (
                                 <TableRow key={HocKy.id}>
                                     <TableCell className="font-medium">{HocKy.ten_hoc_ky}</TableCell>
-                                    <TableCell>{HocKy.nam_hoc + " " + HocKy.nam_hoc + 1}</TableCell>
+                                    <TableCell>{HocKy.nam_hoc + " - " + Number(HocKy.nam_hoc + 1)}</TableCell>
                                     <TableCell>{date}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="icon">
