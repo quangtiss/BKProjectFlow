@@ -1,5 +1,5 @@
-import { GalleryVerticalEnd } from "lucide-react";
-import { useEffect, useState } from "react";
+import { GalleryVerticalEnd, Info } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,28 +25,16 @@ import {
 import { deXuatDeTaiFormSchema } from "@/validations/de_xuat_de_tai.schema";
 import { getAllGiangVien } from "@/services/giang_vien/get_all_giang_vien";
 import { CreateDeTai } from "@/services/de_tai/create_de_tai";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react";
+import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { Badge } from "@/components/ui/badge";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
 import { GetAllHocKy } from "@/services/hoc_ky/get_all_hoc_ky";
 import { useAuth } from "@/routes/auth-context";
-
+import StudentMultiSelect from "@/components/ui/multiple-select";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 
 export function DeXuatDeTai({
@@ -54,33 +42,46 @@ export function DeXuatDeTai({
     ...props
 }: React.ComponentProps<"div">) {
     const { user } = useAuth()
-    const [listGiangVien, setListGiangVien] = useState([])
+    const [listGiangVien, setListGiangVien] = useState<any[]>([])
     const [listHocKy, setListHocKy] = useState([])
-    const [listSinhVien, setListSinhVien] = useState([{
-        label: "",
-        value: "",
-        selected: false
-    }])
-    const [success, setSuccess] = useState("")
-
-
+    const [listSinhVienRaw, setListSinhVienRaw] = useState<any[]>([]);
+    const [heDaoTao, setHeDaoTao] = useState("")
+    const [nhomNganh, setNhomNganh] = useState("")
 
     useEffect(() => {
-        const fetchListGiangVien = async () => {
-            const allHocKy = await GetAllHocKy()
-            const allGiangVien = await getAllGiangVien()
-            const allSinhVien = await getAllSinhVien()
-            setListHocKy(allHocKy)
-            setListGiangVien(allGiangVien)
-            setListSinhVien(allSinhVien.map((sinhVien) => (
-                {
-                    label: sinhVien.mssv + " - " + sinhVien.tai_khoan.ho + " " + sinhVien.tai_khoan.ten,
-                    value: String(sinhVien.id_tai_khoan),
-                    selected: user.auth.role === "Sinh viên" && sinhVien.id_tai_khoan === user.auth.sub ? true : false
-                })))
-        }
-        fetchListGiangVien()
-    }, [])
+        const fetchInitialData = async () => {
+            const [allHocKy, allGiangVien, allSinhVien] = await Promise.all([
+                GetAllHocKy(),
+                getAllGiangVien(),
+                getAllSinhVien(),
+            ]);
+
+            setListHocKy(allHocKy);
+            setListGiangVien(allGiangVien);
+            setListSinhVienRaw(allSinhVien);
+        };
+
+        fetchInitialData();
+    }, []);
+
+    const listSinhVien = useMemo(() => {
+        return listSinhVienRaw
+            .filter((sinhVien) => {
+                if (!nhomNganh) return true;
+                if (nhomNganh !== 'Liên ngành CS-CE' && sinhVien.nganh !== nhomNganh) return false;
+                if (heDaoTao && sinhVien.ngon_ngu !== heDaoTao) return false;
+                return true;
+            })
+            .map((sv) => ({
+                id: sv.id_tai_khoan,
+                mssv: sv.mssv,
+                ho_ten: sv.tai_khoan.ho + " " + sv.tai_khoan.ten,
+                nganh: sv.nganh,
+                he_dao_tao: sv.he_dao_tao,
+            }));
+    }, [listSinhVienRaw, nhomNganh, heDaoTao]);
+
+
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof deXuatDeTaiFormSchema>>({
@@ -89,11 +90,13 @@ export function DeXuatDeTai({
             ten_tieng_viet: "Aa",
             ten_tieng_anh: "Az",
             mo_ta: "Aa",
-            nhom_nganh: "Khoa học Máy tính",
-            he_dao_tao: "Chính quy",
+            yeu_cau_va_so_lieu: "123",
+            tai_lieu_tham_khao: "https://",
+            nhom_nganh: undefined,
+            he_dao_tao: undefined,
             so_luong_sinh_vien: 3,
             id_hoc_ky: undefined,
-            id_giang_vien_huong_dan: user.auth.role === "Giảng viên" ? user.auth.sub : undefined,
+            id_giang_vien_huong_dan: user.auth.role === "Giảng viên" || user.auth.role === "Giảng viên trưởng bộ môn" ? user.auth.sub : undefined,
             list_id_sinh_vien_tham_gia: user.auth.role === "Sinh viên" ? [user.auth.sub] : []
         },
     })
@@ -101,8 +104,34 @@ export function DeXuatDeTai({
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
         const response = await CreateDeTai(values)
-        setSuccess(response)
-        console.log(values)
+        toast(
+            response === "Fail!" ? (
+                <div className="flex flex-row items-center w-full gap-5" >
+                    <AlertCircleIcon className="text-red-600" />
+                    <div className="flex flex-col" >
+                        <div className="text-lg text-red-600" > Không thể tạo đề tài </div>
+                        < div > Có vẻ một số trường không hợp lý </div>
+                    </div>
+                </div>
+            ) :
+                response === "Error!" ? (
+                    <div className="flex flex-row items-center w-full gap-5" >
+                        <CloudAlert className="text-yellow-600" />
+                        <div className="flex flex-col" >
+                            <div className="text-lg text-yellow-600" > Lỗi hệ thống </div>
+                            < div > Vui lòng thử lại sau </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-row items-center w-full gap-5" >
+                        <CheckCircle2Icon className="text-green-600" />
+                        <div className="flex flex-col" >
+                            <div className="text-lg text-green-600" > Tạo đề tài thành công </div>
+                            < div > Đề tài {response.ma_de_tai} của bạn sẽ được chờ duyệt </div>
+                        </div>
+                    </div>
+                )
+        )
     }
 
     return (
@@ -179,7 +208,41 @@ export function DeXuatDeTai({
                                             )}
                                         />
                                     </div>
-                                    <div className="gap-3 w-full grid sm:grid-cols-[1fr_2fr_2fr_1fr]">
+
+                                    <div className="grid gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="yeu_cau_va_so_lieu"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Yêu cầu nội dung và số liệu ban đầu</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea {...field} />
+                                                    </FormControl>
+                                                    <FormDescription />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+                                    <div className="grid gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="tai_lieu_tham_khao"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Tài liệu tham khảo</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea {...field} />
+                                                    </FormControl>
+                                                    <FormDescription />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="gap-3 w-full grid sm:grid-cols-[1fr_2fr_1fr]">
 
                                         <div className="w-full">
                                             <FormField
@@ -187,7 +250,7 @@ export function DeXuatDeTai({
                                                 name="id_hoc_ky"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>học kỳ</FormLabel>
+                                                        <FormLabel>Học kỳ</FormLabel>
                                                         <FormControl>
                                                             <Select value={field.value ? String(field.value) : ""} onValueChange={field.onChange}>
                                                                 <SelectTrigger className="w-full">
@@ -215,40 +278,17 @@ export function DeXuatDeTai({
                                                     <FormItem>
                                                         <FormLabel>Nhóm ngành</FormLabel>
                                                         <FormControl>
-                                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                            <Select value={field.value || ""} onValueChange={(value) => {
+                                                                field.onChange(value)
+                                                                setNhomNganh(value)
+                                                            }}>
                                                                 <SelectTrigger className="w-full">
                                                                     <SelectValue placeholder="Chọn nhóm ngành" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
                                                                     <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
-                                                                    <SelectItem value="Đa ngành">Đa ngành</SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
-                                                        </FormControl>
-                                                        <FormDescription />
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <div className="w-full">
-                                            <FormField
-                                                control={form.control}
-                                                name="he_dao_tao"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Hệ đào tạo</FormLabel>
-                                                        <FormControl>
-                                                            <Select value={field.value} onValueChange={field.onChange}>
-                                                                <SelectTrigger className="w-full">
-                                                                    <SelectValue placeholder="Chọn hệ đào tạo" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectItem value="Chính quy">Chính quy</SelectItem>
-                                                                    <SelectItem value="Chất lượng cao">Chất lượng cao</SelectItem>
-                                                                    <SelectItem value="Việt - Pháp">Việt - Pháp</SelectItem>
-                                                                    <SelectItem value="Việt - Nhật">Việt - Nhật</SelectItem>
+                                                                    <SelectItem value="Liên ngành CS-CE">Liên ngành CS-CE</SelectItem>
                                                                 </SelectContent>
                                                             </Select>
                                                         </FormControl>
@@ -275,6 +315,33 @@ export function DeXuatDeTai({
                                             />
                                         </div>
                                     </div>
+                                    <div className="w-full">
+                                        <FormField
+                                            control={form.control}
+                                            name="he_dao_tao"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Hệ đào tạo</FormLabel>
+                                                    <FormControl>
+                                                        <Select value={field.value || ""} onValueChange={(value) => {
+                                                            field.onChange(value)
+                                                            setHeDaoTao(value)
+                                                        }}>
+                                                            <SelectTrigger className="w-full overflow-hidden">
+                                                                <SelectValue placeholder="Chọn hệ đào tạo" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="Tiếng Việt">Tiếng Việt {"(CQ/B2/CN/SN/VLVH/TX)"}</SelectItem>
+                                                                <SelectItem value="Tiếng Anh">Tiếng Anh {"(CC)"}</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <FormDescription />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                     <div className="grid gap-3">
                                         <FormField
                                             control={form.control}
@@ -284,12 +351,26 @@ export function DeXuatDeTai({
                                                     <FormLabel>Giảng viên hướng dẫn</FormLabel>
                                                     <FormControl>
                                                         <Select value={field.value ? String(field.value) : ""} onValueChange={field.onChange}>
-                                                            <SelectTrigger className="w-full">
+                                                            <SelectTrigger className="w-full py-6">
                                                                 <SelectValue placeholder="Chọn giảng viên hướng dẫn" />
                                                             </SelectTrigger>
-                                                            <SelectContent>
+                                                            <SelectContent className="w-full">
                                                                 {listGiangVien.map((giangVien) => {
-                                                                    return <SelectItem key={giangVien.id_tai_khoan} value={String(giangVien.id_tai_khoan)}>{giangVien.msgv} - {giangVien.tai_khoan.ho + " " + giangVien.tai_khoan.ten}</SelectItem>
+                                                                    return (
+                                                                        <div key={giangVien.id_tai_khoan}>
+                                                                            <SelectItem key={giangVien.id_tai_khoan} value={String(giangVien.id_tai_khoan)} className="w-full">
+                                                                                <div className="flex flex-col">
+                                                                                    <div>{giangVien.msgv} - {giangVien.tai_khoan.ho + " " + giangVien.tai_khoan.ten}
+                                                                                        {giangVien.tai_khoan.vai_tro === "Giảng viên trưởng bộ môn" &&
+                                                                                            <Badge variant='default' className="italic text-green-600 text-xs">Giảng viên trưởng</Badge>}</div>
+                                                                                    <div className="italic text-xs">
+                                                                                        {giangVien.to_chuyen_nganh} - {giangVien.tai_khoan.email}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </SelectItem>
+                                                                            <Separator className="h-0.5 bg-gray-600 my-2" />
+                                                                        </div>
+                                                                    )
                                                                 })}
                                                             </SelectContent>
                                                         </Select>
@@ -309,92 +390,30 @@ export function DeXuatDeTai({
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Sinh viên đăng ký tham gia</FormLabel>
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                            <FormControl>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    role="combobox"
-                                                                    className={cn(
-                                                                        "w-full justify-between h-auto",
-                                                                        !field.value?.length && "text-muted-foreground"
-                                                                    )}
-                                                                >
-                                                                    <div className="flex flex-wrap gap-1 max-w-full overflow-hidden">
-                                                                        {field.value?.length
-                                                                            ?
-                                                                            field.value.map((id) => {
-                                                                                const gv = listSinhVien.find((g) => Number(g.value) === id);
-                                                                                return (
-                                                                                    <Badge key={id} variant="secondary" className="mr-1 truncate">
-                                                                                        {gv?.label}
-                                                                                    </Badge>
-                                                                                );
-                                                                            })
-                                                                            : "Chọn sinh viên (Tùy chọn)"}
-                                                                    </div>
-
-                                                                    <ChevronsUpDown className="opacity-50" />
-                                                                </Button>
-                                                            </FormControl>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
-                                                            <Command>
-                                                                <CommandInput
-                                                                    placeholder="Search framework..."
-                                                                    className="h-9"
-                                                                />
-                                                                <CommandList>
-                                                                    <CommandEmpty>Không có sinh viên.</CommandEmpty>
-                                                                    <CommandGroup>
-                                                                        {listSinhVien.map((sinhVien) => (
-                                                                            <CommandItem
-                                                                                value={sinhVien.label}
-                                                                                key={sinhVien.value}
-                                                                                onSelect={() => {
-                                                                                    const selectedId = Number(sinhVien.value);
-                                                                                    const current = form.getValues("list_id_sinh_vien_tham_gia") || [];
-
-                                                                                    const isSelected = current.includes(selectedId);
-
-                                                                                    const newValue = isSelected
-                                                                                        ? current.filter((id) => id !== selectedId) // bỏ chọn
-                                                                                        : [...current, selectedId]; // thêm vào
-
-                                                                                    form.setValue("list_id_sinh_vien_tham_gia", newValue, {
-                                                                                        shouldValidate: true,
-                                                                                        shouldDirty: true,
-                                                                                    });
-                                                                                    setListSinhVien((prevList) =>
-                                                                                        prevList.map((item) =>
-                                                                                            Number(item.value) === selectedId
-                                                                                                ? { ...item, selected: !isSelected }
-                                                                                                : item
-                                                                                        )
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                {sinhVien.label}
-                                                                                <Check
-                                                                                    className={cn(
-                                                                                        "ml-auto",
-                                                                                        sinhVien.selected === true
-                                                                                            ? "opacity-100"
-                                                                                            : "opacity-0"
-                                                                                    )}
-                                                                                />
-                                                                            </CommandItem>
-                                                                        ))}
-                                                                    </CommandGroup>
-                                                                </CommandList>
-                                                            </Command>
-                                                        </PopoverContent>
-                                                    </Popover>
+                                                    <FormControl>
+                                                        <StudentMultiSelect listSinhVien={listSinhVien} value={field.value} onChange={field.onChange} />
+                                                    </FormControl>
                                                     <FormDescription />
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
+                                        <Alert className="mt-2">
+                                            <AlertTitle className="flex flex-row text-yellow-600">
+                                                <Info className="h-1/10 w-1/10 mt-1" />
+                                                <div className="px-2">
+                                                    SV phải làm đề tài đúng giai đoạn, ngành học, chương trình đào tạo của mình.
+                                                    Một đề tài chỉ được nhận SV cùng giai đoạn, cùng ngành, cùng chương trình đào tạo, cụ thể như sau:
+                                                </div>
+                                            </AlertTitle>
+                                            <AlertDescription className="px-10">
+                                                <ul className="list-inside list-disc text-sm">
+                                                    <li><strong className="underline">CQ, B2, SN, VLVH, TX:</strong> SV được làm chung đề tài.</li>
+                                                    <li><strong className="underline">CC:</strong> SV chỉ được làm chung đề tài với nhau.</li>
+                                                    <li><strong className="underline">CN:</strong> SV chỉ được làm chung đề tài với nhau.</li>
+                                                </ul>
+                                            </AlertDescription>
+                                        </Alert>
                                     </div>
 
 
@@ -408,42 +427,6 @@ export function DeXuatDeTai({
                                         Or
                                     </span>
                                 </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-4">
-
-                                {success == "Success!" ?
-                                    (
-                                        <Alert className="text-green-400">
-                                            <CheckCircle2Icon />
-                                            <AlertTitle>Đề xuất thành công</AlertTitle>
-                                            <AlertDescription className="text-green-400">
-                                                Đề xuất sẽ được xem xét chấp nhận bởi giáo viên hướng dẫn và duyệt đề tài bởi giáo viên trưởng bộ môn.
-                                            </AlertDescription>
-                                        </Alert>
-                                    )
-                                    :
-                                    success == "Fail!" ? (
-                                        <Alert variant="destructive">
-                                            <AlertCircleIcon />
-                                            <AlertTitle>Đề xuất thất bại</AlertTitle>
-                                            <AlertDescription>
-                                                <p>Sinh viên không thể có trong danh sách đăng ký của nhiều đồ án</p>
-                                            </AlertDescription>
-                                        </Alert>
-                                    )
-                                        :
-                                        success == "Error!" ? (
-                                            <Alert variant="destructive">
-                                                <CloudAlert />
-                                                <AlertTitle>Lỗi hệ thống</AlertTitle>
-                                                <AlertDescription>
-                                                    <p>Vui lòng thử lại sau</p>
-                                                </AlertDescription>
-                                            </Alert>
-                                        )
-                                            : null}
-
                             </div>
                         </form>
                     </Form>
