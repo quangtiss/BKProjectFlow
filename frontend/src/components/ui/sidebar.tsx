@@ -25,6 +25,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useAuth } from "@/routes/auth-context"
+import { Badge } from "./badge"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -259,7 +261,11 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, open, openMobile, isMobile } = useSidebar()
+  const { notifications } = useAuth()
+
+  const isSidebarOpen = isMobile ? openMobile : open
+  const unreadCount = notifications?.de_tai_chua_chap_nhan || 0
 
   return (
     <Button
@@ -275,6 +281,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
+      {!isSidebarOpen && unreadCount > 0 && <Badge className="bg-red-500 h-5 min-w-5 round-full px-1 text-accent-foreground">{notifications?.de_tai_chua_chap_nhan}</Badge>}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
