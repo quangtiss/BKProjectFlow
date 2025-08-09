@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
@@ -14,9 +15,13 @@ export class GiangVienService {
     }
 
 
-    async findById(id_tai_khoan: number) {
-        return await this.prismaService.giang_vien.findUnique({
+    async findById(id_tai_khoan: number, tx?: Prisma.TransactionClient) {
+        const client = tx || this.prismaService
+        return await client.giang_vien.findUnique({
             where: { id_tai_khoan },
+            include: {
+                tai_khoan: true
+            }
         });
 
     }
