@@ -1,4 +1,4 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, Query } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
 import { Prisma } from '@prisma/client';
@@ -29,10 +29,32 @@ export class HuongDanService {
                             include: {
                                 sinh_vien: true,
                                 giang_vien: true,
-                                giao_vu: true,
-                                giang_vien_truong_bo_mon: true
                             }
-                        }
+                        },
+                        huong_dan: {
+                            where: {
+                                trang_thai: "Đã chấp nhận"
+                            },
+                            include: {
+                                giang_vien: {
+                                    include: {
+                                        tai_khoan: true
+                                    }
+                                }
+                            }
+                        },
+                        dang_ky: {
+                            where: {
+                                trang_thai: "Đã chấp nhận"
+                            },
+                            include: {
+                                sinh_vien: {
+                                    include: {
+                                        tai_khoan: true
+                                    }
+                                }
+                            }
+                        },
                     }
                 }
             }
@@ -56,6 +78,18 @@ export class HuongDanService {
         })
     }
 
+    async findByIdDeTai(idDeTai: number, query: object) {
+        return this.prismaService.huong_dan.findMany({
+            where: {
+                id_de_tai: idDeTai,
+                ...query
+            },
+            include: {
+                giang_vien: true
+            }
+        })
+    }
+
     async update(idHuongDan: number, data: any, idUserLoggin: number) {
         if (!data || Object.keys(data).length === 0) {
             // Không có gì để cập nhật
@@ -66,6 +100,7 @@ export class HuongDanService {
             const dataCurrentHuongDan = await this.findById(idHuongDan, tx)
             if (dataCurrentHuongDan?.id_giang_vien !== idUserLoggin) throw new Error("Bạn không có quyền!")
 
+            if (!dataCurrentHuongDan?.de_tai?.id) throw new Error("Không tìm thấy id của đề tài thuộc phần quyền của bạn")
             await this.deTaiService.update(dataCurrentHuongDan?.de_tai?.id, {
                 trang_thai: data.trang_thai === "Đã chấp nhận" ? "GVHD đã chấp nhận" :
                     data.trang_thai === "Đã từ chối" ? "GVHD đã từ chối" : "GVHD chưa chấp nhận"

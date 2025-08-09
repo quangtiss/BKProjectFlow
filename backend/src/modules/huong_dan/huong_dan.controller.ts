@@ -8,6 +8,7 @@ import { QueryHuongDanDTO } from './dto/query_huong_dan.dto';
 export class HuongDanController {
   constructor(private readonly huongDanService: HuongDanService) { }
 
+  @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
   @Post()
   create(@Body() body) {
     return this.huongDanService.create(body);
@@ -18,14 +19,18 @@ export class HuongDanController {
     return this.huongDanService.findAll();
   }
 
-  @Roles('Giảng viên')
+  @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
   @Get('/giang-vien')
   findByCurrentIdGiangVien(@Request() req, @Query() query: QueryHuongDanDTO) {
     return this.huongDanService.findByCurrentIdGiangVien(req.user.sub, query);
   }
 
+  @Get('/de-tai/:id')
+  findByIdDeTai(@Param('id') idDeTai, @Query() query: QueryHuongDanDTO) {
+    return this.huongDanService.findByIdDeTai(+idDeTai, query)
+  }
 
-  @Roles('Giảng viên')
+  @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
   @Patch('trang-thai/:id')
   update(@Param('id') idHuongDan: string, @Body() updateHuongDanData: UpdateTrangThaiHuongDanDTO, @Request() req) {
     return this.huongDanService.update(+idHuongDan, updateHuongDanData, req.user.sub);
