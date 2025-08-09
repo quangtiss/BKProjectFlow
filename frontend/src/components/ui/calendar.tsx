@@ -25,7 +25,7 @@ function Calendar({
 
   return (
     <DayPicker
-      fromYear={1950}
+      fromYear={1900}
       toYear={3000}
       showOutsideDays={showOutsideDays}
       className={cn(
