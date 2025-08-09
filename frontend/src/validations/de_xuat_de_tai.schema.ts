@@ -22,16 +22,29 @@ export const deXuatDeTaiFormSchema = z.object({
         .max(8000, { message: "Mô tả tối đa 8000 ký tự" }),
 
 
+    yeu_cau_va_so_lieu: z
+        .string()
+        .trim()
+        .min(1, { message: "Yêu cầu nội dung và số liệu ban đầu tối thiểu 1 ký tự" })
+        .max(8000, { message: "Yêu cầu nội dung và số liệu ban đầu tối đa 8000 ký tự" }),
+
+
+    tai_lieu_tham_khao: z
+        .string()
+        .trim()
+        .min(1, { message: "Tài liệu tham khảo tối thiểu 1 ký tự" })
+        .max(8000, { message: "Tài liệu tham khảo tối đa 8000 ký tự" }),
+
 
     nhom_nganh: z
-        .enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Đa ngành'], {
-            errorMap: () => ({ message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Đa ngành" })
+        .enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Liên ngành CS-CE'], {
+            errorMap: () => ({ message: "Nhóm ngành chỉ có thể là Khoa học Máy tính, Kỹ thuật Máy tính hoặc Liên ngành CS-CE" })
         }),
 
 
     he_dao_tao: z
-        .enum(['Chính quy', 'Chất lượng cao', 'Việt - Nhật', 'Việt - Pháp'], {
-            errorMap: () => ({ message: "Hệ đào tạo chỉ có thể là Chính quy, Chất lượng cao, Việt - Nhật hoặc Việt - Pháp" })
+        .enum(['Tiếng Việt', 'Tiếng Anh'], {
+            errorMap: () => ({ message: "Hệ đào tạo chỉ có thể là Tiếng Việt hoặc Tiếng Anh" })
         }),
 
 
