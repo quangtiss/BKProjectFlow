@@ -55,6 +55,15 @@ export class HuongDanService {
                                 }
                             }
                         },
+                        duyet_de_tai: {
+                            include: {
+                                giang_vien_truong_bo_mon: {
+                                    include: {
+                                        tai_khoan: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
