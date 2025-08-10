@@ -1,5 +1,7 @@
+import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { IconCircleCheckFilled, IconLoader, IconXboxXFilled } from "@tabler/icons-react";
 import { User } from "lucide-react";
 
 export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
@@ -49,24 +51,21 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
                     Giảng viên hướng dẫn
                 </div>
                 <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-                    {dangKy?.de_tai.huong_dan.filter(huongDan => huongDan.trang_thai === "Đã chấp nhận").map((huongDan) => (
-                        <div
-                            className="flex flex-row items-center"
-                            key={huongDan.id}
-                        >
+                    {dangKy.de_tai.huong_dan.map((huongDan) => (
+                        <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
                             <User className="mr-2 scale-75" />
-                            <div>
-                                <div className="text-sm mt-2">
-                                    {huongDan.giang_vien.msgv +
-                                        " - " +
-                                        huongDan.giang_vien.tai_khoan.ho +
-                                        " " +
-                                        huongDan.giang_vien.tai_khoan.ten}
-                                </div>
+                            <div className="w-full">
                                 <div className="text-sm">
-                                    {huongDan.giang_vien.tai_khoan.email}
+                                    {huongDan.giang_vien.msgv + " - " + huongDan.giang_vien.tai_khoan.ho + " " + huongDan.giang_vien.tai_khoan.ten}
+                                    {huongDan.trang_thai === "Đã chấp nhận" ? (
+                                        <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                    ) : huongDan.trang_thai === "Chưa chấp nhận" ? (
+                                        <Badge variant={'secondary'}><IconLoader />Chưa chấp nhận</Badge>
+                                    ) : (
+                                        <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                    )}
                                 </div>
-                                <Separator className="mt-2" />
+                                <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
                             </div>
                         </div>
                     ))}
@@ -134,25 +133,56 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
             <Separator className="border-1" />
             <div className="grid grid-cols-2">
                 <div className="grid gap-2">
-                    <div className="flex leading-none font-medium">Ngày tạo</div>
-                    <div className="text-muted-foreground">
-                        {new Date(dangKy?.de_tai.ngay_tao).toLocaleString()}
+                    <div className="flex leading-none font-medium">
+                        Ngày đề xuất
                     </div>
+                    <div className="text-muted-foreground">{new Date(dangKy.de_tai.ngay_tao).toLocaleString()}</div>
                 </div>
                 <div className="grid gap-2">
-                    <div className="flex leading-none font-medium">Người duyệt</div>
-                    <div className="text-muted-foreground">
-                        {dangKy?.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv +
-                            " - " +
-                            dangKy?.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho +
-                            " " +
-                            dangKy?.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
+                    <div className="flex leading-none font-medium">
+                        Người đề xuất
                     </div>
-                    <div className="text-muted-foreground">
-                        {dangKy?.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}
-                    </div>
+                    <div className="text-muted-foreground">{dangKy.de_tai.tai_khoan.vai_tro}:
+                        {(dangKy.de_tai.tai_khoan.sinh_vien?.mssv || dangKy.de_tai.tai_khoan.giang_vien?.msgv) + " - " + dangKy.de_tai.tai_khoan.ho + " " + dangKy.de_tai.tai_khoan.ten}</div>
+                    <div className="text-muted-foreground">{dangKy.de_tai.tai_khoan.email}</div>
                 </div>
             </div>
+            <div className="grid gap-2 mb-3">
+                <div className="flex leading-none font-medium">
+                    Tình trạng duyệt
+                </div>
+                <div className="text-muted-foreground">
+                    {
+                        dangKy.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
+                            <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
+                        ) : dangKy.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
+                            <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                        ) : (
+                            <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                        )
+                    }
+                </div>
+            </div>
+            {dangKy.de_tai.duyet_de_tai ? (
+                <div className="grid grid-cols-2">
+                    <div className="grid gap-2">
+                        <div className="flex leading-none font-medium">
+                            Ngày duyệt
+                        </div>
+                        <div className="text-muted-foreground">{new Date(dangKy.de_tai.duyet_de_tai.ngay_duyet).toLocaleString()}</div>
+                    </div>
+                    <div className="grid gap-2">
+                        <div className="flex leading-none font-medium">
+                            Người duyệt
+                        </div>
+                        <div className="text-muted-foreground">
+                            {dangKy.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.vai_tro}:
+                            {dangKy.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv + " - " + dangKy.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho + " " + dangKy.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
+                        </div>
+                        <div className="text-muted-foreground">{dangKy.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}</div>
+                    </div>
+                </div>
+            ) : null}
         </div>
     )
 }

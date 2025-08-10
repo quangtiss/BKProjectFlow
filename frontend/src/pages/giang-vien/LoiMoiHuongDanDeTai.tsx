@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/card";
 import {
     IconCircleCheckFilled,
-    IconCircleXFilled
+    IconCircleXFilled,
+    IconLoader,
+    IconXboxXFilled
 } from "@tabler/icons-react";
 import {
     Accordion,
@@ -27,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { AlertCircleIcon, CheckCircle2Icon, CloudAlert, User } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 export const description = "An interactive area chart";
 
@@ -253,6 +256,42 @@ export function LoiMoiHuongDanDeTai() {
                                                         <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.email}</div>
                                                     </div>
                                                 </div>
+                                                <div className="grid gap-2 mb-3">
+                                                    <div className="flex leading-none font-medium">
+                                                        Tình trạng duyệt
+                                                    </div>
+                                                    <div className="text-muted-foreground">
+                                                        {
+                                                            huongDan.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
+                                                                <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
+                                                            ) : huongDan.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
+                                                                <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                            ) : (
+                                                                <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                                {huongDan.de_tai.duyet_de_tai ? (
+                                                    <div className="grid grid-cols-2">
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Ngày duyệt
+                                                            </div>
+                                                            <div className="text-muted-foreground">{new Date(huongDan.de_tai.duyet_de_tai.ngay_duyet).toLocaleString()}</div>
+                                                        </div>
+                                                        <div className="grid gap-2">
+                                                            <div className="flex leading-none font-medium">
+                                                                Người duyệt
+                                                            </div>
+                                                            <div className="text-muted-foreground">
+                                                                {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.vai_tro}:
+                                                                {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv + " - " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho + " " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
+                                                            </div>
+                                                            <div className="text-muted-foreground">{huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}</div>
+                                                        </div>
+                                                    </div>
+                                                ) : null}
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>

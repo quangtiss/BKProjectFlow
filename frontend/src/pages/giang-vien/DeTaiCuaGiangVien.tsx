@@ -4,9 +4,10 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IconUserPlus } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconLoader, IconUserPlus, IconXboxXFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import TeacherMultiSelect from "@/components/ui/multiselect-gv";
+import { Badge } from "@/components/ui/badge";
 
 export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Array<object> }) {
     const [recordExpand, setRecordExpand] = useState()
@@ -154,6 +155,42 @@ export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Arra
                                                             <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.email}</div>
                                                         </div>
                                                     </div>
+                                                    <div className="grid gap-2 mb-3">
+                                                        <div className="flex leading-none font-medium">
+                                                            Tình trạng duyệt
+                                                        </div>
+                                                        <div className="text-muted-foreground">
+                                                            {
+                                                                huongDan.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
+                                                                    <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
+                                                                ) : huongDan.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
+                                                                    <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                                ) : (
+                                                                    <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    {huongDan.de_tai.duyet_de_tai ? (
+                                                        <div className="grid grid-cols-2">
+                                                            <div className="grid gap-2">
+                                                                <div className="flex leading-none font-medium">
+                                                                    Ngày duyệt
+                                                                </div>
+                                                                <div className="text-muted-foreground">{new Date(huongDan.de_tai.duyet_de_tai.ngay_duyet).toLocaleString()}</div>
+                                                            </div>
+                                                            <div className="grid gap-2">
+                                                                <div className="flex leading-none font-medium">
+                                                                    Người duyệt
+                                                                </div>
+                                                                <div className="text-muted-foreground">
+                                                                    {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.vai_tro}:
+                                                                    {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv + " - " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho + " " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
+                                                                </div>
+                                                                <div className="text-muted-foreground">{huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
                                                 </div>
                                             </AccordionContent>
                                         </AccordionItem>
