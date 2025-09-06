@@ -186,17 +186,17 @@ model moi_quan_tam {
 }
 
 model nhiem_vu {
-  id               Int                @id @default(autoincrement())
-  ten              String?            @db.VarChar(255)
-  mo_ta            String?            @db.VarChar(255)
-  ngay_bat_dau     DateTime?          @db.Timestamptz(6)
-  ngay_ket_thuc    DateTime?          @db.Timestamptz(6)
-  id_nguoi_them    Int?
-  id_de_tai        Int?
-  de_tai           de_tai?            @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  giang_vien       giang_vien?        @relation(fields: [id_nguoi_them], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
-  tai_lieu_bao_cao tai_lieu_bao_cao[]
-  thuc_hien        thuc_hien[]
+  id            Int         @id @default(autoincrement())
+  ten           String?     @db.VarChar(255)
+  mo_ta         String?     @db.VarChar(255)
+  ngay_bat_dau  DateTime?   @db.Timestamptz(6)
+  ngay_ket_thuc DateTime?   @db.Timestamptz(6)
+  id_nguoi_them Int?
+  id_de_tai     Int?
+  de_tai        de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  giang_vien    giang_vien? @relation(fields: [id_nguoi_them], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  tai_lieu      tai_lieu[]
+  thuc_hien     thuc_hien[]
 }
 
 model sinh_vien {
@@ -235,16 +235,6 @@ model tai_khoan {
   tuong_tac                                  tuong_tac[]
 }
 
-model tai_lieu_bao_cao {
-  id           Int       @id @default(autoincrement())
-  id_nhiem_vu  Int?
-  ten_tai_lieu String?   @db.VarChar(255)
-  url          String?   @db.VarChar(255)
-  noi_dung     String?   @db.VarChar(255)
-  ngay_tai_len DateTime? @db.Timestamptz(6)
-  nhiem_vu     nhiem_vu? @relation(fields: [id_nhiem_vu], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model tham_gia {
   id            Int         @id @default(autoincrement())
   vai_tro       String?     @db.VarChar(100)
@@ -255,13 +245,17 @@ model tham_gia {
 }
 
 model thuc_hien {
-  id           Int        @id @default(autoincrement())
-  trang_thai   String?    @db.VarChar(100)
-  diem         Int?
-  id_sinh_vien Int?
-  id_nhiem_vu  Int?
-  nhiem_vu     nhiem_vu?  @relation(fields: [id_nhiem_vu], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sinh_vien    sinh_vien? @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  id             Int            @id @default(autoincrement())
+  trang_thai     String?        @db.VarChar(100)
+  diem           Int?
+  noi_dung       String?
+  ngay_thuc_hien DateTime?      @db.Timestamptz(6)
+  ngay_chinh_sua DateTime?      @db.Timestamptz(6)
+  id_sinh_vien   Int?
+  id_nhiem_vu    Int?
+  tep_dinh_kem   tep_dinh_kem[]
+  nhiem_vu       nhiem_vu?      @relation(fields: [id_nhiem_vu], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sinh_vien      sinh_vien?     @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tieu_chi {
@@ -316,4 +310,20 @@ model tuong_tac {
   id_thong_bao  Int?
   tai_khoan     tai_khoan? @relation(fields: [id_nguoi_nhan], references: [id], onDelete: NoAction, onUpdate: NoAction)
   thong_bao     thong_bao? @relation(fields: [id_thong_bao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tai_lieu {
+  id           Int       @id @default(autoincrement())
+  id_nhiem_vu  Int?
+  ten_tai_lieu String?   @db.VarChar(255)
+  url          String?   @db.VarChar(255)
+  nhiem_vu     nhiem_vu? @relation(fields: [id_nhiem_vu], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tep_dinh_kem {
+  id           Int        @id @default(autoincrement())
+  id_thuc_hien Int?
+  ten_tai_lieu String?    @db.VarChar(255)
+  url          String?    @db.VarChar(255)
+  thuc_hien    thuc_hien? @relation(fields: [id_thuc_hien], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
