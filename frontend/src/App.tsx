@@ -12,6 +12,7 @@ import { DeXuatDeTai } from "./pages/DeXuatDeTai";
 import { SignupPage } from "./pages/auth/SignupPage";
 import { HocKy } from "./pages/giao-vu/HocKy";
 import DeTaiCuaToi from "./pages/DeTaiCuaToi";
+import TienDo from "./pages/TienDo";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["Sinh viên", "Giảng viên", "Giảng viên trưởng bộ môn"]} />}>
               <Route path="/de-xuat-de-tai" element={<DeXuatDeTai />} />
               <Route path="/de-tai-cua-toi" element={<DeTaiCuaToi />} />
+              <Route path="/tien-do-de-tai/:id" element={<TienDo />} />
             </Route>
 
 
