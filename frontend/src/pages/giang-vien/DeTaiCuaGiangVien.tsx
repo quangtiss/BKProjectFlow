@@ -8,13 +8,14 @@ import { IconCircleCheckFilled, IconLoader, IconUserPlus, IconXboxXFilled } from
 import { useState } from "react";
 import TeacherMultiSelect from "@/components/ui/multiselect-gv";
 import { Badge } from "@/components/ui/badge";
+import { TienDoTrigger } from "../TienDo";
 
 export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Array<object> }) {
     const [recordExpand, setRecordExpand] = useState()
     return (
         <div className="grid gap-5">
             {
-                listHuongDan.map((huongDan) => {
+                listHuongDan.map((huongDan: any) => {
                     const isExpand = recordExpand === huongDan.id
                     return (
                         <div key={huongDan.id}>
@@ -70,7 +71,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Arra
                                                             Giảng viên hướng dẫn
                                                         </div>
                                                         <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-                                                            {huongDan?.de_tai.huong_dan.map((huongDan) => (
+                                                            {huongDan?.de_tai.huong_dan.map((huongDan: any) => (
                                                                 <div
                                                                     className="flex flex-row items-center"
                                                                     key={huongDan.id}
@@ -109,7 +110,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Arra
                                                     </div>
                                                     <div className="grid gap-2">
                                                         <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
-                                                            {huongDan.de_tai.dang_ky.map((sinhVienDangKy) => (
+                                                            {huongDan.de_tai.dang_ky.map((sinhVienDangKy: any) => (
                                                                 <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
                                                                     <User className="mr-2 scale-75" />
                                                                     <div className="w-full">
@@ -205,6 +206,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }: { listHuongDan: Arra
                                     <div className="w-full">
                                         {isExpand && <div className="animate-in fade-in slide-in-from-top duration-500 p-2 shadow-2xl rounded-2xl border-1"><TeacherMultiSelect deTai={huongDan?.de_tai} /></div>}
                                     </div>
+                                    <TienDoTrigger idDeTai={huongDan.de_tai.id} />
                                 </CardFooter>
                             </Card>
                         </div>

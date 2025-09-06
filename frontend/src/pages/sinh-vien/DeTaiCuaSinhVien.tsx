@@ -3,10 +3,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { IconCircleCheckFilled, IconLoader, IconXboxXFilled } from "@tabler/icons-react";
 import { User } from "lucide-react";
+import { TienDoTrigger } from "../TienDo";
 
-export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
+export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
     return (
         <div className="flex flex-col gap-4 overflow-y-auto p-4 text-sm">
+            <TienDoTrigger idDeTai={dangKy.id_de_tai} />
             <div className="gap-1">
                 <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                     {dangKy.de_tai.ten_tieng_viet}
@@ -51,7 +53,7 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
                     Giảng viên hướng dẫn
                 </div>
                 <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-                    {dangKy.de_tai.huong_dan.map((huongDan) => (
+                    {dangKy.de_tai.huong_dan.map((huongDan: any) => (
                         <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
                             <User className="mr-2 scale-75" />
                             <div className="w-full">
@@ -91,7 +93,7 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: object }) {
             </div>
             <div className="grid gap-2">
                 <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-                    {dangKy.de_tai.dang_ky.map((sinhVienDangKy) => (
+                    {dangKy.de_tai.dang_ky.map((sinhVienDangKy: any) => (
                         <div
                             className="flex flex-row items-center"
                             key={sinhVienDangKy.id}
