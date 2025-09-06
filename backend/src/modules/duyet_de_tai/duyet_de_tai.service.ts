@@ -57,7 +57,7 @@ export class DuyetDeTaiService {
     async create(duyetDeTai: any, idNguoiDuyet: number, tx?: Prisma.TransactionClient) {
         const client = tx || this.prismaService
         const deTai = await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" }, tx)
-        this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
+        this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.ten_tieng_anh + ". " + deTai?.ten_tieng_viet + ". " + deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
         return await client.duyet_de_tai.create({
             data: {
                 ...duyetDeTai,
