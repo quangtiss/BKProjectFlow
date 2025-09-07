@@ -19,10 +19,11 @@ model cham_diem {
 }
 
 model chu_de {
-  id            Int             @id @default(autoincrement())
-  ten_chu_de    String?         @unique @db.VarChar(255)
-  moi_lien_quan moi_lien_quan[]
-  moi_quan_tam  moi_quan_tam[]
+  id             Int             @id @default(autoincrement())
+  ten_tieng_anh  String?         @unique
+  ten_tieng_viet String?         @unique
+  moi_lien_quan  moi_lien_quan[]
+  moi_quan_tam   moi_quan_tam[]
 }
 
 model dang_ky {
@@ -248,6 +249,7 @@ model thuc_hien {
   id             Int            @id @default(autoincrement())
   trang_thai     String?        @db.VarChar(100)
   diem           Int?
+  phan_loai      String?        @db.VarChar(200)
   noi_dung       String?
   ngay_thuc_hien DateTime?      @db.Timestamptz(6)
   ngay_chinh_sua DateTime?      @db.Timestamptz(6)
