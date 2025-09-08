@@ -176,6 +176,8 @@ model moi_lien_quan {
   id_chu_de Int?
   chu_de    chu_de? @relation(fields: [id_chu_de], references: [id], onDelete: NoAction, onUpdate: NoAction)
   de_tai    de_tai? @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([id_chu_de, id_de_tai], map: "moi_lien_quan_id_chu_de_id_de_tai_idx")
 }
 
 model moi_quan_tam {
@@ -184,6 +186,8 @@ model moi_quan_tam {
   id_chu_de    Int?
   chu_de       chu_de?    @relation(fields: [id_chu_de], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sinh_vien    sinh_vien? @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([id_chu_de, id_sinh_vien], map: "moi_quan_tam_id_chu_de_id_sinh_vien_idx")
 }
 
 model nhiem_vu {
