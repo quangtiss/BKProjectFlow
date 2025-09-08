@@ -11,7 +11,7 @@ export class UtilsController {
   @Public()
   @Post('generate-topic')
   getTopicFromDescription(@Body() body) {
-    return this.utilsService.generateTopicFromDescription(body, 1)
+    return this.utilsService.generateTopicFromDescription(body, 2)
   }
 
   @Get('file/:id/:filename')

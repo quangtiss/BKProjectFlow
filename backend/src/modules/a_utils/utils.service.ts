@@ -31,11 +31,12 @@ export class UtilsService {
 
   async generateTopicFromDescription(bodyData: { mo_ta: string }, idDeTai: number) {
     const listChuDe = await this.prismaService.chu_de.findMany()
+    const filteredListChuDe = listChuDe.map(chuDe => ({ id: chuDe.id, ten_chu_de: chuDe.ten_tieng_viet + " " + chuDe.ten_tieng_anh }))
     const moTa = bodyData.mo_ta
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": `Bearer ${process.env.API_KEY_AI}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -46,7 +47,7 @@ export class UtilsService {
             "content": [
               {
                 "type": "text",
-                "text": `Đây là list chủ đề ${JSON.stringify(listChuDe)}, đây là tên tiếng anh, tiếng việt và mô tả của đề tài: ${moTa}
+                "text": `Đây là list chủ đề ${JSON.stringify(filteredListChuDe)}; đây là tên tiếng anh, tiếng việt và mô tả của đề tài: ${moTa}
                 Bạn hãy phân tích mô tả sau đó xem nó thuộc các thể loại ten_chu_de nào ở trên, liệt kê thật đầy đủ, hãy liệt kê ra theo dạng chuỗi id của chúng trong array trên, các thành phần không được lặp lại và phải cách nhau dấu , . Bạn phải trả về dạng chuỗi theo yêu cầu và không làm gì hay nói gì thêm.`
               }
             ]
