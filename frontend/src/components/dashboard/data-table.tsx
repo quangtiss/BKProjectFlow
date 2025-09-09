@@ -1,6 +1,7 @@
 // import * as React from "react"
 import { useState, useMemo, useEffect } from "react";
 import {
+  IconCarambolaFilled,
   IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
@@ -66,15 +67,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "../ui/scroll-area";
-import { AlertCircleIcon, Check, CheckCircle2Icon, CloudAlert, ListFilter, User } from "lucide-react";
+import {
+  AlertCircleIcon,
+  Check,
+  CheckCircle2Icon,
+  CloudAlert,
+  ListFilter,
+  User,
+} from "lucide-react";
 import { Input } from "../ui/input";
 import { useAuth } from "@/routes/auth-context";
 import { toast } from "sonner";
 import { getAllDeTai } from "@/services/de_tai/get_all_de_tai";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
+import ChuDeMultiSelect from "./select-chu-de";
 
 //--------------------------------------------END IMPORT------------------------------------
 
@@ -93,22 +106,23 @@ export const schema = z.object({
   so_luong_sinh_vien: z.number(),
 });
 
-
-
-
 export function DataTable() {
   const [data, setData] = useState<Array<object>>([]);
-  const [toggle, setToggle] = useState(false)
+  const [toggle, setToggle] = useState(false);
   useEffect(() => {
     const fetchAllDeTaiDaDuyet = async () => {
       try {
-        const listDeTaiDaDuyet = await getAllDeTai()
-        setData(listDeTaiDaDuyet.sort((a, b) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
+        const listDeTaiDaDuyet = await getAllDeTai();
+        setData(
+          listDeTaiDaDuyet.sort((a, b) =>
+            a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)
+          )
+        );
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
-    fetchAllDeTaiDaDuyet()
+    };
+    fetchAllDeTaiDaDuyet();
   }, [toggle]);
 
   const columns: ColumnDef<z.infer<typeof schema>>[] = [
@@ -210,7 +224,7 @@ export function DataTable() {
       ),
     },
   ];
-  const [textInput, setTextInput] = useState("")
+  const [textInput, setTextInput] = useState("");
   const [searchingWord, setSearchingWord] = useState<string>("");
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -220,11 +234,10 @@ export function DataTable() {
     return () => clearTimeout(timeout); // 🧹 Clear timeout nếu searchingWord thay đổi sớm
   }, [textInput]);
 
-
   const [filters, setFilters] = useState({
-    soSinhVien: "",          // number
-    daDangKy: false,         // checkbox
-    trangThai: "",           // select
+    soSinhVien: "", // number
+    daDangKy: false, // checkbox
+    trangThai: "", // select
     nhomNganh: "",
     heDaoTao: "",
     giangVienId: "",
@@ -232,14 +245,16 @@ export function DataTable() {
 
   const resetFilter = () => {
     setFilters({
-      soSinhVien: "",          // number
-      daDangKy: false,         // checkbox
-      trangThai: "",           // select
+      soSinhVien: "", // number
+      daDangKy: false, // checkbox
+      trangThai: "", // select
       nhomNganh: "",
       heDaoTao: "",
       giangVienId: "",
-    })
-  }
+    });
+  };
+
+  const [listDeTaiRecommend, setListDeTaiRecommend] = useState<any>([])
 
   const filteredData = useMemo(() => {
     const keyword = searchingWord.toLowerCase().trim();
@@ -247,14 +262,20 @@ export function DataTable() {
     return data.filter((row: any) => {
       const combined = (
         row.de_tai.ma_de_tai +
-        row.de_tai.ten_tieng_viet + row.de_tai.ten_tieng_anh +
-        row.de_tai.so_sinh_vien_dang_ky + "/" + row.de_tai.so_luong_sinh_vien +
+        row.de_tai.ten_tieng_viet +
+        row.de_tai.ten_tieng_anh +
+        row.de_tai.so_sinh_vien_dang_ky +
+        "/" +
+        row.de_tai.so_luong_sinh_vien +
         row.de_tai.nhom_nganh +
         row.de_tai.he_dao_tao +
         row.de_tai.huong_dan?.[0]?.giang_vien?.msgv +
-        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ho + " " +
+        row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ho +
+        " " +
         row.de_tai.huong_dan?.[0]?.giang_vien?.tai_khoan?.ten
-      ).toLowerCase().trim();
+      )
+        .toLowerCase()
+        .trim();
 
       const matchKeyword = combined.includes(keyword);
 
@@ -268,9 +289,9 @@ export function DataTable() {
         : true;
 
       const matchTrangThai = filters.trangThai
-        ? (filters.trangThai === "Đã đầy"
+        ? filters.trangThai === "Đã đầy"
           ? row.de_tai.so_sinh_vien_dang_ky >= row.de_tai.so_luong_sinh_vien
-          : row.de_tai.so_sinh_vien_dang_ky < row.de_tai.so_luong_sinh_vien)
+          : row.de_tai.so_sinh_vien_dang_ky < row.de_tai.so_luong_sinh_vien
         : true;
 
       const matchNhomNganh = filters.nhomNganh
@@ -282,9 +303,13 @@ export function DataTable() {
         : true;
 
       const matchGiangVien = filters.giangVienId
-        ? row.de_tai.huong_dan?.[0]?.giang_vien?.id_tai_khoan === filters.giangVienId
+        ? row.de_tai.huong_dan?.[0]?.giang_vien?.id_tai_khoan ===
+        filters.giangVienId
         : true;
 
+      const recommend = listDeTaiRecommend.length > 0 ?
+        listDeTaiRecommend.includes(row.de_tai.id)
+        : true
 
       return (
         matchKeyword &&
@@ -293,18 +318,25 @@ export function DataTable() {
         matchTrangThai &&
         matchNhomNganh &&
         matchHeDaoTao &&
-        matchGiangVien
+        matchGiangVien &&
+        recommend
       );
-    });
-  }, [data, searchingWord, filters]);
+    })
+      .sort((a: any, b: any) => {
+        const indexA = listDeTaiRecommend.indexOf(a.de_tai.id);
+        const indexB = listDeTaiRecommend.indexOf(b.de_tai.id);
 
+        // nếu không có trong listDeTaiRecommend thì cho xuống cuối
+        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+      });;
+  }, [data, searchingWord, filters, listDeTaiRecommend]);
 
   const uniqueGiaoVien = Array.from(
     new Map(
       data
-        .map(row => row?.de_tai?.huong_dan?.[0]?.giang_vien)
+        .map((row) => row?.de_tai?.huong_dan?.[0]?.giang_vien)
         .filter(Boolean)
-        .map(gv => [gv.id_tai_khoan, gv]) // dùng Map để loại trùng
+        .map((gv) => [gv.id_tai_khoan, gv]) // dùng Map để loại trùng
     ).values()
   );
 
@@ -317,7 +349,7 @@ export function DataTable() {
     pageSize: 10,
   });
 
-
+  const [onRecommend, setOnRecommend] = useState(false)
 
   const table = useReactTable({
     data: filteredData,
@@ -364,6 +396,17 @@ export function DataTable() {
           <IconSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
         </div>
         <div className="flex items-center gap-2">
+          <Popover>
+            <PopoverTrigger asChild className={onRecommend ? "text-yellow-400" : ""}>
+              <Button variant={"outline"} size={"sm"}>
+                <IconCarambolaFilled />
+                <span className="hidden lg:inline">Đề xuất</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-90">
+              <ChuDeMultiSelect onRecommend={onRecommend} setOnRecommend={setOnRecommend} setListDeTaiRecommend={setListDeTaiRecommend} />
+            </PopoverContent>
+          </Popover>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -399,7 +442,7 @@ export function DataTable() {
           </DropdownMenu>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant={'outline'} size={'sm'}>
+              <Button variant={"outline"} size={"sm"}>
                 <ListFilter />
                 <span className="hidden lg:inline">Bộ lọc</span>
               </Button>
@@ -408,7 +451,9 @@ export function DataTable() {
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <div className="flex flex-col items-start gap-2">
-                    <Label htmlFor="so-sinh-vien-yeu-cau">Số sinh viên yêu cầu</Label>
+                    <Label htmlFor="so-sinh-vien-yeu-cau">
+                      Số sinh viên yêu cầu
+                    </Label>
                     <Input
                       id="so-sinh-vien-yeu-cau"
                       className="col-span-2 h-8"
@@ -440,8 +485,6 @@ export function DataTable() {
                   </Label>
                 </div>
 
-
-
                 <div className="grid gap-2">
                   <div className="flex flex-col items-start gap-2">
                     <Label>Trạng thái đăng ký</Label>
@@ -462,15 +505,13 @@ export function DataTable() {
                           <IconCircleCheckFilled
                             className="fill-green-500 dark:fill-green-400 mr-1"
                             size={16}
-                          />{" "}Đã đầy
+                          />{" "}
+                          Đã đầy
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-
-
-
 
                 <div className="grid gap-2">
                   <div className="flex flex-col items-start gap-2">
@@ -485,16 +526,19 @@ export function DataTable() {
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
-                        <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
-                        <SelectItem value="Liên ngành CS-CE">Liên ngành CS-CE</SelectItem>
+                        <SelectItem value="Khoa học Máy tính">
+                          Khoa học Máy tính
+                        </SelectItem>
+                        <SelectItem value="Kỹ thuật Máy tính">
+                          Kỹ thuật Máy tính
+                        </SelectItem>
+                        <SelectItem value="Liên ngành CS-CE">
+                          Liên ngành CS-CE
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-
-
-
 
                 <div className="grid gap-2">
                   <div className="flex flex-col items-start gap-2">
@@ -516,9 +560,6 @@ export function DataTable() {
                   </div>
                 </div>
 
-
-
-
                 <div className="grid gap-2">
                   <div className="flex flex-col items-start gap-2">
                     <Label>Giảng viên hướng dẫn</Label>
@@ -533,8 +574,15 @@ export function DataTable() {
                       </SelectTrigger>
                       <SelectContent>
                         {uniqueGiaoVien.map((gv) => (
-                          <SelectItem key={gv.id_tai_khoan} value={gv.id_tai_khoan}>
-                            {gv.msgv + " - " + gv.tai_khoan?.ho + " " + gv.tai_khoan?.ten}
+                          <SelectItem
+                            key={gv.id_tai_khoan}
+                            value={gv.id_tai_khoan}
+                          >
+                            {gv.msgv +
+                              " - " +
+                              gv.tai_khoan?.ho +
+                              " " +
+                              gv.tai_khoan?.ten}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -542,18 +590,15 @@ export function DataTable() {
                   </div>
                 </div>
 
-
-
-
                 <div className="grid gap-2">
-                  <Button className="w-full" variant={'destructive'} onClick={resetFilter}>
+                  <Button
+                    className="w-full"
+                    variant={"destructive"}
+                    onClick={resetFilter}
+                  >
                     Đặt lại bộ lọc
                   </Button>
                 </div>
-
-
-
-
               </div>
             </PopoverContent>
           </Popover>
@@ -586,16 +631,26 @@ export function DataTable() {
             <TableBody className="**:data-[slot=table-cell]:first:w-8">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
-                ))) : (
+                ))
+              ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
                     Không có kết quả.
                   </TableCell>
                 </TableRow>
@@ -684,39 +739,27 @@ export function DataTable() {
         {/* //--------------------------------------------------------END FOOTER-------------------------------------- */}
       </TabsContent>
       <TabsContent
-        value="past-performance"
+        value="purpose"
         className="flex flex-col px-4 lg:px-6"
       >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent
-        value="focus-documents"
-        className="flex flex-col px-4 lg:px-6"
-      >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
+        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed">
+        </div>
       </TabsContent>
     </Tabs>
   );
 }
 
-
-
-
-
-
-
-
-
-
-
 //Nội dung khi bầm vào từng record
-function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, setToggle: (updater: (prev: boolean) => boolean) => void }) {
+function TableCellViewer({
+  item,
+  setToggle,
+}: {
+  item: z.infer<typeof schema>;
+  setToggle: (updater: (prev: boolean) => boolean) => void;
+}) {
   const isMobile = useIsMobile();
   const { user } = useAuth();
-  const [select, setSelect] = useState(false)
+  const [select, setSelect] = useState(false);
   const [listSinhVienDangKy, setListSinhVienDangKy] = useState([]);
 
   const fetchListSinhVienDangKy = async () => {
@@ -729,65 +772,67 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
     );
     const data = await response.json();
     if (response.ok) {
-      data.forEach((dangKy) => dangKy.sinh_vien.id_tai_khoan === user.auth.sub && setSelect(true))
+      data.forEach(
+        (dangKy) =>
+          dangKy.sinh_vien.id_tai_khoan === user.auth.sub && setSelect(true)
+      );
       setListSinhVienDangKy(data);
     } else {
       console.error("Response data not oke: ", data);
     }
   };
 
-
   const dangKyDeTai = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dang-ky', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("http://localhost:3000/dang-ky", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           trang_thai: "Đã chấp nhận",
           id_sinh_vien: user.auth.sub,
-          id_de_tai: item.de_tai.id
-        })
-      })
+          id_de_tai: item.de_tai.id,
+        }),
+      });
       if (response.ok) {
-        setSelect(true)
-        setToggle((prev) => !prev)
-        toast((
-          <div className="flex flex-row items-center w-full gap-5" >
+        setSelect(true);
+        setToggle((prev) => !prev);
+        toast(
+          <div className="flex flex-row items-center w-full gap-5">
             <CheckCircle2Icon className="text-green-600" />
-            <div className="flex flex-col" >
-              <div className="text-lg text-green-600" > Đăng ký thành công </div>
-            </div>
-          </div>)
-        )
-      } else {
-        const dataError = await response.json()
-        toast((
-          <div className="flex flex-row items-center w-full gap-5" >
-            <AlertCircleIcon className="text-red-600" />
-            <div className="flex flex-col" >
-              <div className="text-lg text-red-600" > Đăng ký thất bại </div>
-              < div >{dataError.message}</div>
+            <div className="flex flex-col">
+              <div className="text-lg text-green-600"> Đăng ký thành công </div>
             </div>
           </div>
-        ))
-        console.error(dataError)
+        );
+      } else {
+        const dataError = await response.json();
+        toast(
+          <div className="flex flex-row items-center w-full gap-5">
+            <AlertCircleIcon className="text-red-600" />
+            <div className="flex flex-col">
+              <div className="text-lg text-red-600"> Đăng ký thất bại </div>
+              <div>{dataError.message}</div>
+            </div>
+          </div>
+        );
+        console.error(dataError);
       }
     } catch (error) {
-      toast((
-        <div className="flex flex-row items-center w-full gap-5" >
+      toast(
+        <div className="flex flex-row items-center w-full gap-5">
           <CloudAlert className="text-yellow-600" />
-          <div className="flex flex-col" >
-            <div className="text-lg text-yellow-600" > Lỗi hệ thống </div>
-            < div > Vui lòng thử lại sau </div>
+          <div className="flex flex-col">
+            <div className="text-lg text-yellow-600"> Lỗi hệ thống </div>
+            <div> Vui lòng thử lại sau </div>
           </div>
         </div>
-      ))
-      console.error(error)
+      );
+      console.error(error);
     }
-  }
+  };
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -843,10 +888,7 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
             </div>
             <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
               {item.de_tai.huong_dan.map((huongDan) => (
-                <div
-                  className="flex flex-row items-center"
-                  key={huongDan.id}
-                >
+                <div className="flex flex-row items-center" key={huongDan.id}>
                   <User className="mr-2 scale-75" />
                   <div>
                     <div className="text-sm mt-2">
@@ -916,13 +958,17 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
             <div className="flex leading-none font-medium">
               Yêu cầu nội dung và số liệu ban đầu
             </div>
-            <div className="text-muted-foreground">{item.de_tai.yeu_cau_va_so_lieu}</div>
+            <div className="text-muted-foreground">
+              {item.de_tai.yeu_cau_va_so_lieu}
+            </div>
           </div>
           <div className="grid gap-2">
             <div className="flex leading-none font-medium">
               Tài liệu tham khảo
             </div>
-            <div className="text-muted-foreground">{item.de_tai.tai_lieu_tham_khao}</div>
+            <div className="text-muted-foreground">
+              {item.de_tai.tai_lieu_tham_khao}
+            </div>
           </div>
           <Separator className="border-1" />
           <div className="grid grid-cols-2">
@@ -948,9 +994,19 @@ function TableCellViewer({ item, setToggle }: { item: z.infer<typeof schema>, se
           </div>
         </div>
         <DrawerFooter>
-          {user?.auth?.role === "Sinh viên" && (select ? <Button disabled className="border-1 border-green-600" variant={'ghost'}><Check className="text-green-600" />Đã đăng ký</Button>
-            :
-            <Button onClick={dangKyDeTai}>Đăng ký</Button>)}
+          {user?.auth?.role === "Sinh viên" &&
+            (select ? (
+              <Button
+                disabled
+                className="border-1 border-green-600"
+                variant={"ghost"}
+              >
+                <Check className="text-green-600" />
+                Đã đăng ký
+              </Button>
+            ) : (
+              <Button onClick={dangKyDeTai}>Đăng ký</Button>
+            ))}
           <DrawerClose asChild>
             <Button variant="outline">Đóng</Button>
           </DrawerClose>
