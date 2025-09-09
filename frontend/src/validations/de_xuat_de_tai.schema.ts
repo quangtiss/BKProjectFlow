@@ -5,14 +5,14 @@ export const deXuatDeTaiFormSchema = z.object({
         .string()
         .trim()
         .min(1, { message: "Tên tiếng việt tối thiểu 1 ký tự" })
-        .max(50, { message: "Tên tiếng việt tối đa 50 ký tự" }),
+        .max(1000, { message: "Tên tiếng việt tối đa 1000 ký tự" }),
 
 
     ten_tieng_anh: z
         .string()
         .trim()
         .min(1, { message: "Tên tiếng anh tối thiểu 1 ký tự" })
-        .max(50, { message: "Tên tiếng anh tối đa 50 ký tự" }),
+        .max(1000, { message: "Tên tiếng anh tối đa 1000 ký tự" }),
 
 
     mo_ta: z

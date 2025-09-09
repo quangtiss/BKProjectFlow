@@ -7,14 +7,14 @@ export class CreateDeTaiDTO {
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
     @MinLength(1, { message: "Tên tiếng việt tối thiểu 1 ký tự" })
-    @MaxLength(50, { message: "Tên tiếng việt tối đa 50 ký tự" })
+    @MaxLength(1000, { message: "Tên tiếng việt tối đa 1000 ký tự" })
     ten_tieng_viet: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsString()
     @MinLength(1, { message: "Tên tiếng anh tối thiểu 1 ký tự" })
-    @MaxLength(50, { message: "Tên tiếng anh tối đa 50 ký tự" })
+    @MaxLength(1000, { message: "Tên tiếng anh tối đa 1000 ký tự" })
     ten_tieng_anh: string;
 
 
