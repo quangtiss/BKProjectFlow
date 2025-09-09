@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Res, Req } from '@nestjs/common';
 import { UtilsService } from './utils.service';
 import { Roles } from '../auth/guard/roles.decorator';
 import { Public } from '../auth/guard/public.decorator';
@@ -17,5 +17,11 @@ export class UtilsController {
   @Get('file/:id/:filename')
   getProjectFile(@Param('id') id: string, @Res() res) {
     return this.utilsService.getFile(+id, res)
+  }
+
+  @Roles('Sinh viên')
+  @Get('get-recommend')
+  getDeTaiRecommend(@Req() req) {
+    return this.utilsService.getDeTaiRecommend(req.user.sub)
   }
 }

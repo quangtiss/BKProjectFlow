@@ -9,6 +9,41 @@ export class UtilsService {
   ) { }
 
 
+  async getDeTaiRecommend(idSinhVien: number) {
+    const rawListIdChuDeQuanTam = await this.prismaService.moi_quan_tam.findMany({
+      where: { id_sinh_vien: idSinhVien },
+      select: { id_chu_de: true }
+    })
+    const listIdChuDeQuanTam = rawListIdChuDeQuanTam.map(item => item.id_chu_de)
+      .filter((id): id is number => id !== null); // ép thành number[]
+
+    const rawListIdDeTaiLienQuan = await this.prismaService.moi_lien_quan.findMany({
+      where: {
+        id_chu_de: { in: listIdChuDeQuanTam }
+      },
+      select: { id_de_tai: true },
+    })
+
+    const priorityMap = new Map<number, number>();
+
+    for (const item of rawListIdDeTaiLienQuan) {
+      if (!item.id_de_tai) continue;
+
+      // tăng priority mỗi lần gặp
+      priorityMap.set(
+        item.id_de_tai,
+        (priorityMap.get(item.id_de_tai) || 0) + 1
+      );
+    }
+
+    const listIdDeTaiLienQuan = Array.from(priorityMap.entries())
+      .sort((a, b) => b[1] - a[1]) // sắp xếp theo priority
+      .map(([id_de_tai]) => id_de_tai); // chỉ lấy id_de_tai
+
+    return listIdDeTaiLienQuan
+  }
+
+
   async getFile(id, res) {
     let file: any = await this.prismaService.tai_lieu.findUnique({
       where: { id }
