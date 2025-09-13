@@ -9,7 +9,7 @@ export const SubmitNhiemVuSchema = z
         noi_dung: z
             .string()
             .trim()
-            .max(8000, "Mô tả tối đa 8000 ký tự"),
+            .max(8000, "Nội dung tối đa 8000 ký tự"),
         files: z
             .array(fileSchema)
             .min(0, "Có thể không chọn file nào")
