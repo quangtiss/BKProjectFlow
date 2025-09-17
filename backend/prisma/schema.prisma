@@ -269,7 +269,7 @@ model thuc_hien {
 model tieu_chi {
   id               Int            @id @default(autoincrement())
   ten              String?
-  diem_toi_da      String?
+  diem_toi_da      Int?
   noi_dung         String?
   id_nhom_tieu_chi Int?
   cham_diem        cham_diem[]
