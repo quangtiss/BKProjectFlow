@@ -71,4 +71,10 @@ export class ThucHienController {
   remove(@Param('id') id: string, @Req() req) {
     return this.thucHienService.delete(+id, req.user);
   }
+
+  @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
+  @Patch('/status/:id')
+  updateStatus(@Param('id') id, @Body() body, @Req() req) {
+    return this.thucHienService.updateStatus(+id, body, req.user.sub)
+  }
 }

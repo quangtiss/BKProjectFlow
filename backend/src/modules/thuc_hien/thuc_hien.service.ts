@@ -23,7 +23,7 @@ export class ThucHienService {
                         tai_khoan: true
                     }
                 },
-                tep_dinh_kem: true
+                tai_lieu: true
             }
         });
     }
@@ -37,7 +37,7 @@ export class ThucHienService {
                         tai_khoan: true
                     }
                 },
-                tep_dinh_kem: true
+                tai_lieu: true
             }
         });
     }
@@ -84,6 +84,7 @@ export class ThucHienService {
             return await this.prismaService.$transaction(async (tx) => {
                 const thucHien = await tx.thuc_hien.create({
                     data: {
+                        trang_thai: "Đã gửi",
                         noi_dung: data.noi_dung,
                         ngay_thuc_hien: new Date(),
                         id_sinh_vien: user.sub,
@@ -111,7 +112,7 @@ export class ThucHienService {
                                 writtenFiles.push(destPath);
 
                                 // insert DB
-                                const tepDinhKem = await tx.tep_dinh_kem.create({
+                                const tepDinhKem = await tx.tai_lieu.create({
                                     data: {
                                         ten_tai_lieu: originalName,
                                         url: relativePath,
@@ -166,6 +167,7 @@ export class ThucHienService {
                 const thucHienUpdated = await tx.thuc_hien.update({
                     where: { id },
                     data: {
+                        trang_thai: "Đã gửi",
                         noi_dung: data.noi_dung,
                         ngay_chinh_sua: new Date()
                     }
@@ -173,7 +175,7 @@ export class ThucHienService {
                 if (oldFileDeleted.length) {
                     await Promise.all(
                         oldFileDeleted.map(async (file) => {
-                            await tx.tep_dinh_kem.delete({
+                            await tx.tai_lieu.delete({
                                 where: {
                                     id: file.id
                                 }
@@ -207,7 +209,7 @@ export class ThucHienService {
                                 writtenFiles.push(destPath);
 
                                 // insert DB
-                                const tepDinhKem = await tx.tep_dinh_kem.create({
+                                const tepDinhKem = await tx.tai_lieu.create({
                                     data: {
                                         ten_tai_lieu: originalName,
                                         url: relativePath,
@@ -253,7 +255,7 @@ export class ThucHienService {
         if (thucHien.id_sinh_vien !== user.sub) throw new ForbiddenException("Bạn không có quyền xóa bài làm này")
 
         const thucHienDeleted = await this.prismaService.$transaction(async (tx) => {
-            await tx.tep_dinh_kem.deleteMany({
+            await tx.tai_lieu.deleteMany({
                 where: { id_thuc_hien: id }
             })
             return await tx.thuc_hien.delete({ where: { id } })
@@ -272,5 +274,22 @@ export class ThucHienService {
         );
         await fs.rm(folderOfThucHien, { recursive: true, force: true });
         return thucHienDeleted;
+    }
+
+
+    async updateStatus(idThucHien: number, data: any, idGiangVien: number) {
+        const thucHien = await this.prismaService.thuc_hien.findUnique({
+            where: { id: idThucHien },
+            include: { nhiem_vu: true }
+        })
+        if (!thucHien) throw new NotFoundException("Không tìm thấy bài làm")
+        if (thucHien.nhiem_vu?.id_nguoi_them !== idGiangVien) throw new ForbiddenException('Bạn không có quyền')
+
+        //
+
+        return await this.prismaService.thuc_hien.update({
+            where: { id: idThucHien },
+            data: { trang_thai: data.trang_thai }
+        })
     }
 }
