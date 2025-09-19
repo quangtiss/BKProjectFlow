@@ -9,7 +9,7 @@ import DeTaiCuaGiangVien from "./giang-vien/DeTaiCuaGiangVien"
 
 export default function DeTaiCuaToi() {
     const [deTaiCuaToi, setDeTaiCuaToi] = useState([])
-    const { user, notifications } = useAuth()
+    const { user, notifications }: { user: any, notifications: any } = useAuth()
     const vaiTro = user?.tai_khoan?.vai_tro
 
     useEffect(() => {
