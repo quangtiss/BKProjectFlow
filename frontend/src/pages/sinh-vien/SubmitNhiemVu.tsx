@@ -20,7 +20,7 @@ import { toast } from "sonner"
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 
-interface TepDinhKem {
+interface TaiLieu {
     id: number;
     id_thuc_hien: number;
     ten_tai_lieu: string;
@@ -51,13 +51,13 @@ export default function SubmitNhiemVu(
             files: []
         }
     })
-    const [oldFiles, setOldFiles] = useState<TepDinhKem[]>([])
-    const [oldFilesDeleted, setOldFilesDeleted] = useState<TepDinhKem[]>([])
+    const [oldFiles, setOldFiles] = useState<TaiLieu[]>([])
+    const [oldFilesDeleted, setOldFilesDeleted] = useState<TaiLieu[]>([])
 
 
     useEffect(() => {
         if (type === 'edit') {
-            setOldFiles(thucHien.tep_dinh_kem)
+            setOldFiles(thucHien.tai_lieu)
             form.reset({
                 noi_dung: thucHien.noi_dung,
                 files: [] // file mới
@@ -191,7 +191,7 @@ export default function SubmitNhiemVu(
                                             <span className="text-sm underline">File cũ: {oldFiles.length}</span>
                                             <ScrollArea className="bg-gray-200 dark:bg-gray-600 p-4 h-[200px] w-full rounded-md border mt-2">
                                                 <ul className="mt-2 space-y-2 rounded">
-                                                    {oldFiles.map((file: TepDinhKem, index: number) => (
+                                                    {oldFiles.map((file: TaiLieu, index: number) => (
                                                         <li key={index}>
                                                             <div className="bg-black text-white dark:bg-white dark:text-black flex justify-between items-center text-sm border rounded-md p-2">
                                                                 <span className="mr-1">{index + 1}. </span>
