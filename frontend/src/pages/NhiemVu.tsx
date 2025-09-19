@@ -46,7 +46,8 @@ interface NhiemVu {
     id_nguoi_them: number;
     id_de_tai: number;
     tai_lieu: TaiLieu[];  // có thể là [] luôn
-    thuc_hien: any
+    thuc_hien: any,
+    giang_vien: any
 }
 
 
@@ -84,6 +85,32 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
     const [open0, setOpen0] = useState(false);
     const [open1, setOpen1] = useState(false);
     const { user }: { user: any } = useAuth()
+
+
+    const updateStatusThucHien = async (idThucHien: number, trang_thai: string) => {
+        try {
+            const response = await fetch('http://localhost:3000/thuc-hien/status/' + idThucHien, {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    trang_thai
+                })
+            })
+            if (response.ok) {
+                setToggle(prev => !prev)
+            } else {
+                const data = await response.json()
+                toast.error('Lỗi khi cập nhật', { description: data.message })
+            }
+        } catch (error) {
+            toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
+            console.error(error)
+        }
+    }
+
     const deleteNhiemVu = async () => {
         try {
             const response = await fetch(`http://localhost:3000/nhiem-vu/${nhiemVu?.id}`, {
@@ -180,12 +207,23 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                                         </Badge>
                                                 )
                                                 :
-                                                <Badge
-                                                    variant={'outline'}
-                                                    className="bg-green-100 text-green-600 dark:bg-green-600 dark:text-green-100  mb-2"
-                                                >
-                                                    Đã có bài nộp
-                                                </Badge>
+                                                (
+                                                    nhiemVu?.thuc_hien.some((item: any) => ["Đã gửi", "Đã chấp nhận"].includes(item.trang_thai))
+                                                        ?
+                                                        <Badge
+                                                            variant={'outline'}
+                                                            className="bg-green-100 text-green-600 dark:bg-green-600 dark:text-green-100  mb-2"
+                                                        >
+                                                            Đã có bài nộp
+                                                        </Badge>
+                                                        :
+                                                        <Badge
+                                                            variant={'outline'}
+                                                            className="bg-purple-100 text-purple-600 dark:bg-purple-600 dark:text-purple-100  mb-2"
+                                                        >
+                                                            Bài làm bị từ chối
+                                                        </Badge>
+                                                )
                                     }
                                     <h3 className="hover:underline font-semibold text-xl text-gray-800 dark:text-white">
                                         {nhiemVu?.ten}
@@ -250,19 +288,25 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                             {listThucHien.length > 0 ? listThucHien.map((thucHien: any) => (
                                                 <AccordionItem key={thucHien.id} value={`item + ${thucHien?.id}`}>
                                                     <AccordionTrigger>
-                                                        <div className=" flex flex-row">
+                                                        <div className=" flex flex-row items-center">
                                                             <User className="h4 w-4 mr-2" />
                                                             <span>
                                                                 {`${thucHien.sinh_vien.mssv} - `
                                                                     + thucHien.sinh_vien.tai_khoan.ho + " "
                                                                     + thucHien.sinh_vien.tai_khoan.ten}
                                                             </span>
+                                                            <Badge
+                                                                variant={"secondary"}
+                                                                className={"text-accent-foreground ml-2 " + (thucHien.trang_thai === "Đã từ chối" ? "bg-red-500" : thucHien.trang_thai === "Đã chấp nhận" ? "bg-green-500" : "")}
+                                                            >
+                                                                {thucHien.trang_thai}
+                                                            </Badge>
                                                         </div>
                                                     </AccordionTrigger>
                                                     <AccordionContent className="gap-2 pl-6 flex flex-col">
                                                         <span>{thucHien.noi_dung}</span>
                                                         <div className="gap-2 flex flex-col justify-items-center text-blue-600">
-                                                            {thucHien.tep_dinh_kem.length > 0 && thucHien.tep_dinh_kem.map((file: any) =>
+                                                            {thucHien.tai_lieu.length > 0 && thucHien.tai_lieu.map((file: any) =>
                                                                 <div key={file.id} className="flex flex-row items-center hover:underline">
                                                                     <File className="mr-1 h-4 w-4" />
                                                                     <a href={`http://localhost:3000/utils/file/${file.id}/${file.ten_tai_lieu}`} target="_blank" >
@@ -314,11 +358,37 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                                                 </Dialog>
                                                             </div>
                                                         }
+                                                        {
+                                                            ['Giảng viên', 'Giảng viên trưởng bộ môn'].includes(user.auth.role) && user.auth.sub === nhiemVu?.id_nguoi_them &&
+                                                            <div className="mt-5 w-full flex flex-row justify-center p-1 px-[30%] gap-2">
+                                                                <Button variant={'secondary'} disabled={thucHien.trang_thai === "Đã chấp nhận"}
+                                                                    className={"w-full border-2" + (thucHien.trang_thai === "Đã chấp nhận" ? "" : " border-green-600")}
+                                                                    onClick={() => updateStatusThucHien(thucHien.id, "Đã chấp nhận")}>
+                                                                    Đạt
+                                                                </Button>
+
+                                                                <Button variant={'secondary'} disabled={thucHien.trang_thai === "Đã từ chối"}
+                                                                    className={"w-full border-2" + (thucHien.trang_thai === "Đã từ chối" ? "" : " border-red-600")}
+                                                                    onClick={() => updateStatusThucHien(thucHien.id, "Đã từ chối")}>
+                                                                    Chưa đạt
+                                                                </Button>
+                                                            </div>
+                                                        }
 
                                                     </AccordionContent>
                                                 </AccordionItem>
                                             )) : "Chưa có bài nộp"}
                                         </Accordion>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mb-4">
+                                <div className="text-sm italic text-gray-500 mb-2 flex gap-2 items">
+                                    <User className="h-4 w-4" />
+                                    Người thêm:
+                                    <div className="flex flex-col">
+                                        {" " + nhiemVu?.giang_vien.tai_khoan.ho + " " + nhiemVu?.giang_vien.tai_khoan.ten + '\n'}
+                                        <div>{nhiemVu?.giang_vien.tai_khoan.email}</div>
                                     </div>
                                 </div>
                             </div>
