@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -17,8 +17,11 @@ export class NhiemVuService {
                         sinh_vien: {
                             include: { tai_khoan: true }
                         },
-                        tep_dinh_kem: true
+                        tai_lieu: true
                     }
+                },
+                giang_vien: {
+                    include: { tai_khoan: true }
                 }
             }
         });
@@ -59,9 +62,11 @@ export class NhiemVuService {
             const deTai = await this.prismaService.de_tai.findUnique({
                 where: {
                     id: data.idDeTai
-                }
+                },
+                include: { duyet_de_tai: true }
             })
             if (!deTai) throw new NotFoundException("Không tìm thấy đề tài")
+            if (deTai.duyet_de_tai?.trang_thai !== "Đã chấp nhận") throw new ConflictException("Đề tài chưa được duyệt")
             const huongDan = await this.prismaService.huong_dan.findFirst({
                 where: {
                     id_de_tai: data.idDeTai,
@@ -263,7 +268,7 @@ export class NhiemVuService {
             if (nhiemVu.thuc_hien.length) {
                 await Promise.all(
                     nhiemVu.thuc_hien.map(async (thucHien) => {
-                        await tx.tep_dinh_kem.deleteMany({
+                        await tx.tai_lieu.deleteMany({
                             where: { id_thuc_hien: thucHien.id }
                         })
                     })
