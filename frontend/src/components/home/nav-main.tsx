@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge"
 export function NavMain() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { notifications } = useAuth()
+  const { notifications }: { notifications: any } = useAuth()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -87,10 +87,10 @@ export function NavMain() {
           </SidebarMenuItem>
 
 
-          <SidebarMenuItem key={'Projects'}>
-            <SidebarMenuButton tooltip={'Projects'}>
+          <SidebarMenuItem key={'Projects'} onClick={() => navigate('/bieu-mau')}>
+            <SidebarMenuButton tooltip={'Biểu mẫu'}>
               <IconFolder />
-              <span>Projects</span>
+              <span>Biểu mẫu</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
