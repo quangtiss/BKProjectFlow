@@ -71,6 +71,23 @@ export class DeTaiService {
         const client = tx ?? this.prismaService;
         return await client.de_tai.findUnique({
             where: { id },
+            include: {
+                huong_dan: {
+                    select: { id_giang_vien: true, trang_thai: true }
+                },
+                dang_ky: {
+                    include: {
+                        sinh_vien: {
+                            include: {
+                                tai_khoan: true
+                            }
+                        }
+                    }
+                },
+                duyet_de_tai: {
+                    where: { trang_thai: "Đã chấp nhận" }
+                }
+            }
         });
 
     }
