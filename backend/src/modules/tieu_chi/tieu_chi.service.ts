@@ -27,9 +27,10 @@ export class TieuChiService {
             // Không có gì để cập nhật
             return null;
         }
+        const { id_tieu_chi, ...rest } = data
         return await this.prismaService.tieu_chi.update({
-            where: { id: id },
-            data: data
+            where: { id: id_tieu_chi },
+            data: rest
         })
     }
 

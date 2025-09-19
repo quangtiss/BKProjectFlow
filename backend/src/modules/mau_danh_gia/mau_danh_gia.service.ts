@@ -16,6 +16,19 @@ export class MauDanhGiaService {
         });
     }
 
+    async findWithGiangVien(type: string) {
+        return await this.prismaService.mau_danh_gia.findFirst({
+            where: { loai_mau: type },
+            include: {
+                nhom_tieu_chi: {
+                    include: {
+                        tieu_chi: true
+                    }
+                }
+            }
+        })
+    }
+
     async create(data: any) {
         return await this.prismaService.mau_danh_gia.create(
             { data }
@@ -29,13 +42,22 @@ export class MauDanhGiaService {
         }
         return await this.prismaService.mau_danh_gia.update({
             where: { id: id },
-            data: data
+            data: {
+                ...data,
+                ghi_chu: data.ghi_chu ?? null
+            }
         })
     }
 
     async delete(id: number) {
-        return this.prismaService.mau_danh_gia.delete({
-            where: { id }
+        return this.prismaService.$transaction(async (tx) => {
+            await tx.tieu_chi.deleteMany({
+                where: { nhom_tieu_chi: { id_mau_danh_gia: id } }
+            })
+            await tx.nhom_tieu_chi.deleteMany({
+                where: { id_mau_danh_gia: id }
+            })
+            return tx.mau_danh_gia.delete({ where: { id } })
         })
     }
 }
