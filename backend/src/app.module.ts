@@ -35,6 +35,8 @@ import { ThongBaoModule } from './modules/thong_bao/thong_bao.module';
 import { TuongTacModule } from './modules/tuong_tac/tuong_tac.module';
 import { UtilsModule } from './modules/a_utils/utils.module';
 import { ChatGateway } from './modules/tin_nhan/chat.gateway';
+import { BaoCaoModule } from './modules/bao_cao/bao_cao.module';
+import { NhomTieuChiModule } from './modules/nhom_tieu_chi/nhom_tieu_chi.module';
 
 @Module({
   imports: [
@@ -69,7 +71,9 @@ import { ChatGateway } from './modules/tin_nhan/chat.gateway';
     ThongBaoModule,
     TuongTacModule,
     UtilsModule,
-    ChatGateway
+    ChatGateway,
+    BaoCaoModule,
+    NhomTieuChiModule
   ],
   controllers: [AppController],
   providers: [ // Áp dụng global cho kiểm soát yêu cầu đăng nhập Auth và quản lý Role nào được dùng api nào
