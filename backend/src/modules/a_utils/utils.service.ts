@@ -45,21 +45,16 @@ export class UtilsService {
 
 
   async getFile(id, res) {
-    let file: any = await this.prismaService.tai_lieu.findUnique({
+    const file: any = await this.prismaService.tai_lieu.findUnique({
       where: { id }
     })
-    if (!file) {
-      file = await this.prismaService.tep_dinh_kem.findUnique({
-        where: { id }
-      })
-      if (!file) throw new NotFoundException("Không tìm thấy file")
-    }
-    const safeFileName = encodeURIComponent(file?.ten_tai_lieu || "");
+    if (!file) throw new NotFoundException("Không tìm thấy tài liệu")
+    const safeFileName = encodeURIComponent(file?.ten_tai_lieu);
     res.setHeader(
       'Content-Disposition',
       `inline; filename*=UTF-8''${safeFileName}`
     );
-    const filePath = join(process.cwd(), file?.url || "", file?.ten_tai_lieu || "");
+    const filePath = join(process.cwd(), file?.url, file?.ten_tai_lieu);
     return res.sendFile(filePath);
   }
 
