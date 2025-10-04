@@ -10,11 +10,16 @@ datasource db {
 model cham_diem {
   id            Int         @id @default(autoincrement())
   ket_qua_cham  String?     @db.VarChar(100)
+  vai_tro       String?     @db.VarChar(255)
   id_giang_vien Int?
   id_tieu_chi   Int?
+  id_sinh_vien  Int?
   id_de_tai     Int?
+  id_hoc_ky     Int?
   de_tai        de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
   giang_vien    giang_vien? @relation(fields: [id_giang_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  hoc_ky        hoc_ky?     @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sinh_vien     sinh_vien?  @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
   tieu_chi      tieu_chi?   @relation(fields: [id_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -53,21 +58,18 @@ model de_tai {
   so_luong_sinh_vien   Int?
   so_sinh_vien_dang_ky Int?
   id_tai_khoan_de_xuat Int?
-  id_hoc_ky            Int?
-  id_hoi_dong          Int?
   bao_cao              bao_cao[]
   cham_diem            cham_diem[]
-  chinh_sua            chinh_sua[]
   dang_ky              dang_ky[]
-  hoc_ky               hoc_ky?         @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  hoi_dong             hoi_dong?       @relation(fields: [id_hoi_dong], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  danh_gia             danh_gia[]
   tai_khoan            tai_khoan?      @relation(fields: [id_tai_khoan_de_xuat], references: [id], onDelete: NoAction, onUpdate: NoAction)
   duyet_de_tai         duyet_de_tai?
   huong_dan            huong_dan[]
   ket_qua              ket_qua[]
   moi_lien_quan        moi_lien_quan[]
   nhiem_vu             nhiem_vu[]
-  tin_nhan             tin_nhan[]
+  phan_bien            phan_bien[]
+  thuoc_ve             thuoc_ve[]
 }
 
 model duyet_de_tai {
@@ -87,11 +89,12 @@ model giang_vien {
   is_giang_vien_truong_bo_mon Boolean?
   id_tai_khoan                Int?           @unique
   cham_diem                   cham_diem[]
-  chinh_sua                   chinh_sua[]
   duyet_de_tai                duyet_de_tai[]
   tai_khoan                   tai_khoan?     @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hoi_dong                    hoi_dong[]
   huong_dan                   huong_dan[]
   nhiem_vu                    nhiem_vu[]
+  phan_bien                   phan_bien[]
   tham_gia                    tham_gia[]
 }
 
@@ -101,7 +104,6 @@ model giao_vu {
   id_tai_khoan Int?         @unique
   tai_khoan    tai_khoan?   @relation(fields: [id_tai_khoan], references: [id], onDelete: NoAction, onUpdate: NoAction)
   hoc_ky       hoc_ky[]
-  hoi_dong     hoi_dong[]
   lich_trinh   lich_trinh[]
 }
 
@@ -111,22 +113,24 @@ model hoc_ky {
   ngay_bat_dau  DateTime?    @db.Timestamptz(6)
   nam_hoc       Int?
   id_nguoi_them Int?
-  de_tai        de_tai[]
+  cham_diem     cham_diem[]
   giao_vu       giao_vu?     @relation(fields: [id_nguoi_them], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
   hoi_dong      hoi_dong[]
   lich_trinh    lich_trinh[]
+  phan_bien     phan_bien[]
+  thuoc_ve      thuoc_ve[]
 }
 
 model hoi_dong {
-  id           Int        @id @default(autoincrement())
-  ngay_gio     DateTime?  @db.Timestamptz(6)
-  phong        String?    @db.VarChar(100)
-  ten_hoi_dong String?    @db.VarChar(255)
+  id           Int         @id @default(autoincrement())
+  ngay_gio     DateTime?   @db.Timestamptz(6)
+  phong        String?     @db.VarChar(100)
+  ten_hoi_dong String?     @db.VarChar(255)
   id_hoc_ky    Int?
   id_nguoi_lap Int?
-  de_tai       de_tai[]
-  hoc_ky       hoc_ky?    @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  giao_vu      giao_vu?   @relation(fields: [id_nguoi_lap], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  danh_gia     danh_gia[]
+  hoc_ky       hoc_ky?     @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  giao_vu      giang_vien? @relation(fields: [id_nguoi_lap], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
   tham_gia     tham_gia[]
 }
 
@@ -166,7 +170,8 @@ model lich_trinh {
 
 model mau_danh_gia {
   id            Int             @id @default(autoincrement())
-  loai_mau      String?
+  loai_mau      String?         @db.VarChar(255)
+  giai_doan     String?         @db.VarChar(255)
   ten_mau       String?         @unique
   ghi_chu       String?
   nhom_tieu_chi nhom_tieu_chi[]
@@ -214,6 +219,7 @@ model sinh_vien {
   ngon_ngu     String?        @db.VarChar(100)
   id_tai_khoan Int?           @unique
   bao_cao      bao_cao[]
+  cham_diem    cham_diem[]
   dang_ky      dang_ky[]
   ket_qua      ket_qua?
   moi_quan_tam moi_quan_tam[]
@@ -222,25 +228,23 @@ model sinh_vien {
 }
 
 model tai_khoan {
-  id                                         Int         @id @default(autoincrement())
-  ten_tai_khoan                              String?     @unique @db.VarChar(255)
-  mat_khau                                   String?     @db.VarChar(255)
-  ten                                        String?     @db.VarChar(255)
-  ho                                         String?     @db.VarChar(255)
-  sdt                                        String?     @unique @db.VarChar(255)
-  cccd                                       String?     @unique @db.VarChar(255)
-  ngay_sinh                                  DateTime?   @db.Date
-  email                                      String?     @unique @db.VarChar(255)
-  dia_chi                                    String?     @db.VarChar(255)
-  gioi_tinh                                  String?     @db.VarChar(100)
-  vai_tro                                    String      @db.VarChar(100)
-  de_tai                                     de_tai[]
-  giang_vien                                 giang_vien?
-  giao_vu                                    giao_vu?
-  sinh_vien                                  sinh_vien?
-  tin_nhan                                   tin_nhan[]
-  tin_nhan_tin_nhan_id_nguoi_nhanTotai_khoan tin_nhan[]  @relation("tin_nhan_id_nguoi_nhanTotai_khoan")
-  tuong_tac                                  tuong_tac[]
+  id            Int         @id @default(autoincrement())
+  ten_tai_khoan String?     @unique @db.VarChar(255)
+  mat_khau      String?     @db.VarChar(255)
+  ten           String?     @db.VarChar(255)
+  ho            String?     @db.VarChar(255)
+  sdt           String?     @unique @db.VarChar(255)
+  cccd          String?     @unique @db.VarChar(255)
+  ngay_sinh     DateTime?   @db.Date
+  email         String?     @unique @db.VarChar(255)
+  dia_chi       String?     @db.VarChar(255)
+  gioi_tinh     String?     @db.VarChar(100)
+  vai_tro       String      @db.VarChar(100)
+  de_tai        de_tai[]
+  giang_vien    giang_vien?
+  giao_vu       giao_vu?
+  sinh_vien     sinh_vien?
+  tuong_tac     tuong_tac[]
 }
 
 model tham_gia {
@@ -269,34 +273,12 @@ model thuc_hien {
 model tieu_chi {
   id               Int            @id @default(autoincrement())
   ten              String?
-  diem_toi_da      Int?
+  loai_diem        String?        @db.VarChar(255)
+  diem_toi_da      String?        @db.VarChar(100)
   noi_dung         String?
   id_nhom_tieu_chi Int?
   cham_diem        cham_diem[]
   nhom_tieu_chi    nhom_tieu_chi? @relation(fields: [id_nhom_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model tin_nhan {
-  id                                          Int        @id @default(autoincrement())
-  ngay_gui                                    DateTime?  @db.Timestamptz(6)
-  noi_dung                                    String?    @db.VarChar(255)
-  trang_thai                                  String?    @db.VarChar(100)
-  id_nguoi_gui                                Int?
-  id_nguoi_nhan                               Int?
-  thuoc_de_tai                                Int?
-  tai_khoan                                   tai_khoan? @relation(fields: [id_nguoi_gui], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tai_khoan_tin_nhan_id_nguoi_nhanTotai_khoan tai_khoan? @relation("tin_nhan_id_nguoi_nhanTotai_khoan", fields: [id_nguoi_nhan], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  de_tai                                      de_tai?    @relation(fields: [thuoc_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model chinh_sua {
-  id                       Int         @id @default(autoincrement())
-  ngay_gio                 DateTime    @db.Timestamptz(6)
-  noi_dung                 String?     @db.VarChar(255)
-  id_nguoi_sua             Int?
-  id_de_tai                Int?
-  de_tai                   de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  giang_vien_truong_bo_mon giang_vien? @relation(fields: [id_nguoi_sua], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model thong_bao {
@@ -351,4 +333,33 @@ model nhom_tieu_chi {
   id_mau_danh_gia Int?
   mau_danh_gia    mau_danh_gia? @relation(fields: [id_mau_danh_gia], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tieu_chi        tieu_chi[]
+}
+
+model danh_gia {
+  id          Int       @id @default(autoincrement())
+  trang_thai  String?   @db.VarChar(255)
+  id_hoi_dong Int?
+  id_de_tai   Int?
+  de_tai      de_tai?   @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hoi_dong    hoi_dong? @relation(fields: [id_hoi_dong], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model phan_bien {
+  id            Int         @id @default(autoincrement())
+  trang_thai    String?     @db.VarChar(255)
+  id_giang_vien Int?
+  id_de_tai     Int?
+  id_hoc_ky     Int?
+  de_tai        de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  giang_vien    giang_vien? @relation(fields: [id_giang_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  hoc_ky        hoc_ky?     @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model thuoc_ve {
+  id         Int     @id @default(autoincrement())
+  trang_thai String? @db.VarChar(255)
+  id_de_tai  Int?
+  id_hoc_ky  Int?
+  de_tai     de_tai? @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hoc_ky     hoc_ky? @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
