@@ -1,17 +1,10 @@
-"use client";
-
-// import * as React from "react"
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
     Card,
-    CardAction,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+    CardFooter
 } from "@/components/ui/card";
 import {
     IconCircleCheckFilled,
@@ -39,7 +32,7 @@ export function LoiMoiHuongDanDeTai() {
 
 
 
-    const handleAccept = async (id, trang_thai) => {
+    const handleAccept = async (id: any, trang_thai: any) => {
         try {
             const response = await fetch(`http://localhost:3000/huong-dan/trang-thai/${id}`, {
                 method: "PATCH",
@@ -61,7 +54,7 @@ export function LoiMoiHuongDanDeTai() {
                     </div>)
                 )
                 setListDeTaiChuaChapNhan(prev =>
-                    prev.filter(item => item.id !== id)
+                    prev.filter((item: any) => item.id !== id)
                 );
             }
             else {
@@ -110,205 +103,200 @@ export function LoiMoiHuongDanDeTai() {
     }, [isMobile]);
 
     return (
-        <div className="p-1"><Card className="@container/card">
-            <CardHeader>
-                <CardTitle></CardTitle>
-                <CardAction>
-                </CardAction>
-            </CardHeader>
-            <CardContent className="px-3">
-                {listDeTaiChuaChapNhan.map((huongDan) => {
-                    return <div key={huongDan.id} className="mb-10">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>{huongDan.de_tai.ma_de_tai + " - " + huongDan.de_tai.ten_tieng_viet}</CardTitle>
-                                <CardDescription>
-                                    {huongDan.de_tai.ten_tieng_anh}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Accordion type="single" collapsible>
-                                    <AccordionItem value="iformations">
-                                        <AccordionTrigger>
-                                            Thông tin chi tiết
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                            <div className="flex flex-col gap-4 overflow-y-auto text-sm">
-                                                <Separator className="border-1" />
-                                                <div className="grid grid-cols-2">
-                                                    <div className="flex flex-col gap-5">
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Mã đề tài
-                                                            </div>
-                                                            <div className="text-muted-foreground">{huongDan.de_tai.ma_de_tai}</div>
-                                                        </div>
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Hệ đào tạo
-                                                            </div>
-                                                            <div className="text-muted-foreground">{huongDan.de_tai.he_dao_tao}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col gap-5">
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Giai đoạn
-                                                            </div>
-                                                            <div className="text-muted-foreground">{huongDan.de_tai.giai_doan}</div>
-                                                        </div>
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Nhóm ngành
-                                                            </div>
-                                                            <div className="text-muted-foreground">{huongDan.de_tai.nhom_nganh}</div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div className="grid gap-3">
-                                                    <div className="flex leading-none font-medium">
-                                                        Giảng viên hướng dẫn
-                                                    </div>
-                                                    <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-                                                        {huongDan?.de_tai.huong_dan.map((huongDan) => (
-                                                            <div
-                                                                className="flex flex-row items-center"
-                                                                key={huongDan.id}
-                                                            >
-                                                                <User className="mr-2 scale-75" />
-                                                                <div>
-                                                                    <div className="text-sm mt-2">
-                                                                        {huongDan.giang_vien.msgv +
-                                                                            " - " +
-                                                                            huongDan.giang_vien.tai_khoan.ho +
-                                                                            " " +
-                                                                            huongDan.giang_vien.tai_khoan.ten}
-                                                                    </div>
-                                                                    <div className="text-sm">
-                                                                        {huongDan.giang_vien.tai_khoan.email}
-                                                                    </div>
-                                                                    <Separator className="mt-2" />
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </ScrollArea>
-                                                </div>
-                                                <div className="grid grid-cols-2">
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Số sinh viên đăng ký
-                                                        </div>
-                                                        <div className="text-muted-foreground">{huongDan.de_tai.so_sinh_vien_dang_ky}</div>
-                                                    </div>
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Số sinh viên yêu cầu
-                                                        </div>
-                                                        <div className="text-muted-foreground">{huongDan.de_tai.so_luong_sinh_vien}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
-                                                        {huongDan.de_tai.dang_ky.map((sinhVienDangKy) => (
-                                                            <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
-                                                                <User className="mr-2 scale-75" />
-                                                                <div className="w-full">
-                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
-                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </ScrollArea>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <div className="flex leading-none font-medium">
-                                                        Mô tả
-                                                    </div>
-                                                    <div className="text-muted-foreground">{huongDan.de_tai.mo_ta}</div>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <div className="flex leading-none font-medium">
-                                                        Yêu cầu nội dung và số liệu ban đầu
-                                                    </div>
-                                                    <div className="text-muted-foreground">{huongDan.de_tai.yeu_cau_va_so_lieu}</div>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <div className="flex leading-none font-medium">
-                                                        Tài liệu tham khảo
-                                                    </div>
-                                                    <div className="text-muted-foreground">{huongDan.de_tai.tai_lieu_tham_khao}</div>
-                                                </div>
-                                                <Separator className="border-1" />
-                                                <div className="grid grid-cols-2">
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Ngày đề xuất
-                                                        </div>
-                                                        <div className="text-muted-foreground">{new Date(huongDan.de_tai.ngay_tao).toLocaleString()}</div>
-                                                    </div>
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Người đề xuất
-                                                        </div>
-                                                        <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.vai_tro}:
-                                                            {(huongDan.de_tai.tai_khoan.sinh_vien?.mssv || huongDan.de_tai.tai_khoan.giang_vien?.msgv) + " - " + huongDan.de_tai.tai_khoan.ho + " " + huongDan.de_tai.tai_khoan.ten}</div>
-                                                        <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.email}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="grid gap-2 mb-3">
-                                                    <div className="flex leading-none font-medium">
-                                                        Tình trạng duyệt
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {
-                                                            huongDan.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
-                                                                <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
-                                                            ) : huongDan.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
-                                                                <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
-                                                            ) : (
-                                                                <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
-                                                            )
-                                                        }
-                                                    </div>
-                                                </div>
-                                                {huongDan.de_tai.duyet_de_tai ? (
-                                                    <div className="grid grid-cols-2">
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Ngày duyệt
-                                                            </div>
-                                                            <div className="text-muted-foreground">{new Date(huongDan.de_tai.duyet_de_tai.ngay_duyet).toLocaleString()}</div>
-                                                        </div>
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Người duyệt
-                                                            </div>
-                                                            <div className="text-muted-foreground">
-                                                                {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.vai_tro}:
-                                                                {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv + " - " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho + " " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
-                                                            </div>
-                                                            <div className="text-muted-foreground">{huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}</div>
-                                                        </div>
-                                                    </div>
-                                                ) : null}
+        <div className="flex flex-col gap-20 p-3 sm:p-20">
+            {listDeTaiChuaChapNhan.length > 0 ? listDeTaiChuaChapNhan.map((huongDan: any) => {
+                return <div key={huongDan.id} className="">
+                    <Card className="rounded-4xl border shadow-lg">
+                        <CardContent>
+                            <Accordion type="single" collapsible>
+                                <AccordionItem value="iformations">
+                                    <AccordionTrigger>
+                                        <div className="flex flex-col">
+                                            <div className="text-xl">{huongDan.de_tai.ma_de_tai + " - " + huongDan.de_tai.ten_tieng_viet}</div>
+                                            <div className="text-sm italic text-gray-500">
+                                                {huongDan.de_tai.ten_tieng_anh}
                                             </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            </CardContent>
-                            <CardFooter className="flex flex-row justify-end">
-                                <Button variant={"outline"} onClick={() => handleAccept(huongDan.id, "Đã từ chối")}>
-                                    Từ chối <IconCircleXFilled className="text-red-400" />
-                                </Button>
-                                <Button variant={"outline"} className="mx-5" onClick={() => handleAccept(huongDan.id, "Đã chấp nhận")}>
-                                    Chấp nhận <IconCircleCheckFilled className="text-green-400" />
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    </div>
-                })}
-            </CardContent>
-        </Card></div>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="flex flex-col gap-4 overflow-y-auto text-sm">
+                                            <Separator className="border-1" />
+                                            <div className="grid grid-cols-2">
+                                                <div className="flex flex-col gap-5">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Mã đề tài
+                                                        </div>
+                                                        <div className="text-muted-foreground">{huongDan.de_tai.ma_de_tai}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Hệ đào tạo
+                                                        </div>
+                                                        <div className="text-muted-foreground">{huongDan.de_tai.he_dao_tao}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-5">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Giai đoạn
+                                                        </div>
+                                                        <div className="text-muted-foreground">{huongDan.de_tai.giai_doan}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Nhóm ngành
+                                                        </div>
+                                                        <div className="text-muted-foreground">{huongDan.de_tai.nhom_nganh}</div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div className="grid gap-3">
+                                                <div className="flex leading-none font-medium">
+                                                    Giảng viên hướng dẫn
+                                                </div>
+                                                <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
+                                                    {huongDan?.de_tai.huong_dan.map((huongDan: any) => (
+                                                        <div
+                                                            className="flex flex-row items-center"
+                                                            key={huongDan.id}
+                                                        >
+                                                            <User className="mr-2 scale-75" />
+                                                            <div>
+                                                                <div className="text-sm mt-2">
+                                                                    {huongDan.giang_vien.msgv +
+                                                                        " - " +
+                                                                        huongDan.giang_vien.tai_khoan.ho +
+                                                                        " " +
+                                                                        huongDan.giang_vien.tai_khoan.ten}
+                                                                </div>
+                                                                <div className="text-sm">
+                                                                    {huongDan.giang_vien.tai_khoan.email}
+                                                                </div>
+                                                                <div className="text-sm italic text-gray-500">
+                                                                    {huongDan.vai_tro}
+                                                                </div>
+                                                                <Separator className="mt-2" />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </ScrollArea>
+                                            </div>
+                                            <div className="grid grid-cols-2">
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Số sinh viên đăng ký
+                                                    </div>
+                                                    <div className="text-muted-foreground">{huongDan.de_tai.so_sinh_vien_dang_ky}</div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Số sinh viên yêu cầu
+                                                    </div>
+                                                    <div className="text-muted-foreground">{huongDan.de_tai.so_luong_sinh_vien}</div>
+                                                </div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
+                                                    {huongDan.de_tai.dang_ky.map((sinhVienDangKy: any) => (
+                                                        <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
+                                                            <User className="mr-2 scale-75" />
+                                                            <div className="w-full">
+                                                                <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
+                                                                <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </ScrollArea>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Mô tả
+                                                </div>
+                                                <div className="text-muted-foreground">{huongDan.de_tai.mo_ta}</div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Yêu cầu nội dung và số liệu ban đầu
+                                                </div>
+                                                <div className="text-muted-foreground">{huongDan.de_tai.yeu_cau_va_so_lieu}</div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Tài liệu tham khảo
+                                                </div>
+                                                <div className="text-muted-foreground">{huongDan.de_tai.tai_lieu_tham_khao}</div>
+                                            </div>
+                                            <Separator className="border-1" />
+                                            <div className="grid grid-cols-2">
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Ngày đề xuất
+                                                    </div>
+                                                    <div className="text-muted-foreground">{new Date(huongDan.de_tai.ngay_tao).toLocaleString()}</div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Người đề xuất
+                                                    </div>
+                                                    <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.vai_tro}:
+                                                        {(huongDan.de_tai.tai_khoan.sinh_vien?.mssv || huongDan.de_tai.tai_khoan.giang_vien?.msgv) + " - " + huongDan.de_tai.tai_khoan.ho + " " + huongDan.de_tai.tai_khoan.ten}</div>
+                                                    <div className="text-muted-foreground">{huongDan.de_tai.tai_khoan.email}</div>
+                                                </div>
+                                            </div>
+                                            <div className="grid gap-2 mb-3">
+                                                <div className="flex leading-none font-medium">
+                                                    Tình trạng duyệt
+                                                </div>
+                                                <div className="text-muted-foreground">
+                                                    {
+                                                        huongDan.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
+                                                            <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
+                                                        ) : huongDan.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
+                                                            <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                        ) : (
+                                                            <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                        )
+                                                    }
+                                                </div>
+                                            </div>
+                                            {huongDan.de_tai.duyet_de_tai ? (
+                                                <div className="grid grid-cols-2">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Ngày duyệt
+                                                        </div>
+                                                        <div className="text-muted-foreground">{new Date(huongDan.de_tai.duyet_de_tai.ngay_duyet).toLocaleString()}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Người duyệt
+                                                        </div>
+                                                        <div className="text-muted-foreground">
+                                                            {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.vai_tro}:
+                                                            {huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.msgv + " - " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ho + " " + huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.ten}
+                                                        </div>
+                                                        <div className="text-muted-foreground">{huongDan.de_tai.duyet_de_tai.giang_vien_truong_bo_mon.tai_khoan.email}</div>
+                                                    </div>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </CardContent>
+                        <CardFooter className="flex flex-row justify-end">
+                            <Button variant={"outline"} onClick={() => handleAccept(huongDan.id, "Đã từ chối")}>
+                                Từ chối <IconCircleXFilled className="text-red-400" />
+                            </Button>
+                            <Button variant={"outline"} className="ml-5" onClick={() => handleAccept(huongDan.id, "Đã chấp nhận")}>
+                                Chấp nhận <IconCircleCheckFilled className="text-green-400" />
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </div>
+            }) : <div className="text-center m-5 font-bold text-2xl text-gray-500">Bạn không có lời mời hướng dẫn đề tài nào ...</div>}
+        </div>
     );
 }

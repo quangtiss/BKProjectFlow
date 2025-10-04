@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { AlertCircleIcon, Check, CheckCircle2Icon, CloudAlert, UserSearch, X } from 'lucide-react';
+import { Check, UserSearch, X } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { getAllGiangVien } from '@/services/giang_vien/get_all_giang_vien';
 import { toast } from 'sonner';
@@ -97,26 +97,11 @@ export default function TeacherMultiSelect({ deTai }: { deTai: object }) {
             );
 
             // ✅ Nếu đến đây là tất cả thành công
-            toast((
-                <div className="flex flex-row items-center w-full gap-5" >
-                    <CheckCircle2Icon className="text-green-600" />
-                    <div className="flex flex-col" >
-                        <div className="text-lg text-green-600" > Gửi tất cả lời mời thành công </div>
-                    </div>
-                </div>
-            ));
+            toast.success('Gửi tất cả lời mời thành công');
 
         } catch (error) {
             // ❌ Nếu có ít nhất 1 lỗi xảy ra trong Promise.all
-            toast((
-                <div className="flex flex-row items-center w-full gap-5" >
-                    <AlertCircleIcon className="text-red-600" />
-                    <div className="flex flex-col" >
-                        <div className="text-lg text-red-600" > Gửi lời mời thất bại </div>
-                        <div> Có thể một số lời mời không được gửi </div>
-                    </div>
-                </div>
-            ));
+            toast.error('Gửi lời mời thất bại', { description: 'Có thể có một số lời mời không được gửi' });
             console.error('Có lỗi khi submit:', error);
         }
         setToggle(prev => !prev)

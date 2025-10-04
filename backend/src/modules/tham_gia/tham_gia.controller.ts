@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Req } from '@nestjs/common';
 import { ThamGiaService } from './tham_gia.service';
+import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('tham-gia')
 export class ThamGiaController {
   constructor(private readonly thamGiaService: ThamGiaService) { }
 
+  @Roles('Giảng viên trưởng bộ môn')
   @Post()
-  create(@Body() body) {
+  create(@Body() body, @Req() req) {
     return this.thamGiaService.create(body);
   }
 

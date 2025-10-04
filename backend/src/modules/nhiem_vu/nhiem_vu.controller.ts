@@ -31,9 +31,9 @@ export class NhiemVuController {
     return this.nhiemVuService.create(JSON.parse(rawData), files, req.user);
   }
 
-  @Get()
-  findAll() {
-    return this.nhiemVuService.findAll();
+  @Get('/de-tai/:id')
+  findAllWithIdDeTai(@Param('id') id: string) {
+    return this.nhiemVuService.findAllWithIdDeTai(+id);
   }
 
   @Get('/count/de-tai/:idDeTai')

@@ -19,8 +19,8 @@ export class MauDanhGiaController {
 
   @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
   @Get('/giang-vien')
-  findWithGiangVien(@Query('type') type) {
-    return this.mauDanhGiaService.findWithGiangVien(type)
+  findWithGiangVien(@Query() query) {
+    return this.mauDanhGiaService.findWithGiangVien(query)
   }
 
   @Get(':id')

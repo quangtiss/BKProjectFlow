@@ -1,8 +1,8 @@
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
   IconNotification,
+  IconPointFilled,
   IconUserCircle,
 } from "@tabler/icons-react"
 
@@ -38,12 +38,13 @@ export function NavUser({
   user: {
     name: string
     email: string
-    avatar: string
+    avatar: string,
+    role: string
   }
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  const { refreshContext } = useAuth();
+  const { refreshContext, badgeCount } = useAuth();
 
   const LogOut = async () => {
     try {
@@ -64,7 +65,7 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-10 w-10 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">BK</AvatarFallback>
               </Avatar>
@@ -73,8 +74,16 @@ export function NavUser({
                 <span className="text-muted-foreground truncate text-xs">
                   {user.email}
                 </span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {user.role}
+                </span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              {/* <IconDotsVertical className="ml-auto size-4" />
+              <IconPointFilled className="text-red-500" /> */}
+              <div className="relative ml-auto">
+                <IconDotsVertical className="size-4" />
+                {badgeCount && badgeCount > 0 ? <IconPointFilled className="absolute -top-3 -right-3 text-red-500 size-5" /> : ""}
+              </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -99,17 +108,14 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/thong-tin-tai-khoan')}>
                 <IconUserCircle />
                 Tài khoản
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Thanh toán
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/thong-bao')}>
                 <IconNotification />
                 Thông báo
+                {badgeCount && badgeCount > 0 ? <IconPointFilled className="absolute top-1 right-32 text-red-500 size-5" /> : ""}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

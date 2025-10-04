@@ -1,8 +1,8 @@
 // import * as React from "react"
 import { IconInnerShadowTop } from "@tabler/icons-react"
-import { NavDocuments } from "@/components/home/nav-documents"
+// import { NavDocuments } from "@/components/home/nav-documents"
 import { NavMain } from "@/components/home/nav-main"
-import { NavSecondary } from "@/components/home/nav-secondary"
+// import { NavSecondary } from "@/components/home/nav-secondary"
 import { NavUser } from "@/components/home/nav-user"
 import {
   Sidebar,
@@ -19,7 +19,7 @@ import { useAuth } from "@/routes/auth-context"
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuth()
+  const { user }: { user: any } = useAuth()
   const navigate = useNavigate();
 
   return (
@@ -41,14 +41,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavDocuments />
-        <NavSecondary className="mt-auto" />
+        {/* <NavDocuments /> */}
+        {/* <NavSecondary className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{
           name: user.tai_khoan.ho + " " + user.tai_khoan.ten || "Chưa rõ tên",
           email: user.tai_khoan.email || "",
           avatar: "/avatars/shadcn.jpg",
+          role: user.tai_khoan.vai_tro
         }} />
       </SidebarFooter>
     </Sidebar>

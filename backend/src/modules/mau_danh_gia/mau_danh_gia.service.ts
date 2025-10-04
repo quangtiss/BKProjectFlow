@@ -16,9 +16,12 @@ export class MauDanhGiaService {
         });
     }
 
-    async findWithGiangVien(type: string) {
+    async findWithGiangVien(query) {
         return await this.prismaService.mau_danh_gia.findFirst({
-            where: { loai_mau: type },
+            where: {
+                loai_mau: query.loai_mau,
+                giai_doan: query.giai_doan
+            },
             include: {
                 nhom_tieu_chi: {
                     include: {

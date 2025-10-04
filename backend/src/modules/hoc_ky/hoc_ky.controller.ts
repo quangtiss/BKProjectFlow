@@ -24,13 +24,15 @@ export class HocKyController {
         return this.HocKyService.findById(+id);
     }
 
+    @Roles("Giáo vụ")
     @Patch(':id')
-    update(@Param('id') id: string, @Body() body) {
-        return this.HocKyService.update(+id, body);
+    update(@Param('id') id: string, @Body() body, @Request() req) {
+        return this.HocKyService.update(+id, body, req.user.sub);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.HocKyService.delete(+id);
-    }
+    // @Roles("Giáo vụ")
+    // @Delete(':id')
+    // remove(@Param('id') id: string, @Request() req) {
+    //     return this.HocKyService.delete(+id, req.user.sub);
+    // }
 }

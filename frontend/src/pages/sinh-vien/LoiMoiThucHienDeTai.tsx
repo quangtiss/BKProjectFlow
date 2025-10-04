@@ -40,7 +40,7 @@ export function LoiMoiThucHienDeTai() {
                         </div>
                     </div>)
                 )
-                setListDangKy(listDangKy.filter(item => item.id !== id))
+                setListDangKy(listDangKy.filter((item: any) => item.id !== id))
             } else {
                 const dataError = await response.json()
                 if (dataError.message === "Số lượng sinh viên đăng ký đã đầy") {
@@ -102,7 +102,7 @@ export function LoiMoiThucHienDeTai() {
                         </div>
                     </div>)
                 )
-                setListDangKy(listDangKy.filter(item => item.id !== id))
+                setListDangKy(listDangKy.filter((item: any) => item.id !== id))
             } else {
                 toast((
                     <div className="flex flex-row items-center w-full gap-5" >
@@ -147,21 +147,21 @@ export function LoiMoiThucHienDeTai() {
 
 
     return (
-        <div className="grid grid-cols-1 gap-6 p-2 bg-background">
-            {listDangKy.map((dangKy) => {
+        <div className="flex flex-col gap-10 p-2 sm:p-20">
+            {listDangKy.length > 0 ? listDangKy.map((dangKy: any) => {
                 const isExpanded = expandedId === dangKy.id;
                 return (
                     <Card
                         key={dangKy.id}
                         onClick={() => handleToggleExpand(dangKy.id)}
-                        className={`rounded-2xl border border-border shadow-lg dark:shadow-xl transition-all duration-300 ease-in-out cursor-pointer overflow-hidden "}`}
+                        className={`rounded-4xl border border-border shadow-lg dark:shadow-xl transition-all duration-300 ease-in-out cursor-pointer overflow-hidden "}`}
                         style={{ minHeight: "200px" }}
                     >
                         <CardContent className="p-6">
                             <div className="flex items-start justify-between mb-4">
                                 <div>
                                     <h3 className="text-lg font-semibold leading-snug">{dangKy.de_tai.ma_de_tai + " - " + dangKy.de_tai.ten_tieng_viet}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{dangKy.de_tai.ten_tieng_anh}</p>
+                                    <p className="text-sm italic text-muted-foreground line-clamp-2">{dangKy.de_tai.ten_tieng_anh}</p>
                                 </div>
                             </div>
                             <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? "h-auto opacity-100 mt-4" : "max-h-0 opacity-0"
@@ -205,7 +205,7 @@ export function LoiMoiThucHienDeTai() {
                                         </div>
                                         <div className="grid gap-2">
                                             <ScrollArea className="h-auto max-h-[150px] w-auto rounded-md border px-2">
-                                                {dangKy.de_tai.huong_dan.map((huongDan) => (
+                                                {dangKy.de_tai.huong_dan.map((huongDan: any) => (
                                                     <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
                                                         <User className="mr-2 scale-75" />
                                                         <div className="w-full">
@@ -220,6 +220,7 @@ export function LoiMoiThucHienDeTai() {
                                                                 )}
                                                             </div>
                                                             <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
+                                                            <div className="text-sm italic text-gray-500">{huongDan.vai_tro}</div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -242,7 +243,7 @@ export function LoiMoiThucHienDeTai() {
                                     </div>
                                     <div className="grid gap-2">
                                         <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
-                                            {dangKy.de_tai.dang_ky.map((sinhVienDangKy) => (
+                                            {dangKy.de_tai.dang_ky.map((sinhVienDangKy: any) => (
                                                 <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
                                                     <User className="mr-2 scale-75" />
                                                     <div className="w-full">
@@ -353,7 +354,7 @@ export function LoiMoiThucHienDeTai() {
                         </CardFooter>
                     </Card>
                 );
-            })}
+            }) : <div className="font-bold m-5 text-center text-gray-500 text-2xl">Không có lời mời nào!</div>}
         </div>
     );
 }

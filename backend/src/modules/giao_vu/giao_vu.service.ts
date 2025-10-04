@@ -6,7 +6,11 @@ export class GiaoVuService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async findAll() {
-        return await this.prismaService.giao_vu.findMany();
+        return await this.prismaService.giao_vu.findMany({
+            include: {
+                tai_khoan: true
+            }
+        });
     }
 
 

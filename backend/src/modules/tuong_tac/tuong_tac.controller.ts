@@ -1,34 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
 import { TuongTacService } from './tuong_tac.service';
-import { CreateTuongTacDto } from './dto/create_tuong_tac.dto';
-import { UpdateTuongTacDto } from './dto/update_tuong_tac.dto';
-
 @Controller('tuong-tac')
 export class TuongTacController {
   constructor(private readonly tuongTacService: TuongTacService) { }
 
-  @Post()
-  create(@Body() createTuongTacDto: CreateTuongTacDto) {
-    return this.tuongTacService.create(createTuongTacDto);
+  @Get('/nguoi-dung')
+  getThongBaoCurrentUser(@Req() req, @Query() query) {
+    return this.tuongTacService.getThongBaoCurrentUser(req.user.sub, query)
   }
 
-  @Get()
-  findAll() {
-    return this.tuongTacService.findAll();
+  @Get('/nguoi-dung/count')
+  countThongBaoCurrentUser(@Req() req, @Query() query) {
+    return this.tuongTacService.countThongBaoCurrentUser(req.user.sub, query)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tuongTacService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTuongTacDto: UpdateTuongTacDto) {
-    return this.tuongTacService.update(+id, updateTuongTacDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tuongTacService.remove(+id);
+  @Get('/:id')
+  setRead(@Param('id') id) {
+    return this.tuongTacService.setRead(+id)
   }
 }

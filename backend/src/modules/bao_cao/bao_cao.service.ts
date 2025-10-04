@@ -89,8 +89,9 @@ export class BaoCaoService {
     }
   }
 
-  async findAll() {
+  async findAllWithIdDeTai(idDeTai: number) {
     return await this.prismaService.bao_cao.findMany({
+      where: { id_de_tai: idDeTai },
       include: {
         tai_lieu: true,
         sinh_vien: {

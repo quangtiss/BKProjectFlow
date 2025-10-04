@@ -2,20 +2,20 @@ import { IsString, MinLength, MaxLength, Matches, IsIn, IsOptional } from 'class
 import { Transform } from 'class-transformer';
 
 export class UpdateTaiKhoanDTO {
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-    @IsOptional()
-    @IsString({ message: 'Họ phải ở dạng chuỗi' })
-    @MinLength(1, { message: 'Họ tối thiểu 1 ký tự' })
-    @MaxLength(50, { message: 'Họ tối đa 50 ký tự' })
-    ho: string;
+    // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    // @IsOptional()
+    // @IsString({ message: 'Họ phải ở dạng chuỗi' })
+    // @MinLength(1, { message: 'Họ tối thiểu 1 ký tự' })
+    // @MaxLength(50, { message: 'Họ tối đa 50 ký tự' })
+    // ho: string;
 
 
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-    @IsOptional()
-    @IsString({ message: 'Tên phải ở dạng chuỗi' })
-    @MinLength(1, { message: 'Tên tối thiểu 1 ký tự' })
-    @MaxLength(15, { message: 'Tên tối đa 15 ký tự' })
-    ten: string;
+    // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    // @IsOptional()
+    // @IsString({ message: 'Tên phải ở dạng chuỗi' })
+    // @MinLength(1, { message: 'Tên tối thiểu 1 ký tự' })
+    // @MaxLength(15, { message: 'Tên tối đa 15 ký tự' })
+    // ten: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
@@ -45,15 +45,15 @@ export class UpdateTaiKhoanDTO {
     ngay_sinh: string;
 
 
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-    @IsOptional()
-    @IsString({ message: 'Email phải ở dạng chuỗi' })
-    @MinLength(2, { message: 'Email tối thiểu 2 ký tự' })
-    @MaxLength(50, { message: 'Email tối đa 50 ký tự' })
-    @Matches(/^[a-zA-Z0-9._%+-]+@hcmut\.edu\.vn$/, {
-        message: 'Email phải có định dạng @hcmut.edu.vn',
-    })
-    email: string;
+    // @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    // @IsOptional()
+    // @IsString({ message: 'Email phải ở dạng chuỗi' })
+    // @MinLength(2, { message: 'Email tối thiểu 2 ký tự' })
+    // @MaxLength(50, { message: 'Email tối đa 50 ký tự' })
+    // @Matches(/^[a-zA-Z0-9._%+-]+@hcmut\.edu\.vn$/, {
+    //     message: 'Email phải có định dạng @hcmut.edu.vn',
+    // })
+    // email: string;
 
 
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)

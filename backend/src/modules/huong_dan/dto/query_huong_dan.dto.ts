@@ -1,4 +1,4 @@
-import { IsIn, IsOptional } from "class-validator";
+import { IsIn, IsOptional, MaxLength } from "class-validator";
 
 export class QueryHuongDanDTO {
     @IsOptional()
@@ -6,4 +6,8 @@ export class QueryHuongDanDTO {
         message: 'Trạng thái hướng dẫn chỉ có thể là Chưa chấp, Đã từ chối hoặc Đã chấp nhận'
     })
     trang_thai: string
+
+    @IsOptional()
+    @MaxLength(10)
+    id_hoc_ky: string
 }

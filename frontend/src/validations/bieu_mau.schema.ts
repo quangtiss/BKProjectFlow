@@ -8,6 +8,7 @@ export const BieuMauSchema = z.object({
 
     loai_mau: z.enum(['Giảng viên hướng dẫn', 'Giảng viên phản biện', 'Hội đồng']),
 
+    giai_doan: z.enum(['Đồ án tốt nghiệp', 'Đồ án chuyên ngành']),
     ghi_chu: z
         .string()
         .max(1000, "Ghi chú mẫu tối đa 1000 ký tự")

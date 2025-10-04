@@ -1,3 +1,4 @@
+import { tai_khoan } from '@prisma/client';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
@@ -15,7 +16,18 @@ export class DuyetDeTaiService {
 
     async findAll(query) {
         return await this.prismaService.duyet_de_tai.findMany({
-            where: query,
+            where: {
+                trang_thai: query?.trang_thai,
+                de_tai: {
+                    thuoc_ve: {
+                        some: {
+                            id_hoc_ky: +query?.id_hoc_ky || undefined,
+                            trang_thai: 'Đang làm'
+                        }
+                    },
+                    giai_doan: query?.giai_doan
+                },
+            },
             include: {
                 giang_vien_truong_bo_mon: {
                     include: {
@@ -39,7 +51,22 @@ export class DuyetDeTaiService {
                                     }
                                 }
                             }
-                        }
+                        },
+                        dang_ky: {
+                            include: {
+                                sinh_vien: {
+                                    include: {
+                                        tai_khoan: true
+                                    }
+                                }
+                            }
+                        },
+                        danh_gia: {
+                            include: {
+                                hoi_dong: true
+                            }
+                        },
+                        phan_bien: true
                     }
                 },
             }
@@ -57,7 +84,7 @@ export class DuyetDeTaiService {
     async create(duyetDeTai: any, idNguoiDuyet: number, tx?: Prisma.TransactionClient) {
         const client = tx || this.prismaService
         const deTai = await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" }, tx)
-        this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.ten_tieng_anh + ". " + deTai?.ten_tieng_viet + ". " + deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
+        if (duyetDeTai.trang_thai === 'Đã chấp nhận') this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.ten_tieng_anh + ". " + deTai?.ten_tieng_viet + ". " + deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
         return await client.duyet_de_tai.create({
             data: {
                 ...duyetDeTai,

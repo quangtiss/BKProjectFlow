@@ -30,13 +30,14 @@ import { TaiLieuModule } from './modules/tai_lieu/tai_lieu.module';
 import { ThamGiaModule } from './modules/tham_gia/tham_gia.module';
 import { ThucHienModule } from './modules/thuc_hien/thuc_hien.module';
 import { TieuChiModule } from './modules/tieu_chi/tieu_chi.module';
-import { TinNhanModule } from './modules/tin_nhan/tin_nhan.module';
 import { ThongBaoModule } from './modules/thong_bao/thong_bao.module';
 import { TuongTacModule } from './modules/tuong_tac/tuong_tac.module';
 import { UtilsModule } from './modules/a_utils/utils.module';
-import { ChatGateway } from './modules/tin_nhan/chat.gateway';
 import { BaoCaoModule } from './modules/bao_cao/bao_cao.module';
 import { NhomTieuChiModule } from './modules/nhom_tieu_chi/nhom_tieu_chi.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ExcelModule } from './modules/excel_process/excel.module';
+import { PhanBienModule } from './modules/phan_bien/phan_bien.module';
 
 @Module({
   imports: [
@@ -67,13 +68,14 @@ import { NhomTieuChiModule } from './modules/nhom_tieu_chi/nhom_tieu_chi.module'
     ThamGiaModule,
     ThucHienModule,
     TieuChiModule,
-    TinNhanModule,
     ThongBaoModule,
     TuongTacModule,
     UtilsModule,
-    ChatGateway,
     BaoCaoModule,
-    NhomTieuChiModule
+    NhomTieuChiModule,
+    NotificationsModule,
+    ExcelModule,
+    PhanBienModule
   ],
   controllers: [AppController],
   providers: [ // Áp dụng global cho kiểm soát yêu cầu đăng nhập Auth và quản lý Role nào được dùng api nào
@@ -85,8 +87,7 @@ import { NhomTieuChiModule } from './modules/nhom_tieu_chi/nhom_tieu_chi.module'
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    },
-    ChatGateway
+    }
   ],
 })
 export class AppModule { }

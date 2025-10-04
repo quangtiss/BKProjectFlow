@@ -2,6 +2,7 @@ import { Injectable, forwardRef, Inject, Query } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
 import { Prisma } from '@prisma/client';
+import { QueryHuongDanDTO } from './dto/query_huong_dan.dto';
 
 @Injectable()
 export class HuongDanService {
@@ -16,10 +17,17 @@ export class HuongDanService {
     }
 
 
-    async findByCurrentIdGiangVien(idGiangVien: number, query: object) {
+    async findByCurrentIdGiangVien(idGiangVien: number, query: QueryHuongDanDTO) {
         return this.prismaService.huong_dan.findMany({
             where: {
-                ...query,
+                trang_thai: query?.trang_thai,
+                de_tai: {
+                    thuoc_ve: {
+                        some: {
+                            id_hoc_ky: +query?.id_hoc_ky || undefined,
+                        }
+                    }
+                },
                 id_giang_vien: idGiangVien
             },
             include: {

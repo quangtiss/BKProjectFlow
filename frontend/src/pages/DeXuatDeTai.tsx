@@ -24,8 +24,6 @@ import {
 } from "@/components/ui/form"
 import { deXuatDeTaiFormSchema } from "@/validations/de_xuat_de_tai.schema";
 import { getAllGiangVien } from "@/services/giang_vien/get_all_giang_vien";
-import { CreateDeTai } from "@/services/de_tai/create_de_tai";
-import { CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { getAllSinhVien } from "@/services/sinh_vien/get_all_sinh_vien";
@@ -35,15 +33,16 @@ import StudentMultiSelect from "@/components/ui/multiple-select";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { getCurrentAndNextHocKy } from "@/services/getCurrentNextHocKy";
 
 
 export function DeXuatDeTai({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const { user } = useAuth()
+    const { user }: { user: any } = useAuth()
     const [listGiangVien, setListGiangVien] = useState<any[]>([])
-    const [listHocKy, setListHocKy] = useState([])
+    const [hocKy, setHocKy] = useState<any>()
     const [listSinhVienRaw, setListSinhVienRaw] = useState<any[]>([]);
     const [heDaoTao, setHeDaoTao] = useState("")
     const [nhomNganh, setNhomNganh] = useState("")
@@ -56,7 +55,7 @@ export function DeXuatDeTai({
                 getAllSinhVien(),
             ]);
 
-            setListHocKy(allHocKy);
+            setHocKy(getCurrentAndNextHocKy(allHocKy));
             setListGiangVien(allGiangVien);
             setListSinhVienRaw(allSinhVien);
         };
@@ -90,8 +89,8 @@ export function DeXuatDeTai({
             ten_tieng_viet: "Aa",
             ten_tieng_anh: "Az",
             mo_ta: "Aa",
-            yeu_cau_va_so_lieu: "123",
-            tai_lieu_tham_khao: "https://",
+            yeu_cau_va_so_lieu: "Không có",
+            tai_lieu_tham_khao: "GVHD tự cung cấp",
             nhom_nganh: undefined,
             he_dao_tao: undefined,
             so_luong_sinh_vien: 3,
@@ -103,35 +102,26 @@ export function DeXuatDeTai({
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof deXuatDeTaiFormSchema>) {
-        const response = await CreateDeTai(values)
-        toast(
-            response === "Fail!" ? (
-                <div className="flex flex-row items-center w-full gap-5" >
-                    <AlertCircleIcon className="text-red-600" />
-                    <div className="flex flex-col" >
-                        <div className="text-lg text-red-600" > Không thể tạo đề tài </div>
-                        < div > Có vẻ một số trường không hợp lý </div>
-                    </div>
-                </div>
-            ) :
-                response === "Error!" ? (
-                    <div className="flex flex-row items-center w-full gap-5" >
-                        <CloudAlert className="text-yellow-600" />
-                        <div className="flex flex-col" >
-                            <div className="text-lg text-yellow-600" > Lỗi hệ thống </div>
-                            < div > Vui lòng thử lại sau </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex flex-row items-center w-full gap-5" >
-                        <CheckCircle2Icon className="text-green-600" />
-                        <div className="flex flex-col" >
-                            <div className="text-lg text-green-600" > Tạo đề tài thành công </div>
-                            < div > Đề tài {response.ma_de_tai} của bạn sẽ được chờ duyệt </div>
-                        </div>
-                    </div>
-                )
-        )
+        try {
+            const response = await fetch("http://localhost:3000/de-tai", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values)
+            })
+            const data = await response.json()
+            if (response.ok) {
+                toast.success('Đã gửi', { description: `Đề tài ${data.ma_de_tai} của bạn sẽ được chờ duyệt` })
+            }
+            else {
+                toast.error('Lỗi khi gửi đề xuất', { description: data.message })
+            }
+        } catch (error) {
+            console.error(error)
+            toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
+        }
     }
 
     return (
@@ -257,9 +247,12 @@ export function DeXuatDeTai({
                                                                     <SelectValue placeholder="Chọn học kỳ" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    {listHocKy.map((HocKy) => {
-                                                                        return <SelectItem key={HocKy.id} value={String(HocKy.id)}>{HocKy.ten_hoc_ky}</SelectItem>
-                                                                    })}
+                                                                    {hocKy && (
+                                                                        <>
+                                                                            <SelectItem value={String(hocKy?.current?.id)}>{hocKy?.current?.ten_hoc_ky} <span className="italic text-blue-500">{"(Hiện hành)"}</span></SelectItem>
+                                                                            <SelectItem value={String(hocKy?.next?.id)}>{hocKy?.next?.ten_hoc_ky}</SelectItem>
+                                                                        </>
+                                                                    )}
                                                                 </SelectContent>
                                                             </Select>
                                                         </FormControl>

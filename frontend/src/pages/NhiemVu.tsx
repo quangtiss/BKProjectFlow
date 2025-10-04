@@ -161,14 +161,14 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
 
 
     return (
-        <div className="flex flex-col items-center w-full p-5 mb-5">
+        <div className="relative max-w-full">
             <Expandable
                 expandDirection="both"
                 expandBehavior="push"
                 initialDelay={0.2}
                 onExpandStart={() => { }}
                 onExpandEnd={() => { }}
-                className={`flex fex-row justify-center w-full`}
+                className={`flex fex-row justify-center w-full mb-5`}
             >
                 <ExpandableCard
                     className="min-w-[80%] max-w-full"
@@ -184,7 +184,7 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                         !isStart() ?
                                             <Badge
                                                 variant={'default'}
-                                                className="  mb-2"
+                                                className="mb-2"
                                             >
                                                 Chưa mở
                                             </Badge>
@@ -217,12 +217,21 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                                             Đã có bài nộp
                                                         </Badge>
                                                         :
-                                                        <Badge
-                                                            variant={'outline'}
-                                                            className="bg-purple-100 text-purple-600 dark:bg-purple-600 dark:text-purple-100  mb-2"
-                                                        >
-                                                            Bài làm bị từ chối
-                                                        </Badge>
+                                                        (!isEnd ?
+                                                            <Badge
+                                                                variant={'outline'}
+                                                                className="bg-purple-100 text-purple-600 dark:bg-purple-600 dark:text-purple-100  mb-2"
+                                                            >
+                                                                Bài làm bị từ chối
+                                                            </Badge>
+                                                            :
+                                                            <Badge
+                                                                variant={'outline'}
+                                                                className="bg-red-100 text-red-600 dark:bg-red-600 dark:text-red-100  mb-2"
+                                                            >
+                                                                Bài làm bị từ chối
+                                                            </Badge>
+                                                        )
                                                 )
                                     }
                                     <h3 className="hover:underline font-semibold text-xl text-gray-800 dark:text-white">
@@ -396,13 +405,13 @@ export function NhiemVu({ nhiemVu, setToggle }: { nhiemVu: NhiemVu | undefined, 
                                 {
                                     user.auth.role === "Sinh viên" && (
                                         !isStart() ?
-                                            <Button disabled className="w-full border-3 border-yellow-600 bg-accent text-foreground">
+                                            <Button disabled className="w-full border-3 bg-accent text-foreground">
                                                 <Upload className="h-4 w-4 mr-2" />
                                                 Nhiệm vụ chưa mở
                                             </Button>
                                             :
                                             isEnd() ?
-                                                <Button disabled className="w-full border-3 border-red-600 bg-accent text-foreground">
+                                                <Button disabled className="w-full border-3 bg-accent text-foreground">
                                                     <Upload className="h-4 w-4 mr-2" />
                                                     Nhiệm vụ đã khóa
                                                 </Button>

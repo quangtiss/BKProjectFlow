@@ -7,8 +7,8 @@ import { TienDoTrigger } from "../TienDo";
 
 export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
     return (
-        <div className="flex flex-col gap-4 overflow-y-auto p-4 text-sm">
-            <TienDoTrigger idDeTai={dangKy.id_de_tai} />
+        <div className="flex flex-col gap-4 overflow-y-auto p-4 text-sm sm:px-20">
+            <div className="text-center text-gray-500 font-bold text-xl">Học kỳ: <span className="italic text-blue-500">{dangKy.de_tai?.thuoc_ve.find((item: any) => item.trang_thai === 'Đang làm')?.hoc_ky.ten_hoc_ky}</span></div>
             <div className="gap-1">
                 <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                     {dangKy.de_tai.ten_tieng_viet}
@@ -17,6 +17,8 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
                     {dangKy.de_tai.ten_tieng_anh}
                 </p>
             </div>
+            <Separator className="border-1" />
+            {dangKy.de_tai.duyet_de_tai?.trang_thai === "Đã chấp nhận" && <TienDoTrigger idDeTai={dangKy.id_de_tai} />}
             <Separator className="border-1" />
             <div className="grid grid-cols-2">
                 <div className="flex flex-col gap-5">
@@ -68,6 +70,7 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
                                     )}
                                 </div>
                                 <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
+                                <div className="text-sm text-gray-500 italic">{huongDan.vai_tro}</div>
                             </div>
                         </div>
                     ))}
@@ -110,6 +113,10 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
                                 <div className="text-sm">
                                     {sinhVienDangKy.sinh_vien.tai_khoan.email}
                                 </div>
+                                {dangKy.de_tai.ket_qua.length > 0 && <div className="text-sm italic">
+                                    <div className="text-gray-500">Điểm chuyên ngành: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_chuyen_nganh}</div>
+                                    <div className="text-gray-500">Điểm chuyên ngành: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_tot_nghiep || '-'}</div>
+                                </div>}
                                 <Separator className="mt-2" />
                             </div>
                         </div>

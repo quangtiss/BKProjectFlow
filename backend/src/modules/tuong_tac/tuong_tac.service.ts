@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTuongTacDto } from './dto/create_tuong_tac.dto';
-import { UpdateTuongTacDto } from './dto/update_tuong_tac.dto';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class TuongTacService {
-  create(createTuongTacDto: CreateTuongTacDto) {
-    return 'This action adds a new tuongTac';
+  constructor(private readonly prismaService: PrismaService) { }
+
+  async getThongBaoCurrentUser(idUser, query) {
+    let da_doc_chua: boolean | undefined = undefined;
+
+    if (query.is_read === 'true') {
+      da_doc_chua = true;
+    } else if (query.is_read === 'false') {
+      da_doc_chua = false;
+    }
+    return await this.prismaService.tuong_tac.findMany({
+      where: {
+        id_nguoi_nhan: idUser,
+        da_doc_chua
+      },
+      include: {
+        thong_bao: true
+      }
+    })
   }
 
-  findAll() {
-    return `This action returns all tuongTac`;
+  async countThongBaoCurrentUser(idUser, query) {
+    let da_doc_chua: boolean | undefined = undefined;
+
+    if (query.is_read === 'true') {
+      da_doc_chua = true;
+    } else if (query.is_read === 'false') {
+      da_doc_chua = false;
+    }
+    return await this.prismaService.tuong_tac.count({
+      where: {
+        id_nguoi_nhan: idUser,
+        da_doc_chua
+      }
+    })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tuongTac`;
-  }
-
-  update(id: number, updateTuongTacDto: UpdateTuongTacDto) {
-    return `This action updates a #${id} tuongTac`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tuongTac`;
+  async setRead(id: number) {
+    return await this.prismaService.tuong_tac.update({
+      where: {
+        id
+      },
+      data: {
+        da_doc_chua: true
+      }
+    })
   }
 }

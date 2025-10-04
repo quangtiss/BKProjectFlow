@@ -167,17 +167,6 @@ export function LoginForm({
                 </div>
 
 
-                <div className="text-center text-sm">
-                  Chưa có tài khoản?{" "}
-                  <a href="" onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/signup')
-                  }} className="underline underline-offset-4">
-                    Đăng ký
-                  </a>
-                </div>
-
-
               </div>
             </form>
           </Form>

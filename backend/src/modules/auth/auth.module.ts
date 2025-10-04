@@ -7,9 +7,11 @@ import { jwtConstants } from './guard/constants';
 import { SinhVienModule } from '../sinh_vien/sinh_vien.module';
 import { GiaoVuModule } from '../giao_vu/giao_vu.module';
 import { GiangVienModule } from '../giang_vien/giang_vien.module';
+import { PrismaModule } from 'prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     TaiKhoanModule,
     SinhVienModule,
     GiangVienModule,

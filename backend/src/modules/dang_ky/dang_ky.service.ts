@@ -2,13 +2,15 @@ import { ConflictException, ForbiddenException, forwardRef, Inject, Injectable, 
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class DangKiService {
     constructor(
         private readonly prismaService: PrismaService,
         @Inject(forwardRef(() => DeTaiService))
-        private readonly deTaiService: DeTaiService
+        private readonly deTaiService: DeTaiService,
+        private readonly notificationsService: NotificationsService
     ) { }
 
     async findAll(query: object) {
@@ -75,8 +77,15 @@ export class DangKiService {
                                     }
                                 }
                             }
-                        }
+                        },
+                        thuoc_ve: {
+                            include: {
+                                hoc_ky: true
+                            }
+                        },
+                        ket_qua: true
                     },
+
                 }
             }
         });
@@ -98,34 +107,17 @@ export class DangKiService {
         })
     }
 
-    async rejectOtherAcceptedDangKy(idSinhVien: number, tx: Prisma.TransactionClient) {
-        const DangKyChapNhanBefore = await tx.dang_ky.findMany({
+    async checkDangKyTruocDo(idSinhVien: number, tx: Prisma.TransactionClient) {
+        const listDangKyTruocDo = await tx.dang_ky.findMany({
             where: {
-                id_sinh_vien: idSinhVien,
-                trang_thai: "Đã chấp nhận"
+                id_sinh_vien: idSinhVien
             }
         })
-        if (DangKyChapNhanBefore.length > 0) {
-            await Promise.all(
-                DangKyChapNhanBefore.flatMap((dangKy) =>
-                    [
-                        tx.dang_ky.update({
-                            where: { id: dangKy.id },
-                            data: {
-                                trang_thai: "Đã từ chối"
-                            }
-                        }),
-                        this.deTaiService.update(
-                            dangKy.id_de_tai || 0,
-                            {
-                                so_sinh_vien_dang_ky: {
-                                    increment: -1
-                                }
-                            }
-                            , tx)
-                    ]
-                )
-            )
+        const sinhVien = await tx.tai_khoan.findUnique({
+            where: { id: idSinhVien }
+        })
+        if (listDangKyTruocDo.length > 0 && sinhVien) {
+            if (listDangKyTruocDo.some((dangKy) => dangKy.trang_thai === 'Đã chấp nhận')) throw new ConflictException(`Sinh viên ${sinhVien.ho + " " + sinhVien.ten} đã đăng ký một đề tài trước đó`)
         }
     }
 
@@ -184,7 +176,7 @@ export class DangKiService {
             // Đã có transaction → dùng luôn
             await this.checkSinhVienDangKyHaveEnoughCondition(data.id_sinh_vien, data.id_de_tai, tx)
             if (data.trang_thai === "Đã chấp nhận") {
-                await this.rejectOtherAcceptedDangKy(data.id_sinh_vien, tx);
+                await this.checkDangKyTruocDo(data.id_sinh_vien, tx);
                 await this.deTaiService.update(
                     data.id_de_tai,
                     {
@@ -206,7 +198,7 @@ export class DangKiService {
             return this.prismaService.$transaction(async (tx) => {
                 await this.checkSinhVienDangKyHaveEnoughCondition(data.id_sinh_vien, data.id_de_tai, tx)
                 if (data.trang_thai === "Đã chấp nhận") {
-                    await this.rejectOtherAcceptedDangKy(data.id_sinh_vien, tx);
+                    await this.checkDangKyTruocDo(data.id_sinh_vien, tx);
                     await this.deTaiService.update(
                         data.id_de_tai,
                         {
@@ -233,6 +225,7 @@ export class DangKiService {
             return null;
         }
         return this.prismaService.$transaction(async (tx) => {
+
             const dangKy = await tx.dang_ky.findUnique({
                 where: { id }
             })
@@ -258,7 +251,7 @@ export class DangKiService {
                 else {
                     throw new ConflictException("Số lượng sinh viên đăng ký đã đầy")
                 }
-                await this.rejectOtherAcceptedDangKy(idSinhVien, tx)
+                await this.checkDangKyTruocDo(idSinhVien, tx)
             }
             await tx.dang_ky.update({
                 where: { id },

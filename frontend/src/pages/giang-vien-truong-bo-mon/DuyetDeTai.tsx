@@ -1,16 +1,9 @@
-"use client"
-
-// import * as React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Card,
-    CardAction,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+    CardFooter
 } from "@/components/ui/card"
 import {
     IconCircleCheckFilled,
@@ -35,7 +28,7 @@ export const description = "An interactive area chart"
 
 export function DuyetDeTai() {
     const [listDeTaiChuaDuocDuyet, setListDeTaiChuaDuocDuyet] = useState([])
-    const { user } = useAuth()
+    const { user }: { user: any } = useAuth()
 
     const handleAccept = async (id_de_tai: number, trang_thai: string) => {
         try {
@@ -59,7 +52,7 @@ export function DuyetDeTai() {
                         </div>
                     </div>)
                 )
-                setListDeTaiChuaDuocDuyet(oldList => oldList.filter(item => item.id != id_de_tai))
+                setListDeTaiChuaDuocDuyet(oldList => oldList.filter((item: any) => item.id != id_de_tai))
             }
             else {
                 toast((
@@ -95,7 +88,7 @@ export function DuyetDeTai() {
                     credentials: 'include'
                 })
                 const data = await response.json()
-                if (response.ok) setListDeTaiChuaDuocDuyet(data.filter((deTai) => deTai.huong_dan[0].giang_vien.to_chuyen_nganh === user.tai_khoan.giang_vien.to_chuyen_nganh))
+                if (response.ok) setListDeTaiChuaDuocDuyet(data.filter((deTai: any) => deTai.huong_dan[0].giang_vien.to_chuyen_nganh === user.tai_khoan.giang_vien.to_chuyen_nganh))
                 else console.log(data)
             } catch (error) {
                 console.log(error)
@@ -107,170 +100,160 @@ export function DuyetDeTai() {
     }, [])
 
     return (
-        <div className="p-3"><Card className="@container/card">
-            <CardHeader>
-                <CardTitle></CardTitle>
-                <CardAction>
-                </CardAction>
-            </CardHeader>
-            <CardContent className="px-3">
-                {listDeTaiChuaDuocDuyet.map((deTai) => {
-                    return <div className="mb-10" key={deTai.id}>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>{deTai.ma_de_tai + " - " + deTai.ten_tieng_viet}</CardTitle>
-                                <CardDescription>
-                                    {deTai.ten_tieng_anh}
-                                </CardDescription>
-                                <CardAction>
-                                    <Button variant='ghost' className="text-red-400" onClick={() => handleAccept(deTai.id, "Đã từ chối")}>
-                                        <IconCircleXFilled />
-                                    </Button>
-                                </CardAction>
-                            </CardHeader>
-                            <CardContent>
-                                <Accordion type="single" collapsible>
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>Thông tin chi tiết</AccordionTrigger>
-                                        <AccordionContent>
-                                            <div className="flex flex-col gap-4 overflow-y-auto text-sm">
-                                                <Separator className="border-1" />
-                                                <div className="grid grid-cols-2">
-                                                    <div className="flex flex-col gap-5">
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Mã đề tài
-                                                            </div>
-                                                            <div className="text-muted-foreground">{deTai.ma_de_tai}</div>
+        <div className="flex flex-col gap-10 rounded-lg border border-dashed m-5 p-5 sm:p-20 sm:m-10">
+            {listDeTaiChuaDuocDuyet.length > 0 ? listDeTaiChuaDuocDuyet.map((deTai: any) => {
+                return <div className="" key={deTai.id}>
+                    <Card className="rounded-4xl border shadow-lg">
+                        <CardContent>
+                            <Accordion type="single" collapsible>
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger>
+                                        <div className="flex flex-col">
+                                            <div className="text-xl">{deTai.ma_de_tai + " - " + deTai.ten_tieng_viet}</div>
+                                            <div className="text-sm italic text-gray-500">
+                                                {deTai.ten_tieng_anh}
+                                            </div>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="flex flex-col gap-4 overflow-y-auto text-sm">
+                                            <Separator className="border-1" />
+                                            <div className="grid grid-cols-2">
+                                                <div className="flex flex-col gap-5">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Mã đề tài
                                                         </div>
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Hệ đào tạo
-                                                            </div>
-                                                            <div className="text-muted-foreground">{deTai.he_dao_tao}</div>
-                                                        </div>
+                                                        <div className="text-muted-foreground">{deTai.ma_de_tai}</div>
                                                     </div>
-                                                    <div className="flex flex-col gap-5">
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Giai đoạn
-                                                            </div>
-                                                            <div className="text-muted-foreground">{deTai.giai_doan}</div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Hệ đào tạo
                                                         </div>
-                                                        <div className="grid gap-2">
-                                                            <div className="flex leading-none font-medium">
-                                                                Nhóm ngành
-                                                            </div>
-                                                            <div className="text-muted-foreground">{deTai.nhom_nganh}</div>
+                                                        <div className="text-muted-foreground">{deTai.he_dao_tao}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-5">
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Giai đoạn
                                                         </div>
+                                                        <div className="text-muted-foreground">{deTai.giai_doan}</div>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <div className="flex leading-none font-medium">
+                                                            Nhóm ngành
+                                                        </div>
+                                                        <div className="text-muted-foreground">{deTai.nhom_nganh}</div>
+                                                    </div>
 
-                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Giảng viên hướng dẫn
                                                 </div>
                                                 <div className="grid gap-2">
-                                                    <div className="flex leading-none font-medium">
-                                                        Giảng viên hướng dẫn
-                                                    </div>
-                                                    <div className="grid gap-2">
-                                                        <ScrollArea className="h-auto max-h-[150px] w-auto rounded-md border px-2">
-                                                            {deTai.huong_dan.map((huongDan) => (
-                                                                <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
-                                                                    <User className="mr-2 scale-75" />
-                                                                    <div className="w-full">
-                                                                        <div className="text-sm">
-                                                                            {huongDan.giang_vien.msgv + " - " + huongDan.giang_vien.tai_khoan.ho + " " + huongDan.giang_vien.tai_khoan.ten}
-                                                                            {huongDan.trang_thai === "Đã chấp nhận" ? (
-                                                                                <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
-                                                                            ) : huongDan.trang_thai === "Chưa chấp nhận" ? (
-                                                                                <Badge variant={'secondary'}><IconLoader />Chưa chấp nhận</Badge>
-                                                                            ) : (
-                                                                                <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
-                                                                            )}
-                                                                        </div>
-                                                                        <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </ScrollArea>
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-2">
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Số sinh viên đăng ký
-                                                        </div>
-                                                        <div className="text-muted-foreground">{deTai.so_sinh_vien_dang_ky}</div>
-                                                    </div>
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Số sinh viên yêu cầu
-                                                        </div>
-                                                        <div className="text-muted-foreground">{deTai.so_luong_sinh_vien}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
-                                                        {deTai.dang_ky.map((sinhVienDangKy) => (
-                                                            <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
+                                                    <ScrollArea className="h-auto max-h-[150px] w-auto rounded-md border px-2">
+                                                        {deTai.huong_dan.map((huongDan: any) => (
+                                                            <div className="w-full flex flex-row items-center my-2" key={huongDan.id}>
                                                                 <User className="mr-2 scale-75" />
                                                                 <div className="w-full">
-                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
-                                                                    <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
+                                                                    <div className="text-sm">
+                                                                        {huongDan.giang_vien.msgv + " - " + huongDan.giang_vien.tai_khoan.ho + " " + huongDan.giang_vien.tai_khoan.ten}
+                                                                        {huongDan.trang_thai === "Đã chấp nhận" ? (
+                                                                            <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                                        ) : huongDan.trang_thai === "Chưa chấp nhận" ? (
+                                                                            <Badge variant={'secondary'}><IconLoader />Chưa chấp nhận</Badge>
+                                                                        ) : (
+                                                                            <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="text-sm">{huongDan.giang_vien.tai_khoan.email}</div>
                                                                 </div>
                                                             </div>
                                                         ))}
                                                     </ScrollArea>
                                                 </div>
+                                            </div>
+                                            <div className="grid grid-cols-2">
                                                 <div className="grid gap-2">
                                                     <div className="flex leading-none font-medium">
-                                                        Mô tả
+                                                        Số sinh viên đăng ký
                                                     </div>
-                                                    <div className="text-muted-foreground">{deTai.mo_ta}</div>
+                                                    <div className="text-muted-foreground">{deTai.so_sinh_vien_dang_ky}</div>
                                                 </div>
                                                 <div className="grid gap-2">
                                                     <div className="flex leading-none font-medium">
-                                                        Yêu cầu nội dung và số liệu ban đầu
+                                                        Số sinh viên yêu cầu
                                                     </div>
-                                                    <div className="text-muted-foreground">{deTai.yeu_cau_va_so_lieu}</div>
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <div className="flex leading-none font-medium">
-                                                        Tài liệu tham khảo
-                                                    </div>
-                                                    <div className="text-muted-foreground">{deTai.tai_lieu_tham_khao}</div>
-                                                </div>
-                                                <Separator className="border-1" />
-                                                <div className="grid grid-cols-2">
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Ngày đề xuất
-                                                        </div>
-                                                        <div className="text-muted-foreground">{new Date(deTai.ngay_tao).toLocaleString()}</div>
-                                                    </div>
-                                                    <div className="grid gap-2">
-                                                        <div className="flex leading-none font-medium">
-                                                            Người đề xuất
-                                                        </div>
-                                                        <div className="text-muted-foreground">{deTai.tai_khoan.vai_tro}:
-                                                            {(deTai.tai_khoan.sinh_vien?.mssv || deTai.tai_khoan.giang_vien?.msgv) + " - " + deTai.tai_khoan.ho + " " + deTai.tai_khoan.ten}</div>
-                                                        <div className="text-muted-foreground">{deTai.tai_khoan.email}</div>
-                                                    </div>
+                                                    <div className="text-muted-foreground">{deTai.so_luong_sinh_vien}</div>
                                                 </div>
                                             </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            </CardContent>
-                            <CardFooter className="flex flex-row justify-end gap-10">
-                                <Button variant='outline' className="text-green-600" onClick={() => handleAccept(deTai.id, "Đã chấp nhận")}>
-                                    <IconCircleCheckFilled /> Duyệt
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    </div>
-                })}
-
-
-            </CardContent>
-        </Card></div>
+                                            <div className="grid gap-2">
+                                                <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
+                                                    {deTai.dang_ky.map((sinhVienDangKy: any) => (
+                                                        <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
+                                                            <User className="mr-2 scale-75" />
+                                                            <div className="w-full">
+                                                                <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
+                                                                <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </ScrollArea>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Mô tả
+                                                </div>
+                                                <div className="text-muted-foreground">{deTai.mo_ta}</div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Yêu cầu nội dung và số liệu ban đầu
+                                                </div>
+                                                <div className="text-muted-foreground">{deTai.yeu_cau_va_so_lieu}</div>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="flex leading-none font-medium">
+                                                    Tài liệu tham khảo
+                                                </div>
+                                                <div className="text-muted-foreground">{deTai.tai_lieu_tham_khao}</div>
+                                            </div>
+                                            <Separator className="border-1" />
+                                            <div className="grid grid-cols-2">
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Ngày đề xuất
+                                                    </div>
+                                                    <div className="text-muted-foreground">{new Date(deTai.ngay_tao).toLocaleString()}</div>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <div className="flex leading-none font-medium">
+                                                        Người đề xuất
+                                                    </div>
+                                                    <div className="text-muted-foreground">{deTai.tai_khoan.vai_tro}:
+                                                        {(deTai.tai_khoan.sinh_vien?.mssv || deTai.tai_khoan.giang_vien?.msgv) + " - " + deTai.tai_khoan.ho + " " + deTai.tai_khoan.ten}</div>
+                                                    <div className="text-muted-foreground">{deTai.tai_khoan.email}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </CardContent>
+                        <CardFooter className="flex flex-row justify-end gap-5">
+                            <Button variant='outline' className="text-red-400 rounded-4xl border shadow-lg" onClick={() => handleAccept(deTai.id, "Đã từ chối")}>
+                                <IconCircleXFilled />
+                            </Button>
+                            <Button variant='outline' className="text-green-600 rounded-4xl border shadow-lg" onClick={() => handleAccept(deTai.id, "Đã chấp nhận")}>
+                                <IconCircleCheckFilled /> Duyệt
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </div>
+            }) : <div className="font-bold text-2xl my-10 text-center text-gray-500">Không có đề tài nào được gửi!</div>}
+        </div>
     )
 }

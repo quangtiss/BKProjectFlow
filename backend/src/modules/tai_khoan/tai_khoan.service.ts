@@ -47,7 +47,10 @@ export class TaiKhoanService {
     }
     return await this.prismaService.tai_khoan.update({
       where: { id: id },
-      data: data
+      data: {
+        ...data,
+        ngay_sinh: new Date(data.ngay_sinh)
+      }
     })
   }
 

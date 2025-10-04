@@ -9,10 +9,10 @@ import {
   Res,
 } from "@nestjs/common";
 import { LogInDTO } from "./dto/login.dto";
-import { SignUpDTO } from "./dto/signup.dto";
 import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { Public } from "./guard/public.decorator";
+import { ChangePasswordDTO } from "./dto/signup.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -38,16 +38,14 @@ export class AuthController {
     return this.authService.LogOut(res);
   }
 
-
-  @Public()
-  @Post("signup")
-  SignUp(@Body() data: SignUpDTO) {
-    return this.authService.SignUp(data)
-  }
-
   @Get("profile")
   async getProfile(@Request() req) {
     const user = req.user;
     return this.authService.getProfile(user);
+  }
+
+  @Post('change-password')
+  async changePassword(@Request() req, @Body() data: ChangePasswordDTO) {
+    return this.authService.changPassword(req.user.sub, data)
   }
 }

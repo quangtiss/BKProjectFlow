@@ -8,8 +8,9 @@ import { Buffer } from "buffer";
 export class NhiemVuService {
     constructor(private readonly prismaService: PrismaService) { }
 
-    async findAll() {
+    async findAllWithIdDeTai(idDeTai: number) {
         return await this.prismaService.nhiem_vu.findMany({
+            where: { id_de_tai: idDeTai },
             include: {
                 tai_lieu: true,
                 thuc_hien: {
@@ -46,7 +47,9 @@ export class NhiemVuService {
             where: {
                 id_de_tai: idDeTai,
                 thuc_hien: {
-                    some: {}, // có ít nhất 1 bản ghi thuc_hien liên quan
+                    some: {
+                        trang_thai: { in: ['Đã gửi', 'Đã chấp nhận'] } //Có ít nhất một bản ghi con trong quan hệ thuc_hien
+                    }
                 }
             }
         })

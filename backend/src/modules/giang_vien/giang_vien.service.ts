@@ -9,7 +9,8 @@ export class GiangVienService {
     async findAll() {
         return await this.prismaService.giang_vien.findMany({
             include: {
-                tai_khoan: true
+                tai_khoan: true,
+                tham_gia: true
             }
         });
     }

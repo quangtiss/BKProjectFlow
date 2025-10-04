@@ -1,32 +1,20 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Req } from '@nestjs/common';
 import { ChamDiemService } from './cham_diem.service';
+import { Roles } from '../auth/guard/roles.decorator';
 
 @Controller('cham-diem')
 export class ChamDiemController {
     constructor(private readonly chamDiemService: ChamDiemService) { }
 
+    @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
     @Post()
-    create(@Body() body) {
-        return this.chamDiemService.create(body);
+    create(@Body() body, @Req() req) {
+        return this.chamDiemService.create(body, req.user.sub);
     }
 
-    @Get()
-    findAll() {
-        return this.chamDiemService.findAll();
-    }
-
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.chamDiemService.findById(+id);
-    }
-
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() body) {
-        return this.chamDiemService.update(+id, body);
-    }
-
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.chamDiemService.delete(+id);
+    @Roles('Giảng viên', 'Giảng viên trưởng bộ môn')
+    @Post('/update-all')
+    updateAll(@Body() body, @Req() req) {
+        return this.chamDiemService.updateAll(body);
     }
 }

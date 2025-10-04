@@ -6,18 +6,19 @@ import {
     type ReactNode,
     useContext
 } from 'react';
+import { toast } from 'sonner';
 
 type AuthContextType = {
-    isAuthenticated: boolean;
-    loading: boolean;
-    setIsAuthenticated: (value: boolean) => void;
-    user: object | null;
-    setUser: (value: object | null) => void;
-    notifications: object | null;
-    setNotifications: (value: object | null) => void;
+    isAuthenticated: any;
+    loading: any;
+    setIsAuthenticated: any;
+    user: any;
+    setUser: any;
     updateContext: boolean;
-    setUpdateContext: (updater: (value: boolean) => boolean) => void;
-    refreshContext: () => void;
+    setUpdateContext: any;
+    refreshContext: any;
+    badgeCount: number;
+    setBadgeCount: any
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -26,24 +27,25 @@ const AuthContext = createContext<AuthContextType>({
     setIsAuthenticated: () => { },
     user: null,
     setUser: () => { },
-    notifications: null,
-    setNotifications: () => { },
     updateContext: false,
     setUpdateContext: () => { },
-    refreshContext: () => { }
+    refreshContext: () => { },
+    badgeCount: 0,
+    setBadgeCount: () => { }
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<object | null>(null);
-    const [notifications, setNotifications] = useState<object | null>(null)
+    const [user, setUser] = useState(null);
     const [updateContext, setUpdateContext] = useState(false)
 
 
     const refreshContext = () => {
         setUpdateContext((prev) => !prev); // toggle để useEffect chạy lại
     };
+
+    const [badgeCount, setBadgeCount] = useState(0);
 
     useEffect(() => {
         const isLogin = async () => {
@@ -56,14 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     const data = await response.json()
                     setIsAuthenticated(true)
                     setUser(data)
-
-                    const response2 = await fetch('http://localhost:3000/thong-bao/count-all', {
-                        method: 'GET',
-                        credentials: 'include'
-                    })
-                    if (response2.ok) {
-                        setNotifications(await response2.json())
-                    }
                 }
                 else {
                     setUser(null)
@@ -78,10 +72,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         }
         isLogin()
+        setBadgeCount(0)
     }, [updateContext]);
 
+    ;
+
+    useEffect(() => {
+        if (!user?.auth?.sub) return; // chưa login thì bỏ qua
+
+        const fetchCountTbao = async () => {
+            try {
+                const res = await fetch('http://localhost:3000/tuong-tac/nguoi-dung/count?is_read=false', { method: 'GET', credentials: 'include' })
+                const data = await res.text();
+                setBadgeCount(Number(data));
+            } catch (error) {
+                console.error('Lỗi khi tính thông báo: ', error)
+            }
+        }
+        fetchCountTbao()
+
+        const eventSource = new EventSource(`http://localhost:3000/notifications/stream/${user.auth.sub}`, {
+            withCredentials: true
+        });
+
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            // Cập nhật badge
+            setBadgeCount((prev) => prev + 1);
+            toast.success('Thông báo mới', { description: data.message })
+        };
+
+        return () => eventSource.close();
+    }, [user]);
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, user, setUser, notifications, setNotifications, refreshContext }}>
+        <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, user, setUser, refreshContext, badgeCount, setBadgeCount }}>
             {children}
         </AuthContext.Provider>
     );

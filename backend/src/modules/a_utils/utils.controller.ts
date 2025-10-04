@@ -8,6 +8,14 @@ import { join } from 'path';
 export class UtilsController {
   constructor(private readonly utilsService: UtilsService) { }
 
+
+  @Public()
+  @Get('hello-world')
+  getHello() {
+    return this.utilsService.getHello()
+  }
+
+
   @Public()
   @Post('generate-topic')
   getTopicFromDescription(@Body() body) {
@@ -23,5 +31,10 @@ export class UtilsController {
   @Get('get-recommend')
   getDeTaiRecommend(@Req() req) {
     return this.utilsService.getDeTaiRecommend(req.user.sub)
+  }
+
+  @Get('/initial-data')
+  getInitialData() {
+    return this.utilsService.getInitialData()
   }
 }

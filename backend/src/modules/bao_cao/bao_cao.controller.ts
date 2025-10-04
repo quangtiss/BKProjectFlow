@@ -31,9 +31,9 @@ export class BaoCaoController {
     return this.baoCaoService.create(JSON.parse(rawData), files, req.user.sub);
   }
 
-  @Get()
-  findAll() {
-    return this.baoCaoService.findAll()
+  @Get('/de-tai/:idDeTai')
+  findAllWithIdDeTai(@Param('idDeTai') idDeTai: string) {
+    return this.baoCaoService.findAllWithIdDeTai(+idDeTai);
   }
 
   @Get('/:idBaoCao')

@@ -12,8 +12,7 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { SignUpService } from "@/services/auth/signup"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Eye, EyeOff, CheckCircle2Icon, AlertCircleIcon, CloudAlert } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -27,6 +26,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { signUpFormSchema } from "@/validations/signup.schema"
+import { toast } from "sonner"
 
 export function SignupPage({
     className,
@@ -34,7 +34,6 @@ export function SignupPage({
 }: React.ComponentProps<"div">) {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false)
-    const [success, setSuccess] = useState("")
 
 
     const form = useForm<z.infer<typeof signUpFormSchema>>({
@@ -85,7 +84,12 @@ export function SignupPage({
             filteredData = data
         }
         const response = await SignUpService(filteredData)
-        setSuccess(response)
+        if (response == "Success!")
+            toast.success('Đăng ký thành công')
+        else if (response == "Fail!")
+            toast.error('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin')
+        else
+            toast.error('Lỗi hệ thống. Vui lòng thử lại sau')
     }
 
 
@@ -357,10 +361,9 @@ export function SignupPage({
                                                                             <SelectValue placeholder="Chọn hệ đào tạo" />
                                                                         </SelectTrigger>
                                                                         <SelectContent>
-                                                                            <SelectItem value="Chính quy">Chính quy</SelectItem>
-                                                                            <SelectItem value="Chất lượng cao">Chất lượng cao</SelectItem>
-                                                                            <SelectItem value="Việt - Pháp">Việt - Pháp</SelectItem>
-                                                                            <SelectItem value="Việt - Nhật">Việt - Nhật</SelectItem>
+                                                                            {['Chính quy', 'Văn bằng 2', 'Vừa làm vừa học', 'Song ngành', 'Đào tạo từ xa', 'Chất lượng cao tăng cường tiếng Nhật', 'Chất lượng cao'].map((hdt, index) => (
+                                                                                <SelectItem key={index} value={hdt}>{hdt}</SelectItem>
+                                                                            ))}
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </FormControl>
@@ -436,8 +439,6 @@ export function SignupPage({
                                                                         </SelectTrigger>
                                                                         <SelectContent>
                                                                             <SelectItem value="Nhân viên thông tin">Nhân viên thông tin</SelectItem>
-                                                                            <SelectItem value="Nhân viên kiểm soát">Nhân viên kiểm soát</SelectItem>
-
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </FormControl>
@@ -507,43 +508,6 @@ export function SignupPage({
                                         <Button type="submit" className="w-full">
                                             Đăng ký
                                         </Button>
-
-
-                                        <div className="grid grid-cols-1 gap-4">
-
-                                            {success == "Success!" ?
-                                                (
-                                                    <Alert className="text-green-500">
-                                                        <CheckCircle2Icon />
-                                                        <AlertTitle>Đăng ký thành công</AlertTitle>
-                                                        <AlertDescription className="text-green-500">
-                                                            Đang chuyển hướng, vui lòng chờ ...
-                                                        </AlertDescription>
-                                                    </Alert>
-                                                )
-                                                :
-                                                success == "Fail!" ? (
-                                                    <Alert variant="destructive">
-                                                        <AlertCircleIcon />
-                                                        <AlertTitle>Đăng ký thất bại</AlertTitle>
-                                                        <AlertDescription>
-                                                            <p>Một số trường đã tồn tại</p>
-                                                        </AlertDescription>
-                                                    </Alert>
-                                                )
-                                                    :
-                                                    success == "Error!" ? (
-                                                        <Alert variant="destructive">
-                                                            <CloudAlert />
-                                                            <AlertTitle>Lỗi hệ thống</AlertTitle>
-                                                            <AlertDescription>
-                                                                <p>Vui lòng thử lại sau</p>
-                                                            </AlertDescription>
-                                                        </Alert>
-                                                    )
-                                                        : null}
-
-                                        </div>
 
 
                                         <div className="text-center text-sm">

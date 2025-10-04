@@ -8,6 +8,7 @@ import { HuongDanService } from '../huong_dan/huong_dan.service';
 import { Prisma } from '@prisma/client';
 import { ThongBaoService } from '../thong_bao/thong_bao.service';
 import { TuongTacService } from '../tuong_tac/tuong_tac.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class DeTaiService {
@@ -19,7 +20,8 @@ export class DeTaiService {
         private readonly giangVienService: GiangVienService,
         private readonly huongDanService: HuongDanService,
         private readonly thongBaoService: ThongBaoService,
-        private readonly tuongTacService: TuongTacService
+        private readonly tuongTacService: TuongTacService,
+        private readonly notificationService: NotificationsService
     ) { }
 
     async findAll(query) {
@@ -94,7 +96,7 @@ export class DeTaiService {
 
 
     async create(data: any, user: any) {
-        const { id_giang_vien_huong_dan, list_id_sinh_vien_tham_gia, ...dataDeTai } = data
+        const { id_giang_vien_huong_dan, list_id_sinh_vien_tham_gia, id_hoc_ky, ...dataDeTai } = data
         if (list_id_sinh_vien_tham_gia.length > data.so_luong_sinh_vien)
             throw new BadRequestException("Số lượng sinh viên tham gia không khớp với số lượng yêu cầu")
         const prefix =
@@ -139,6 +141,14 @@ export class DeTaiService {
                     so_sinh_vien_dang_ky: 0
                 }
             })
+
+            await tx.thuoc_ve.create({
+                data: {
+                    id_de_tai: deTai.id,
+                    id_hoc_ky: id_hoc_ky,
+                    trang_thai: 'Đang làm'
+                }
+            })
             const maDeTai = `${prefix}${deTai.id.toString().padStart(4, "0")}`;
             const deTaiUpdated = await this.update(deTai.id, { ma_de_tai: maDeTai }, tx)
 
@@ -160,6 +170,25 @@ export class DeTaiService {
                     }, tx)
                 )
             )
+
+            // Tạo thông báo cho giảng viên
+            if (user.sub !== id_giang_vien_huong_dan) {
+                const tb = await tx.thong_bao.create({
+                    data: {
+                        tieu_de: 'Lời mời hướng dẫn đề tài',
+                        noi_dung: `Bạn được mời hướng dẫn đề tài ${maDeTai}`,
+                        duong_dan: '/de-tai-cua-toi'
+                    }
+                })
+                const tt = await tx.tuong_tac.create({
+                    data: {
+                        id_thong_bao: tb.id,
+                        id_nguoi_nhan: id_giang_vien_huong_dan,
+                        da_doc_chua: false
+                    }
+                })
+                this.notificationService.pushToUser(id_giang_vien_huong_dan, { message: 'Bạn có lời mời hướng dẫn đề tài' })
+            }
 
             return deTaiUpdated
         });

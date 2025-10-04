@@ -14,7 +14,6 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import {
-  type ColumnDef,
   type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -27,7 +26,6 @@ import {
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { z } from "zod";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
@@ -70,17 +68,14 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "../ui/scroll-area";
 import {
-  AlertCircleIcon,
   Check,
-  CheckCircle2Icon,
-  CloudAlert,
   ListFilter,
   User,
 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useAuth } from "@/routes/auth-context";
 import { toast } from "sonner";
-import { getAllDeTai } from "@/services/de_tai/get_all_de_tai";
+import { getAllDeTaiCuaHocKyHienTai } from "@/services/de_tai/get_all_de_tai";
 import {
   Popover,
   PopoverTrigger,
@@ -91,30 +86,17 @@ import ChuDeMultiSelect from "./select-chu-de";
 
 //--------------------------------------------END IMPORT------------------------------------
 
-export const schema = z.object({
-  id: z.number(),
-  ngay_tao: z.date(),
-  trang_thai: z.string(),
-  trang_thai_duyet: z.string(),
-  giai_doan: z.string(),
-  ten_tieng_viet: z.string(),
-  ten_tieng_anh: z.string(),
-  mo_ta: z.string(),
-  ma_de_tai: z.string(),
-  nhom_nganh: z.string(),
-  he_dao_tao: z.string(),
-  so_luong_sinh_vien: z.number(),
-});
 
 export function DataTable() {
   const [data, setData] = useState<Array<object>>([]);
   const [toggle, setToggle] = useState(false);
+  const { user }: { user: any } = useAuth();
   useEffect(() => {
     const fetchAllDeTaiDaDuyet = async () => {
       try {
-        const listDeTaiDaDuyet = await getAllDeTai();
+        const listDeTaiDaDuyet = await getAllDeTaiCuaHocKyHienTai();
         setData(
-          listDeTaiDaDuyet.sort((a, b) =>
+          listDeTaiDaDuyet.sort((a: any, b: any) =>
             a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)
           )
         );
@@ -125,7 +107,7 @@ export function DataTable() {
     fetchAllDeTaiDaDuyet();
   }, [toggle]);
 
-  const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  const columns: any = [
     {
       id: "purpose",
       header: "",
@@ -134,7 +116,7 @@ export function DataTable() {
     {
       accessorKey: "Tên đề tài",
       header: "Tên đề tài",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         return <TableCellViewer item={row.original} setToggle={setToggle} />;
       },
       enableHiding: false,
@@ -142,7 +124,7 @@ export function DataTable() {
     {
       accessorKey: "Số lượng sinh viên",
       header: "Sinh viên",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         return (
           row.original.de_tai.so_sinh_vien_dang_ky +
           "/" +
@@ -153,7 +135,7 @@ export function DataTable() {
     {
       accessorKey: "Trạng thái đăng ký",
       header: "Trạng thái đăng ký",
-      cell: ({ row }) => (
+      cell: ({ row }: { row: any }) => (
         <Badge variant="outline" className="text-muted-foreground px-1.5">
           {row.original.de_tai.so_luong_sinh_vien >
             row.original.de_tai.so_sinh_vien_dang_ky ? (
@@ -175,21 +157,21 @@ export function DataTable() {
     {
       accessorKey: "Nhóm ngành",
       header: "Nhóm ngành",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         return row.original.de_tai.nhom_nganh;
       },
     },
     {
       accessorKey: "Hệ đào tạo",
       header: "Hệ đào tạo",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         return row.original.de_tai.he_dao_tao;
       },
     },
     {
       accessorKey: "Giảng viên hướng dẫn",
       header: "GVHD",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         return (
           row.original.de_tai.huong_dan[0].giang_vien.msgv +
           " - " +
@@ -334,7 +316,7 @@ export function DataTable() {
   const uniqueGiaoVien = Array.from(
     new Map(
       data
-        .map((row) => row?.de_tai?.huong_dan?.[0]?.giang_vien)
+        .map((row: any) => row?.de_tai?.huong_dan?.[0]?.giang_vien)
         .filter(Boolean)
         .map((gv) => [gv.id_tai_khoan, gv]) // dùng Map để loại trùng
     ).values()
@@ -361,7 +343,7 @@ export function DataTable() {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row: any) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -396,7 +378,7 @@ export function DataTable() {
           <IconSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
         </div>
         <div className="flex items-center gap-2">
-          <Popover>
+          {user.auth.role === 'Sinh viên' && <Popover>
             <PopoverTrigger asChild className={onRecommend ? "text-yellow-400" : ""}>
               <Button variant={"outline"} size={"sm"}>
                 <IconCarambolaFilled />
@@ -406,7 +388,7 @@ export function DataTable() {
             <PopoverContent className="w-90">
               <ChuDeMultiSelect onRecommend={onRecommend} setOnRecommend={setOnRecommend} setListDeTaiRecommend={setListDeTaiRecommend} />
             </PopoverContent>
-          </Popover>
+          </Popover>}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -662,7 +644,9 @@ export function DataTable() {
         {/* //-------------------------------------FOOTER-------------------------------------------------------------------------- */}
 
         <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex"></div>
+          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+            Tổng số đề tài: {filteredData?.length}
+          </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
@@ -754,11 +738,11 @@ function TableCellViewer({
   item,
   setToggle,
 }: {
-  item: z.infer<typeof schema>;
+  item: any;
   setToggle: (updater: (prev: boolean) => boolean) => void;
 }) {
   const isMobile = useIsMobile();
-  const { user } = useAuth();
+  const { user }: { user: any } = useAuth();
   const [select, setSelect] = useState(false);
   const [listSinhVienDangKy, setListSinhVienDangKy] = useState([]);
 
@@ -773,7 +757,7 @@ function TableCellViewer({
     const data = await response.json();
     if (response.ok) {
       data.forEach(
-        (dangKy) =>
+        (dangKy: any) =>
           dangKy.sinh_vien.id_tai_khoan === user.auth.sub && setSelect(true)
       );
       setListSinhVienDangKy(data);
@@ -799,37 +783,14 @@ function TableCellViewer({
       if (response.ok) {
         setSelect(true);
         setToggle((prev) => !prev);
-        toast(
-          <div className="flex flex-row items-center w-full gap-5">
-            <CheckCircle2Icon className="text-green-600" />
-            <div className="flex flex-col">
-              <div className="text-lg text-green-600"> Đăng ký thành công </div>
-            </div>
-          </div>
-        );
+        toast.success('Đăng ký thành công')
       } else {
         const dataError = await response.json();
-        toast(
-          <div className="flex flex-row items-center w-full gap-5">
-            <AlertCircleIcon className="text-red-600" />
-            <div className="flex flex-col">
-              <div className="text-lg text-red-600"> Đăng ký thất bại </div>
-              <div>{dataError.message}</div>
-            </div>
-          </div>
-        );
+        toast.error('Đăng ký thất bại', { description: dataError.message })
         console.error(dataError);
       }
     } catch (error) {
-      toast(
-        <div className="flex flex-row items-center w-full gap-5">
-          <CloudAlert className="text-yellow-600" />
-          <div className="flex flex-col">
-            <div className="text-lg text-yellow-600"> Lỗi hệ thống </div>
-            <div> Vui lòng thử lại sau </div>
-          </div>
-        </div>
-      );
+      toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
       console.error(error);
     }
   };
@@ -887,7 +848,7 @@ function TableCellViewer({
               Giảng viên hướng dẫn
             </div>
             <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-              {item.de_tai.huong_dan.map((huongDan) => (
+              {item.de_tai.huong_dan.map((huongDan: any) => (
                 <div className="flex flex-row items-center" key={huongDan.id}>
                   <User className="mr-2 scale-75" />
                   <div>
@@ -900,6 +861,9 @@ function TableCellViewer({
                     </div>
                     <div className="text-sm">
                       {huongDan.giang_vien.tai_khoan.email}
+                    </div>
+                    <div className="text-sm italic text-gray-500">
+                      {huongDan.vai_tro}
                     </div>
                     <Separator className="mt-2" />
                   </div>
@@ -927,7 +891,7 @@ function TableCellViewer({
           </div>
           <div className="grid gap-2">
             <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-              {listSinhVienDangKy.map((sinhVienDangKy) => (
+              {listSinhVienDangKy.map((sinhVienDangKy: any) => (
                 <div
                   className="flex flex-row items-center"
                   key={sinhVienDangKy.id}
