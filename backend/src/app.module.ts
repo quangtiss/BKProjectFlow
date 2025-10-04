@@ -17,7 +17,6 @@ import { DuyetDeTaiModule } from './modules/duyet_de_tai/duyet_de_tai.module';
 import { GiangVienModule } from './modules/giang_vien/giang_vien.module';
 import { GiaoVuModule } from './modules/giao_vu/giao_vu.module';
 import { HoiDongModule } from './modules/hoi_dong/hoi_dong.module';
-import { ChinhSuaModule } from './modules/chinh_sua/chinh_sua.module';
 import { HuongDanModule } from './modules/huong_dan/huong_dan.module';
 import { KetQuaModule } from './modules/ket_qua/ket_qua.module';
 import { LichTrinhModule } from './modules/lich_trinh/lich_trinh.module';
@@ -46,7 +45,6 @@ import { PhanBienModule } from './modules/phan_bien/phan_bien.module';
     }),
     AuthModule,
     ChamDiemModule,
-    ChinhSuaModule,
     ChuDeModule,
     DangKiModule,
     DeTaiModule,
