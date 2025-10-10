@@ -83,9 +83,17 @@ export class DangKiService {
                                 hoc_ky: true
                             }
                         },
-                        ket_qua: true
+                        ket_qua: true,
+                        cham_diem: {
+                            include: {
+                                bang_diem: {
+                                    include: {
+                                        diem_thanh_phan: true
+                                    }
+                                }
+                            }
+                        }
                     },
-
                 }
             }
         });
@@ -186,6 +194,23 @@ export class DangKiService {
                     },
                     tx
                 )
+            } else {
+                const deTai = await tx.de_tai.findUnique({ where: { id: data.id_de_tai } })
+                const tb = await tx.thong_bao.create({
+                    data: {
+                        tieu_de: 'Lời mời thực hiện đề tài',
+                        noi_dung: `Bạn được mời thực hiện đề tài ${deTai?.ma_de_tai || 'chưa xác định'}`,
+                        duong_dan: '/de-tai-cua-toi'
+                    }
+                })
+                const tt = await tx.tuong_tac.create({
+                    data: {
+                        id_thong_bao: tb.id,
+                        id_nguoi_nhan: data.id_sinh_vien,
+                        da_doc_chua: false
+                    }
+                })
+                this.notificationsService.pushToUser(data.id_sinh_vien, { message: 'Bạn có lời mời thực hiện đề tài' })
             }
             return await tx.dang_ky.create({
                 data: {
@@ -208,6 +233,23 @@ export class DangKiService {
                         },
                         tx
                     )
+                } else {
+                    const deTai = await tx.de_tai.findUnique({ where: { id: data.id_de_tai } })
+                    const tb = await tx.thong_bao.create({
+                        data: {
+                            tieu_de: 'Lời mời thực hiện đề tài',
+                            noi_dung: `Bạn được mời thực hiện đề tài ${deTai?.ma_de_tai || 'chưa xác định'}`,
+                            duong_dan: '/de-tai-cua-toi'
+                        }
+                    })
+                    const tt = await tx.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: data.id_sinh_vien,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(data.id_sinh_vien, { message: 'Bạn có lời mời thực hiện đề tài' })
                 }
                 return await tx.dang_ky.create({
                     data: {

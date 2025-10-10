@@ -137,7 +137,6 @@ export function LoiMoiThucHienDeTai() {
                 })
                 const data = await response.json()
                 setListDangKy(data)
-                console.log(data)
             } catch (error) {
                 console.log("Error ", error)
             }

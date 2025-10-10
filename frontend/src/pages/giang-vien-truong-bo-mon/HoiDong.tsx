@@ -1,4 +1,4 @@
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { getCurrentAndNextHocKy } from "@/services/getCurrentNextHocKy"
 import { Plus } from "lucide-react"
@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import FormHoiDong from "./FormHoiDong"
 import { useAuth } from "@/routes/auth-context"
-import { IconChecks, IconEditCircle, IconTablePlus, IconUsersPlus } from "@tabler/icons-react"
+import { IconEditCircle, IconTablePlus, IconUsersPlus } from "@tabler/icons-react"
 import FormPhanChiaDeTai from "./FormPhanChiaDeTai"
 import FormPhanChiaGiangVien from "./FormPhanChiaGiangVien"
 import { Input } from "@/components/ui/input"
@@ -93,29 +93,10 @@ export default function HoiDong() {
         }
     }
 
-    const updateDiemChinhThucAll = async (id_de_tai: any, id_hoi_dong: any) => {
-        try {
-            const response = await fetch('http://localhost:3000/cham-diem/update-all', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id_de_tai, id_hoi_dong })
-            })
-            const data = await response.json()
-            if (response.ok) {
-                toast.success('Điểm đã được cập nhật chính thức')
-            } else {
-                toast.error('Lỗi khi cập nhật', { description: data.message })
-            }
-        } catch (error) {
-            toast.warning('Lỗi kết nối server')
-            console.error(error)
-        }
-    }
+
+
     return (
-        <div className="flex flex-col gap-2 p-5">
+        <div className="flex flex-col gap-2 p-5 sm:mx-20">
             <div className="flex gap-2 mb-5">
                 <Select value={selectHocKy} onValueChange={setSelectHocKy}>
                     <SelectTrigger className="flex justify-center w-full">
@@ -163,6 +144,15 @@ export default function HoiDong() {
                     </div>
                     <div className="p-2 border-accent-foreground/10 border-b-2 bg-gray-600/50 font-medium">
                         <div>
+                            Giai đoạn: <span className="italic no-underline text-blue-600">{hoiDong.giai_doan}</span>
+                        </div>
+                        <div>
+                            Nhóm ngành: <span className="italic no-underline text-blue-600">{hoiDong.nhom_nganh}</span>
+                        </div>
+                        <div>
+                            Hệ đào tạo: <span className="italic no-underline text-blue-600">{hoiDong.he_dao_tao}</span>
+                        </div>
+                        <div>
                             Phòng: <span className="italic no-underline text-blue-600">{hoiDong.phong}</span>
                         </div>
                         <div>
@@ -193,7 +183,7 @@ export default function HoiDong() {
                                     <DialogContent className="max-h-9/10 overflow-y-auto">
                                         <DialogTitle>Thêm đề tài vào hội đồng</DialogTitle>
                                         <DialogDescription />
-                                        <FormPhanChiaDeTai idCurrentHocKy={currentHocKy?.current?.id || 0} idHoiDong={hoiDong.id} />
+                                        <FormPhanChiaDeTai idCurrentHocKy={currentHocKy?.current?.id || 0} hoiDong={hoiDong} />
                                     </DialogContent>
                                 </Dialog>
                                 <Dialog onOpenChange={(isOpen) => { if (!isOpen) setToggle(prev => !prev) }}>
@@ -258,30 +248,6 @@ export default function HoiDong() {
                                     <div className="flex gap-2">
                                         {isNow && isGiangVienTruong && <Button variant={'destructive'} className="ml-auto cursor-pointer" onClick={() => handleDeleteDeTai(deTai.de_tai.id)}>Xóa</Button>}
                                         {isNow && hoiDong.tham_gia.some((thamGia: any) => thamGia.giang_vien.id_tai_khoan === user.auth.sub) && <Button className="ml-auto bg-blue-500" onClick={() => navigate('/cham-diem-hoi-dong/' + deTai.de_tai.id)}>Đánh giá</Button>}
-                                        {isNow && hoiDong.tham_gia.some((thamGia: any) => thamGia.giang_vien.id_tai_khoan === user.auth.sub && thamGia.vai_tro === 'Chủ tịch') &&
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button variant={'ghost'} className="ml-1 text-green-500">
-                                                        <IconChecks />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="max-h-9/10 overflow-y-auto">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Thao tác này sẽ cập nhật điểm chính thức cho sinh viên</DialogTitle>
-                                                        <DialogDescription>
-                                                            Hãy chắc chắn những người có liên quan đều đã nhập điểm
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <DialogFooter className="flex flex-row w-full">
-                                                        <DialogClose className="w-1/2 mr-2" asChild>
-                                                            <Button className="w-1/2" variant={"secondary"}>Hủy</Button>
-                                                        </DialogClose>
-                                                        <DialogClose className="w-1/2" asChild>
-                                                            <Button className="w-1/2 bg-green-500" onClick={() => updateDiemChinhThucAll(deTai.de_tai.id, hoiDong.id)}>Xác nhận</Button>
-                                                        </DialogClose>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>}
                                     </div>
                                 </div>
                             </div>

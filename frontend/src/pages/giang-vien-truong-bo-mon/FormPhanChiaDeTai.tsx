@@ -5,7 +5,7 @@ import { IconCheck } from "@tabler/icons-react"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 
-export default function FormPhanChiaDeTai({ idCurrentHocKy, idHoiDong }: { idCurrentHocKy: number, idHoiDong: number }) {
+export default function FormPhanChiaDeTai({ idCurrentHocKy, hoiDong }: { idCurrentHocKy: number, hoiDong: any }) {
     const [listDeTai, setListDeTai] = useState<any[]>([])
     const [filterListDeTai, setFilterListDeTai] = useState<any[]>([])
     const [listDeTaiSelected, setListDeTaiSelected] = useState<any[]>([])
@@ -17,8 +17,12 @@ export default function FormPhanChiaDeTai({ idCurrentHocKy, idHoiDong }: { idCur
                 const response = await fetch('http://localhost:3000/duyet-de-tai?trang_thai=Đã chấp nhận&id_hoc_ky=' + idCurrentHocKy, { method: 'GET', credentials: 'include' })
                 const data = await response.json()
                 if (response.ok) {
-                    setListDeTai(data.filter((item: any) => item.de_tai.danh_gia.every((danhGia: any) => danhGia.trang_thai === "Đã chấm")).sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
-                    setFilterListDeTai(data.filter((item: any) => item.de_tai.danh_gia.every((danhGia: any) => danhGia.trang_thai === "Đã chấm")).sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
+                    setListDeTai(data.filter((item: any) => item.de_tai.danh_gia.every((danhGia: any) => danhGia.trang_thai === "Đã chấm"))
+                        .filter((item: any) => item.de_tai.giai_doan === hoiDong.giai_doan && item.de_tai.giai_doan.nhom_nganh === hoiDong.nhom_nganh && item.de_tai.he_dao_tao === hoiDong.he_dao_tao)
+                        .sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
+                    setFilterListDeTai(data.filter((item: any) => item.de_tai.danh_gia.every((danhGia: any) => danhGia.trang_thai === "Đã chấm"))
+                        .filter((item: any) => item.de_tai.giai_doan === hoiDong.giai_doan && item.de_tai.nhom_nganh === hoiDong.nhom_nganh && item.de_tai.he_dao_tao === hoiDong.he_dao_tao)
+                        .sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
                 } else {
                     toast.error('Lỗi khi lấy dữ liệu đề tài', { description: data.message })
                 }
@@ -28,7 +32,7 @@ export default function FormPhanChiaDeTai({ idCurrentHocKy, idHoiDong }: { idCur
             }
         }
         fetchData();
-    }, [idCurrentHocKy, toggle])
+    }, [idCurrentHocKy, toggle, hoiDong])
 
 
     const sortedFilterList = useMemo(() => {
@@ -68,7 +72,7 @@ export default function FormPhanChiaDeTai({ idCurrentHocKy, idHoiDong }: { idCur
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id_hoi_dong: idHoiDong,
+                    id_hoi_dong: hoiDong.id,
                     list_de_tai: listDeTaiSelected.map(dt => dt.de_tai.id)
                 })
             })

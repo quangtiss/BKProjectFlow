@@ -13,7 +13,7 @@ export default function DeTaiCuaToi() {
     const [listHocKy, setListHocKy] = useState([])
     const [selectHocKy, setSelectHocKy] = useState("")
     const [deTaiCuaToi, setDeTaiCuaToi] = useState([])
-    const { user }: { user: any } = useAuth()
+    const { user, badgeCount }: { user: any, badgeCount: any } = useAuth()
     const vaiTro = user?.tai_khoan?.vai_tro
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function DeTaiCuaToi() {
             else console.log("Lấy dữ liệu lỗi: ", data)
         }
         fetchData()
-    }, [vaiTro, selectHocKy])
+    }, [vaiTro, selectHocKy, badgeCount])
 
 
     useEffect(() => {

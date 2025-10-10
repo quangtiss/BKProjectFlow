@@ -1,3 +1,4 @@
+import { NotificationsService } from './../notifications/notifications.service';
 import { Injectable, forwardRef, Inject, Query } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { DeTaiService } from '../de_tai/de_tai.service';
@@ -9,7 +10,8 @@ export class HuongDanService {
     constructor(
         private readonly prismaService: PrismaService,
         @Inject(forwardRef(() => DeTaiService))
-        private readonly deTaiService: DeTaiService
+        private readonly deTaiService: DeTaiService,
+        private readonly notificationsService: NotificationsService
     ) { }
 
     async findAll() {
@@ -63,6 +65,16 @@ export class HuongDanService {
                                 }
                             }
                         },
+                        ket_qua: true,
+                        cham_diem: {
+                            include: {
+                                bang_diem: {
+                                    include: {
+                                        diem_thanh_phan: true
+                                    }
+                                }
+                            }
+                        },
                         duyet_de_tai: {
                             include: {
                                 giang_vien_truong_bo_mon: {
@@ -80,6 +92,54 @@ export class HuongDanService {
 
     async create(data: any, tx?: Prisma.TransactionClient) {
         const client = tx ?? this.prismaService;
+        //Thông báo---------------
+        if (data.trang_thai === 'Chưa chấp nhận') {
+            const deTai = await client.de_tai.findUnique({ where: { id: data.id_de_tai } })
+            const tb = await client.thong_bao.create({
+                data: {
+                    tieu_de: 'Lời mời hướng dẫn đề tài',
+                    noi_dung: `Bạn được mời hướng dẫn đề tài ${deTai?.ma_de_tai || 'chưa xác định'}`,
+                    duong_dan: '/de-tai-cua-toi'
+                }
+            })
+            const tt = await client.tuong_tac.create({
+                data: {
+                    id_thong_bao: tb.id,
+                    id_nguoi_nhan: data.id_giang_vien,
+                    da_doc_chua: false
+                }
+            })
+            this.notificationsService.pushToUser(data.id_giang_vien, { message: 'Bạn có lời mời hướng dẫn đề tài' })
+        } else {
+            const gvAccepted = await client.giang_vien.findUnique({ where: { id_tai_khoan: data.id_giang_vien } })
+            const listGVLead = await client.giang_vien.findMany({
+                where: {
+                    to_chuyen_nganh: gvAccepted?.to_chuyen_nganh,
+                    is_giang_vien_truong_bo_mon: true
+                }
+            })
+            const deTai = await client.de_tai.findUnique({ where: { id: data.id_de_tai } })
+            const tb = await client.thong_bao.create({
+                data: {
+                    tieu_de: 'Đề tài được đề xuất cần duyệt',
+                    noi_dung: `Đề tài ${deTai?.ma_de_tai || 'chưa xác định'} đã được đề xuất`,
+                    duong_dan: '/duyet-de-tai'
+                }
+            })
+            for (const gvLead of listGVLead) {
+                if (gvLead.id_tai_khoan) {
+                    const tt = await client.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: gvLead.id_tai_khoan,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(gvLead.id_tai_khoan, { message: 'Có thêm đề tài mới được đề xuất' })
+                }
+            }
+        }
+        //-------
         return await client.huong_dan.create(
             { data }
         )
@@ -90,7 +150,13 @@ export class HuongDanService {
         return client.huong_dan.findUnique({
             where: { id },
             include: {
-                de_tai: true
+                de_tai: {
+                    include: {
+                        huong_dan: true,
+                        dang_ky: true
+                    }
+                },
+                giang_vien: true
             }
         })
     }
@@ -122,6 +188,74 @@ export class HuongDanService {
                 trang_thai: data.trang_thai === "Đã chấp nhận" ? "GVHD đã chấp nhận" :
                     data.trang_thai === "Đã từ chối" ? "GVHD đã từ chối" : "GVHD chưa chấp nhận"
             }, tx)
+
+            //Thông báo-------------------
+
+            const tb = await tx.thong_bao.create({
+                data: {
+                    tieu_de: 'Phản hồi từ giáo viên hướng dẫn',
+                    noi_dung: `Giảng viên ${dataCurrentHuongDan.giang_vien?.msgv || 'chưa xác định'} ${data.trang_thai} vai trò ${dataCurrentHuongDan.vai_tro} đề tài ${dataCurrentHuongDan.de_tai.ma_de_tai}`,
+                    duong_dan: '/de-tai-cua-toi'
+                }
+            })
+            for (const dangKy of dataCurrentHuongDan.de_tai.dang_ky) {
+                if (dangKy.trang_thai === 'Đã chấp nhận' && dangKy.id_sinh_vien) {
+                    const tt = await tx.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: dangKy.id_sinh_vien,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(dangKy.id_sinh_vien, { message: 'Giảng viên đã phản hồi lời mời hướng dẫn' })
+                }
+            }
+
+            for (const huongDan of dataCurrentHuongDan.de_tai.huong_dan) {
+                if (huongDan.trang_thai === 'Đã chấp nhận' && huongDan.id_giang_vien) {
+                    const tt = await tx.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: huongDan.id_giang_vien,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(huongDan.id_giang_vien, { message: 'Giảng viên đã phản hồi lời mời hướng dẫn' })
+                }
+            }
+
+            //Báo cho giảng viên trưởng là có đề tài cần duyệt vì GVHD đã chấp nhận rồi
+            if (dataCurrentHuongDan.vai_tro === 'Giảng viên hướng dẫn chính' && data.trang_thai === 'Đã chấp nhận') {
+                const gvAccepted = await tx.giang_vien.findUnique({ where: { id_tai_khoan: dataCurrentHuongDan.id_giang_vien } })
+                const listGVLead = await tx.giang_vien.findMany({
+                    where: {
+                        to_chuyen_nganh: gvAccepted?.to_chuyen_nganh,
+                        is_giang_vien_truong_bo_mon: true
+                    }
+                })
+                const deTai = await tx.de_tai.findUnique({ where: { id: dataCurrentHuongDan.id_de_tai! } })
+                const tb = await tx.thong_bao.create({
+                    data: {
+                        tieu_de: 'Đề tài được đề xuất cần duyệt',
+                        noi_dung: `Đề tài ${deTai?.ma_de_tai || 'chưa xác định'} đã được đề xuất`,
+                        duong_dan: '/duyet-de-tai'
+                    }
+                })
+                for (const gvLead of listGVLead) {
+                    if (gvLead.id_tai_khoan) {
+                        const tt = await tx.tuong_tac.create({
+                            data: {
+                                id_thong_bao: tb.id,
+                                id_nguoi_nhan: gvLead.id_tai_khoan,
+                                da_doc_chua: false
+                            }
+                        })
+                        this.notificationsService.pushToUser(gvLead.id_tai_khoan, { message: 'Có thêm đề tài mới được đề xuất' })
+                    }
+                }
+            }
+            //----------------------
+
 
             return await tx.huong_dan.update({
                 where: { id: idHuongDan },

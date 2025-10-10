@@ -6,6 +6,25 @@ import { User } from "lucide-react";
 import { TienDoTrigger } from "../TienDo";
 
 export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
+    // Tạo mảng tổng hợp điểm theo vai_tro và giai_doan
+    const tongHop = dangKy.de_tai.cham_diem.flatMap((chamDiem: any) => {
+        const { vai_tro, giai_doan } = chamDiem
+        return chamDiem.bang_diem.map((bang: any) => {
+            const tong_diem = bang.diem_thanh_phan.reduce((sum: any, d: any) => {
+                const val = parseFloat(d.diem)
+                return !isNaN(val) ? sum + val : sum
+            }, 0)
+
+            return {
+                id_sinh_vien: bang.id_sinh_vien,
+                vai_tro,
+                giai_doan,
+                tong_diem,
+            }
+        })
+    })
+
+
     return (
         <div className="flex flex-col gap-4 overflow-y-auto p-4 text-sm sm:px-20">
             <div className="text-center text-gray-500 font-bold text-xl">Học kỳ: <span className="italic text-blue-500">{dangKy.de_tai?.thuoc_ve.find((item: any) => item.trang_thai === 'Đang làm')?.hoc_ky.ten_hoc_ky}</span></div>
@@ -95,14 +114,14 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
                 </div>
             </div>
             <div className="grid gap-2">
-                <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
+                <div className="h-auto w-full rounded-md border px-2">
                     {dangKy.de_tai.dang_ky.map((sinhVienDangKy: any) => (
                         <div
                             className="flex flex-row items-center"
                             key={sinhVienDangKy.id}
                         >
                             <User className="mr-2 scale-75" />
-                            <div>
+                            <div className="w-full">
                                 <div className="text-sm mt-2">
                                     {sinhVienDangKy.sinh_vien.mssv +
                                         " - " +
@@ -113,15 +132,31 @@ export default function DeTaiCuaSinhVien({ dangKy }: { dangKy: any }) {
                                 <div className="text-sm">
                                     {sinhVienDangKy.sinh_vien.tai_khoan.email}
                                 </div>
-                                {dangKy.de_tai.ket_qua.length > 0 && <div className="text-sm italic">
-                                    <div className="text-gray-500">Điểm chuyên ngành: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_chuyen_nganh}</div>
-                                    <div className="text-gray-500">Điểm chuyên ngành: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_tot_nghiep || '-'}</div>
+                                {dangKy.de_tai.ket_qua.length > 0 && <div className="text-sm italic w-full">
+                                    <div>* Điểm chuyên ngành: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_chuyen_nganh}</div>
+                                    <div className="ml-5 text-gray-500">
+                                        {
+                                            tongHop.filter((th: any) => th.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan && th.giai_doan === 'Đồ án chuyên ngành')
+                                                .map((th: any, index: number) => {
+                                                    return <div key={index}>{th.vai_tro === 'Hội đồng' ? `Hội đồng (${index + 1})` : th.vai_tro}: {th.tong_diem}</div>
+                                                })
+                                        }
+                                    </div>
+                                    <div>* Điểm tốt nghiệp: {dangKy.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_tot_nghiep || '-'}</div>
+                                    <div className="ml-5 text-gray-500">
+                                        {
+                                            tongHop.filter((th: any) => th.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan && th.giai_doan === 'Đồ án tốt nghiệp')
+                                                .map((th: any, index: number) => {
+                                                    return <div key={index}>{th.vai_tro === 'Hội đồng' ? `Hội đồng (${index + 1})` : th.vai_tro}: {th.tong_diem}</div>
+                                                })
+                                        }
+                                    </div>
                                 </div>}
                                 <Separator className="mt-2" />
                             </div>
                         </div>
                     ))}
-                </ScrollArea>
+                </div>
             </div>
             <div className="grid gap-2">
                 <div className="flex leading-none font-medium">Mô tả</div>

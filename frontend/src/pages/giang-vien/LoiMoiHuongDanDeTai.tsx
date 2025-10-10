@@ -92,7 +92,6 @@ export function LoiMoiHuongDanDeTai() {
                     credentials: 'include'
                 })
                 const data = await response.json()
-                console.log(data)
                 setListDeTaiChuaChapNhan(data)
             } catch (error) {
                 console.log(error)

@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function DeTaiCuaGiangVien({ listHuongDan }:
     { listHuongDan: Array<object> }) {
@@ -26,7 +27,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
         trangThai: "",
         nhomNganh: "",
         heDaoTao: "",
-        giaiDoan: ""
+        giaiDoan: "Đồ án chuyên ngành"
     });
     const navigate = useNavigate()
 
@@ -76,18 +77,64 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
 
     const resetFilter = () => {
         setFilters({
+            ...filters,
             soSinhVien: "",
             daDangKy: false,
             trangThai: "",
             nhomNganh: "",
-            heDaoTao: "",
-            giaiDoan: ""
+            heDaoTao: ""
         });
+    }
+    function DiemSinhVien(huongDan: any, sinhVienDangKy: any) {
+        const tongHop = huongDan.de_tai.cham_diem.flatMap((chamDiem: any) => {
+            const { vai_tro, giai_doan } = chamDiem
+            return chamDiem.bang_diem.map((bang: any) => {
+                const tong_diem = bang.diem_thanh_phan.reduce((sum: any, d: any) => {
+                    const val = parseFloat(d.diem)
+                    return !isNaN(val) ? sum + val : sum
+                }, 0)
+
+                return {
+                    id_sinh_vien: bang.id_sinh_vien,
+                    vai_tro,
+                    giai_doan,
+                    tong_diem,
+                }
+            })
+        })
+        if (huongDan.de_tai.ket_qua.length > 0) return (
+            <div className="text-sm italic">
+                <div>* Điểm chuyên ngành: {huongDan.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_chuyen_nganh}</div>
+                <div className="ml-5 text-gray-500">
+                    {
+                        tongHop.filter((th: any) => th.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan && th.giai_doan === 'Đồ án chuyên ngành')
+                            .map((th: any, index: number) => {
+                                return <div key={index}>{th.vai_tro === 'Hội đồng' ? `Hội đồng (${index + 1})` : th.vai_tro}: {th.tong_diem}</div>
+                            })
+                    }
+                </div>
+                <div>* Điểm tốt nghiệp: {huongDan.de_tai.ket_qua.find((item: any) => item.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan)?.diem_tot_nghiep || '-'}</div>
+                <div className="ml-5 text-gray-500">
+                    {
+                        tongHop.filter((th: any) => th.id_sinh_vien === sinhVienDangKy.sinh_vien.id_tai_khoan && th.giai_doan === 'Đồ án tốt nghiệp')
+                            .map((th: any, index: number) => {
+                                return <div key={index}>{th.vai_tro === 'Hội đồng' ? `Hội đồng (${index + 1})` : th.vai_tro}: {th.tong_diem}</div>
+                            })
+                    }
+                </div>
+            </div>
+        )
     }
 
     return (
         <div className="flex flex-col gap-4">
             <div className="flex gap-2">
+                <Tabs defaultValue="Đồ án chuyên ngành" className="" onValueChange={(value) => setFilters({ ...filters, giaiDoan: value })}>
+                    <TabsList>
+                        <TabsTrigger value="Đồ án chuyên ngành">Đồ án chuyên ngành</TabsTrigger>
+                        <TabsTrigger value="Đồ án tốt nghiệp">Đồ án tốt nghiệp</TabsTrigger>
+                    </TabsList>
+                </Tabs>
                 <Input placeholder="Tìm kiếm ..." className="mb-2"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)} />
@@ -207,7 +254,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
                                 </div>
                             </div>
 
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <div className="flex flex-col items-start gap-2">
                                     <Label>Giai đoạn</Label>
                                     <Select
@@ -225,7 +272,7 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
                                         </SelectContent>
                                     </Select>
                                 </div>
-                            </div>
+                            </div> */}
                             <Button
                                 className="w-full"
                                 variant={"destructive"}
@@ -252,6 +299,17 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
                                                         <div className="text-xl">{huongDan.de_tai.ma_de_tai + " - " + huongDan.de_tai.ten_tieng_viet}</div>
                                                         <div className="text-sm italic text-gray-500">
                                                             {huongDan.de_tai.ten_tieng_anh}
+                                                        </div>
+                                                        <div className="text-muted-foreground mt-1">
+                                                            {
+                                                                huongDan.de_tai.trang_thai_duyet === "Chưa duyệt" ? (
+                                                                    <Badge variant={'secondary'}><IconLoader />Chưa duyệt</Badge>
+                                                                ) : huongDan.de_tai.duyet_de_tai.trang_thai === "Đã chấp nhận" ? (
+                                                                    <Badge variant={'secondary'}><IconCircleCheckFilled className="text-green-500" />Đã chấp nhận</Badge>
+                                                                ) : (
+                                                                    <Badge variant={'secondary'}><IconXboxXFilled className="text-red-500" />Đã từ chối</Badge>
+                                                                )
+                                                            }
                                                         </div>
                                                     </div>
                                                 </AccordionTrigger>
@@ -335,17 +393,19 @@ export default function DeTaiCuaGiangVien({ listHuongDan }:
                                                             </div>
                                                         </div>
                                                         <div className="grid gap-2">
-                                                            <ScrollArea className="h-auto max-h-[150px] rounded-md border px-2">
+                                                            <div className="h-auto w-full rounded-md border px-2">
                                                                 {huongDan.de_tai.dang_ky.map((sinhVienDangKy: any) => (
                                                                     <div className="w-full flex flex-row items-center my-2" key={sinhVienDangKy.id}>
                                                                         <User className="mr-2 scale-75" />
                                                                         <div className="w-full">
                                                                             <div className="text-sm">{sinhVienDangKy.sinh_vien.mssv + " - " + sinhVienDangKy.sinh_vien.tai_khoan.ho + " " + sinhVienDangKy.sinh_vien.tai_khoan.ten}</div>
                                                                             <div className="text-sm">{sinhVienDangKy.sinh_vien.tai_khoan.email}</div>
+                                                                            {DiemSinhVien(huongDan, sinhVienDangKy)}
+                                                                            <Separator className="mt-2" />
                                                                         </div>
                                                                     </div>
                                                                 ))}
-                                                            </ScrollArea>
+                                                            </div>
                                                         </div>
                                                         <div className="grid gap-2">
                                                             <div className="flex leading-none font-medium">

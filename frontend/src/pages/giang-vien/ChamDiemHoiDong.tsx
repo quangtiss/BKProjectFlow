@@ -15,7 +15,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import TomTatDiem from "./TomTatDiem"
-import { IconArrowLeft } from "@tabler/icons-react"
+import { IconArrowLeft, IconChecks, IconRefresh } from "@tabler/icons-react"
+import OverViewAllScores from "./OverViewAllScores"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export function ChamDiemHoiDong() {
     const { id } = useParams()
@@ -25,6 +27,7 @@ export function ChamDiemHoiDong() {
     const [deTai, setDeTai] = useState<any>()
     const [selectSV, setSelectSV] = useState<number>()
     const [isDone, setDone] = useState(false)
+    const [overView, setOverView] = useState(false)
     // Điểm hiện tại đang được nhập
     const [scores, setScores] = useState<{ [key: string]: number }>({})
     // Điểm của all sinh viên
@@ -35,7 +38,7 @@ export function ChamDiemHoiDong() {
                 sumNhom +
                 nhomTieuChi.tieu_chi.reduce((sum: number, tieuChi: any) => {
                     const val = scores[tieuChi.id];
-                    if (!val) return sum;
+                    if (val === undefined || val === null) return sum;
 
                     if (tieuChi.loai_diem === "Điểm số") {
                         return sum + val;
@@ -48,6 +51,8 @@ export function ChamDiemHoiDong() {
         0
     );
     let count = 1;
+    const [idHocKy, setIdHocKy] = useState(0)
+    const [gd, setGD] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,6 +64,8 @@ export function ChamDiemHoiDong() {
                 const data0 = await response0.json()
                 if (response0.ok) {
                     setDeTai(data0)
+                    setIdHocKy(data0.thuoc_ve.find((item: any) => item.trang_thai === 'Đang làm')?.hoc_ky?.id)
+                    setGD(data0.giai_doan)
                     const response = await fetch('http://localhost:3000/mau-danh-gia/giang-vien?loai_mau=Hội đồng&giai_doan=' + data0.giai_doan, {
                         method: 'GET',
                         credentials: 'include'
@@ -79,6 +86,24 @@ export function ChamDiemHoiDong() {
         }
         fetchData()
     }, [id])
+
+
+    const [dataOverView, setDataOverView] = useState([])
+    const [refresh, setRefresh] = useState(false)
+    useEffect(() => {
+        if (overView) {
+            const fetchAllDiem = async () => {
+                const res = await fetch(`http://localhost:3000/cham-diem?idDeTai=${+id!}&idHocKy=${idHocKy}&giaiDoan=${gd}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+                const data = await res.json()
+                if (res.ok) setDataOverView(data)
+                else toast.error('Lỗi khi lấy dữ liệu', { description: data.message })
+            }
+            fetchAllDiem()
+        }
+    }, [overView, idHocKy, gd, id, refresh])
 
 
     const onSubmitTemp = async () => {
@@ -128,7 +153,7 @@ export function ChamDiemHoiDong() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id_de_tai: +id!, danh_gia: payload })
+                body: JSON.stringify({ id_de_tai: +id!, vai_tro: 'Hội đồng', id_hoc_ky: idHocKy, giai_doan: gd, danh_gia: payload })
             })
 
             const data = await res.json()
@@ -145,20 +170,100 @@ export function ChamDiemHoiDong() {
     }
 
 
+
+    const hoiDong = deTai?.danh_gia?.find((danhGia: any) => danhGia.trang_thai === 'Chưa chấm')?.hoi_dong
+
+
+
+    async function updateAll() {
+        try {
+            const res = await fetch('http://localhost:3000/cham-diem/update-all', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_hoi_dong: hoiDong.id, id_de_tai: deTai.id, id_hoc_ky: idHocKy })
+            })
+            if (res.ok) toast.success('Đã hoàn thành đánh giá đề tài')
+            else {
+                const data = await res.json()
+                toast.error('Lỗi khi cập nhật điểm chính thức', { description: data.message })
+            }
+        } catch (error) {
+            toast.warning('Lỗi hệ thống vui lòng thử lại sau')
+            console.error(error)
+        }
+    }
+
+
+
+
+
+
     if (!deTai) return <div className="text-center text-3xl">Không tìm thấy đề tài</div>
+
+    if (overView) return (
+        <div className="flex flex-col p-5 sm:p-20 gap-10">
+            <div className="flex justify-between">
+                <Button className="w-[100px] hover:cursor-pointer" variant={'outline'} onClick={() => setOverView(false)}>
+                    <IconArrowLeft />Quay lại
+                </Button>
+                <Button className="w-[100px] hover:cursor-pointer text-blue-500" variant={'outline'} onClick={() => setRefresh(prev => !prev)}>
+                    <IconRefresh />Làm mới
+                </Button>
+            </div>
+            <OverViewAllScores data={dataOverView} />
+            {hoiDong?.tham_gia.find((item: any) => item.id_giang_vien === user.auth.sub && (item.vai_tro === 'Chủ tịch' || item.vai_tro === 'Thư ký')) && <div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant={'outline'} className="mx-auto text-green-500">
+                            <IconChecks /> Cập nhật điểm chính thưc cho sinh viên và đề tài
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-h-9/10 overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle>Thao tác này sẽ cập nhật điểm chính thức cho sinh viên</DialogTitle>
+                            <DialogDescription>
+                                Hãy chắc chắn những người có liên quan đều đã nhập điểm hợp lý
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="w-full flex">
+                            <DialogClose asChild className="w-1/2">
+                                <Button variant={'destructive'}>
+                                    Hủy
+                                </Button>
+                            </DialogClose>
+                            <DialogClose asChild className="w-1/2">
+                                <Button className="bg-green-500" onClick={() => updateAll()}>
+                                    Xác nhận
+                                </Button>
+                            </DialogClose>
+                        </div>
+                        <DialogFooter className="flex flex-row w-full">
+
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </div>}
+        </div>
+    )
 
     if (isDone) return (
         <div className="flex flex-col p-5 sm:p-20 gap-10">
-            <Button className="w-[100px] hover:cursor-pointer" variant={'outline'} onClick={() => setDone(false)}>
-                <IconArrowLeft />Quay lại
-            </Button>
+            <div className="flex justify-between">
+                <Button className="w-[100px] hover:cursor-pointer" variant={'outline'} onClick={() => setDone(false)}>
+                    <IconArrowLeft />Quay lại
+                </Button>
+                <Button className="w-[120px] hover:cursor-pointer" variant={'default'} onClick={() => setOverView(true)}>
+                    Tổng hợp điểm
+                </Button>
+            </div>
             <TomTatDiem bieuMau={bieuMau} deTai={deTai} allScores={allScores} />
             <Button className="w-full bg-green-500" onClick={onSubmit}>Gửi điểm</Button>
         </div>
     )
 
     return (
-        <div className="flex flex-col p-5 gap-3">
+        <div className="flex flex-col p-5 gap-3 sm:p-20">
             <div className="text-center font-bold text-3xl mb-10">{bieuMau.ten_mau}</div>
             <div><span className="font-extrabold">GV hội đồng: </span>{user.tai_khoan.ho + " " + user.tai_khoan.ten}</div>
             <div><span className="font-extrabold">MSGV: </span>{user.tai_khoan.giang_vien.msgv}</div>
@@ -241,7 +346,7 @@ export function ChamDiemHoiDong() {
                                                 <TableCell className="text-right">
                                                     <Input
                                                         className="w-24 ml-auto"
-                                                        value={scores[tieuChi.id] || ""}
+                                                        value={scores[tieuChi.id] ?? ""}
                                                         onChange={(e) => {
                                                             const rawValue = e.target.value.trim().toUpperCase();
 

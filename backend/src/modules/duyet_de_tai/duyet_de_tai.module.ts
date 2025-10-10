@@ -4,12 +4,14 @@ import { DuyetDeTaiService } from './duyet_de_tai.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { DeTaiModule } from '../de_tai/de_tai.module';
 import { UtilsModule } from '../a_utils/utils.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     PrismaModule,
     forwardRef(() => DeTaiModule),
-    UtilsModule
+    UtilsModule,
+    NotificationsModule
   ],
   controllers: [DuyetDeTaiController],
   providers: [DuyetDeTaiService],

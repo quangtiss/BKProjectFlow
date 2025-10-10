@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { HoiDongSchema } from "@/validations/hoi_dong"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
@@ -14,7 +15,10 @@ export default function FormHoiDong({ type, idCurrentHocKy, hoiDong }: { type: '
         defaultValues: {
             ten_hoi_dong: "Aa",
             phong: "403H6",
-            ngay_gio: "2025-09-22T12:00"
+            ngay_gio: "2025-09-22T12:00",
+            giai_doan: 'Đồ án chuyên ngành',
+            nhom_nganh: 'Khoa học Máy tính',
+            he_dao_tao: 'Tiếng Việt'
         }
     })
 
@@ -35,6 +39,9 @@ export default function FormHoiDong({ type, idCurrentHocKy, hoiDong }: { type: '
             form.reset({
                 ten_hoi_dong: hoiDong.ten_hoi_dong,
                 phong: hoiDong.phong,
+                giai_doan: hoiDong.giai_doan,
+                nhom_nganh: hoiDong.nhom_nganh,
+                he_dao_tao: hoiDong.he_dao_tao,
                 ngay_gio: localDateTime(hoiDong.ngay_gio)
             })
         }
@@ -121,6 +128,79 @@ export default function FormHoiDong({ type, idCurrentHocKy, hoiDong }: { type: '
                                         {...field}
                                         placeholder="Nhập tên"
                                     />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="giai_doan"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="block text-sm font-medium mb-1">Giai đoạn</FormLabel>
+                                <FormControl>
+                                    <Select key={field.value} value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Chọn giai đoạn" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Đồ án chuyên ngành">Đồ án chuyên ngành</SelectItem>
+                                                <SelectItem value="Đồ án tốt nghiệp">Đồ án tốt nghiệp</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="nhom_nganh"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="block text-sm font-medium mb-1">Nhóm ngành</FormLabel>
+                                <FormControl>
+                                    <Select key={field.value} value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Chọn nhóm ngành" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Khoa học Máy tính">Khoa học Máy tính</SelectItem>
+                                                <SelectItem value="Kỹ thuật Máy tính">Kỹ thuật Máy tính</SelectItem>
+                                                <SelectItem value="Liên ngành CS-CE">Liên ngành CS-CE</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="he_dao_tao"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="block text-sm font-medium mb-1">Hệ đào tạo</FormLabel>
+                                <FormControl>
+                                    <Select key={field.value} value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Chọn hệ đào tạo" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Tiếng Việt">Tiếng Việt</SelectItem>
+                                                <SelectItem value="Tiếng Anh">Tiếng Anh</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormControl>
                                 <FormDescription />
                                 <FormMessage />

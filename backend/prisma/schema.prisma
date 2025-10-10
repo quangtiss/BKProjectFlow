@@ -9,18 +9,15 @@ datasource db {
 
 model cham_diem {
   id            Int         @id @default(autoincrement())
-  ket_qua_cham  String?     @db.VarChar(100)
+  giai_doan     String?     @db.VarChar(255)
   vai_tro       String?     @db.VarChar(255)
   id_giang_vien Int?
-  id_tieu_chi   Int?
-  id_sinh_vien  Int?
   id_de_tai     Int?
   id_hoc_ky     Int?
+  bang_diem     bang_diem[]
   de_tai        de_tai?     @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
   giang_vien    giang_vien? @relation(fields: [id_giang_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
   hoc_ky        hoc_ky?     @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sinh_vien     sinh_vien?  @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
-  tieu_chi      tieu_chi?   @relation(fields: [id_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model chu_de {
@@ -126,6 +123,9 @@ model hoi_dong {
   ngay_gio     DateTime?   @db.Timestamptz(6)
   phong        String?     @db.VarChar(100)
   ten_hoi_dong String?     @db.VarChar(255)
+  giai_doan    String?     @db.VarChar(255)
+  nhom_nganh   String?     @db.VarChar(255)
+  he_dao_tao   String?     @db.VarChar(255)
   id_hoc_ky    Int?
   id_nguoi_lap Int?
   danh_gia     danh_gia[]
@@ -218,8 +218,8 @@ model sinh_vien {
   nganh        String?        @db.VarChar(100)
   ngon_ngu     String?        @db.VarChar(100)
   id_tai_khoan Int?           @unique
+  bang_diem    bang_diem[]
   bao_cao      bao_cao[]
-  cham_diem    cham_diem[]
   dang_ky      dang_ky[]
   ket_qua      ket_qua?
   moi_quan_tam moi_quan_tam[]
@@ -271,14 +271,14 @@ model thuc_hien {
 }
 
 model tieu_chi {
-  id               Int            @id @default(autoincrement())
+  id               Int               @id @default(autoincrement())
   ten              String?
-  loai_diem        String?        @db.VarChar(255)
-  diem_toi_da      String?        @db.VarChar(100)
+  loai_diem        String?           @db.VarChar(255)
+  diem_toi_da      String?           @db.VarChar(100)
   noi_dung         String?
   id_nhom_tieu_chi Int?
-  cham_diem        cham_diem[]
-  nhom_tieu_chi    nhom_tieu_chi? @relation(fields: [id_nhom_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  diem_thanh_phan  diem_thanh_phan[]
+  nhom_tieu_chi    nhom_tieu_chi?    @relation(fields: [id_nhom_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model thong_bao {
@@ -362,4 +362,22 @@ model thuoc_ve {
   id_hoc_ky  Int?
   de_tai     de_tai? @relation(fields: [id_de_tai], references: [id], onDelete: NoAction, onUpdate: NoAction)
   hoc_ky     hoc_ky? @relation(fields: [id_hoc_ky], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model bang_diem {
+  id              Int               @id @default(autoincrement())
+  id_sinh_vien    Int?
+  id_cham_diem    Int?
+  cham_diem       cham_diem?        @relation(fields: [id_cham_diem], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sinh_vien       sinh_vien?        @relation(fields: [id_sinh_vien], references: [id_tai_khoan], onDelete: NoAction, onUpdate: NoAction)
+  diem_thanh_phan diem_thanh_phan[]
+}
+
+model diem_thanh_phan {
+  id           Int        @id @default(autoincrement())
+  diem         String?    @db.VarChar(100)
+  id_bang_diem Int?
+  id_tieu_chi  Int?
+  bang_diem    bang_diem? @relation(fields: [id_bang_diem], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tieu_chi     tieu_chi?  @relation(fields: [id_tieu_chi], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

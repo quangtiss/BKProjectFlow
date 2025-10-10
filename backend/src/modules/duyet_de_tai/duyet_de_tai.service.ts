@@ -1,3 +1,4 @@
+import { NotificationsService } from './../notifications/notifications.service';
 import { tai_khoan } from '@prisma/client';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
@@ -11,7 +12,8 @@ export class DuyetDeTaiService {
         private readonly prismaService: PrismaService,
         @Inject(forwardRef(() => DeTaiService))
         private readonly deTaiService: DeTaiService,
-        private readonly utilsService: UtilsService
+        private readonly utilsService: UtilsService,
+        private readonly notificationsService: NotificationsService
     ) { }
 
     async findAll(query) {
@@ -81,17 +83,59 @@ export class DuyetDeTaiService {
 
     }
 
-    async create(duyetDeTai: any, idNguoiDuyet: number, tx?: Prisma.TransactionClient) {
-        const client = tx || this.prismaService
-        const deTai = await this.deTaiService.update(duyetDeTai.id_de_tai, { trang_thai_duyet: "Đã duyệt" }, tx)
-        if (duyetDeTai.trang_thai === 'Đã chấp nhận') this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.ten_tieng_anh + ". " + deTai?.ten_tieng_viet + ". " + deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
-        return await client.duyet_de_tai.create({
-            data: {
-                ...duyetDeTai,
-                id_nguoi_duyet: idNguoiDuyet,
-                ngay_duyet: new Date()
+    async create(duyetDeTai: any, idNguoiDuyet: number) {
+        return await this.prismaService.$transaction(async (tx) => {
+            const deTai = await tx.de_tai.update({
+                where: {
+                    id: duyetDeTai.id_de_tai
+                },
+                data: { trang_thai_duyet: "Đã duyệt" },
+                include: {
+                    dang_ky: true,
+                    huong_dan: true
+                }
+            })
+            if (duyetDeTai.trang_thai === 'Đã chấp nhận') this.utilsService.generateTopicFromDescription({ mo_ta: deTai?.ten_tieng_anh + ". " + deTai?.ten_tieng_viet + ". " + deTai?.mo_ta || "" }, duyetDeTai.id_de_tai)
+            const tb = await tx.thong_bao.create({
+                data: {
+                    tieu_de: 'Đề tài đã được duyệt',
+                    noi_dung: `Đề tài ${deTai.ma_de_tai || 'chưa xác định'} ${duyetDeTai.trang_thai}`,
+                    duong_dan: '/de-tai-cua-toi'
+                }
+            })
+            for (const dangKy of deTai.dang_ky) {
+                if (dangKy.trang_thai === 'Đã chấp nhận' && dangKy.id_sinh_vien) {
+                    const tt = await tx.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: dangKy.id_sinh_vien,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(dangKy.id_sinh_vien, { message: 'Đề tài của bạn đã được duyệt, hãy xem kết quả' })
+                }
             }
 
+            for (const huongDan of deTai.huong_dan) {
+                if (huongDan.trang_thai === 'Đã chấp nhận' && huongDan.id_giang_vien) {
+                    const tt = await tx.tuong_tac.create({
+                        data: {
+                            id_thong_bao: tb.id,
+                            id_nguoi_nhan: huongDan.id_giang_vien,
+                            da_doc_chua: false
+                        }
+                    })
+                    this.notificationsService.pushToUser(huongDan.id_giang_vien, { message: 'Đề tài của bạn đã được duyệt, hãy xem kết quả' })
+                }
+            }
+            return await tx.duyet_de_tai.create({
+                data: {
+                    ...duyetDeTai,
+                    id_nguoi_duyet: idNguoiDuyet,
+                    ngay_duyet: new Date()
+                }
+
+            })
         })
     }
 

@@ -88,6 +88,20 @@ export class DeTaiService {
                 },
                 duyet_de_tai: {
                     where: { trang_thai: "Đã chấp nhận" }
+                },
+                thuoc_ve: {
+                    include: {
+                        hoc_ky: true
+                    }
+                },
+                danh_gia: {
+                    include: {
+                        hoi_dong: {
+                            include: {
+                                tham_gia: true
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -170,25 +184,6 @@ export class DeTaiService {
                     }, tx)
                 )
             )
-
-            // Tạo thông báo cho giảng viên
-            if (user.sub !== id_giang_vien_huong_dan) {
-                const tb = await tx.thong_bao.create({
-                    data: {
-                        tieu_de: 'Lời mời hướng dẫn đề tài',
-                        noi_dung: `Bạn được mời hướng dẫn đề tài ${maDeTai}`,
-                        duong_dan: '/de-tai-cua-toi'
-                    }
-                })
-                const tt = await tx.tuong_tac.create({
-                    data: {
-                        id_thong_bao: tb.id,
-                        id_nguoi_nhan: id_giang_vien_huong_dan,
-                        da_doc_chua: false
-                    }
-                })
-                this.notificationService.pushToUser(id_giang_vien_huong_dan, { message: 'Bạn có lời mời hướng dẫn đề tài' })
-            }
 
             return deTaiUpdated
         });

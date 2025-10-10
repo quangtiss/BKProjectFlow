@@ -10,6 +10,7 @@ export class PhanBienService {
       data: {
         id_de_tai: data.id_de_tai,
         id_giang_vien: data.id_giang_vien,
+        id_hoc_ky: data.id_hoc_ky,
         trang_thai: 'Chưa chấm'
       }
     })
@@ -20,6 +21,7 @@ export class PhanBienService {
     return await this.prismaService.phan_bien.updateMany({
       where: {
         id_de_tai: data.id_de_tai,
+        id_hoc_ky: data.id_hoc_ky,
         trang_thai: 'Chưa chấm'
       },
       data: {

@@ -8,6 +8,7 @@ import { QueryDuyetDeTaiDTO } from './dto/query_duyet_de_tai.dto';
 export class DuyetDeTaiController {
     constructor(private readonly duyetDeTaiService: DuyetDeTaiService) { }
 
+    @Roles('Giảng viên trưởng bộ môn')
     @Post()
     create(@Body() duyetDeTai: CreateDuyetDeTaiDTO, @Request() req) {
         return this.duyetDeTaiService.create(duyetDeTai, req.user.sub);
@@ -24,7 +25,6 @@ export class DuyetDeTaiController {
     }
 
 
-    @Roles('Giảng viên trưởng bộ môn')
     @Patch(':id')
     update(@Param('id') id: string, @Body() body) {
         return this.duyetDeTaiService.update(+id, body);

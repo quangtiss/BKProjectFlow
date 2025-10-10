@@ -18,6 +18,58 @@ export default function PhanBien() {
     const [listDeTai, setListDeTai] = useState([])
     const [listGiangVien, setListGiangVien] = useState([])
     const [toggle, setToggle] = useState(false)
+    const [selectHocKy, setSelectHocKy] = useState("")
+    const [listHocKy, setListHocKy] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response1 = await fetch('http://localhost:3000/hoc-ky', { method: 'GET', credentials: 'include' })
+                const data1 = await response1.json()
+                if (response1.ok) {
+                    setListHocKy(data1.sort((a: any, b: any) => a.ten_hoc_ky - b.ten_hoc_ky))
+                    const current = getCurrentAndNextHocKy(data1)?.current?.id
+                    setSelectHocKy(String(current))
+                }
+                else toast.error('Lỗi khi lấy dữ liệu', { description: data1.message })
+            } catch (error) {
+                toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
+                console.error(error)
+            }
+        }
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        const fetchDeTai = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/duyet-de-tai?giai_doan=Đồ án tốt nghiệp&trang_thai=Đã chấp nhận&id_hoc_ky=' + selectHocKy, { method: 'GET', credentials: 'include' })
+                const data = await response.json()
+                if (response.ok) {
+                    setListDeTai(data.sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
+                } else {
+                    toast.error('Lỗi khi lấy dữ liệu đề tài', { description: data.message })
+                }
+
+
+                const response0 = await fetch('http://localhost:3000/giang-vien', { method: 'GET', credentials: 'include' })
+                const data0 = await response0.json()
+                if (response0.ok) {
+                    const sortedData = data0.sort((a: any, b: any) => a.msgv.localeCompare(b.msgv));
+                    setListGiangVien(sortedData);
+                } else {
+                    toast.error('Lỗi khi lấy dữ liệu giảng viên', { description: data.message })
+                }
+            } catch (error) {
+                toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
+                console.error(error)
+            }
+        }
+        fetchDeTai()
+    }, [toggle, selectHocKy])
+
+    const currentHocKy = getCurrentAndNextHocKy(listHocKy)
+
 
     async function onSubmit(idGV: number, idDeTai: number, type: 'PATCH' | 'POST') {
         try {
@@ -27,7 +79,7 @@ export default function PhanBien() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id_de_tai: idDeTai, id_giang_vien: idGV })
+                body: JSON.stringify({ id_de_tai: idDeTai, id_giang_vien: idGV, id_hoc_ky: currentHocKy?.current?.id })
             })
             const data = await response.json()
             if (response.ok) {
@@ -41,46 +93,23 @@ export default function PhanBien() {
         }
     }
 
-    useEffect(() => {
-        const fetchDeTai = async () => {
-            try {
-                const response1 = await fetch('http://localhost:3000/hoc-ky', { method: 'GET', credentials: 'include' })
-                const data1 = await response1.json()
-                if (response1.ok) {
-                    const current = getCurrentAndNextHocKy(data1)?.current?.id
 
 
-                    const response = await fetch('http://localhost:3000/duyet-de-tai?giai_doan=Đồ án tốt nghiệp&trang_thai=Đã chấp nhận&id_hoc_ky=' + current, { method: 'GET', credentials: 'include' })
-                    const data = await response.json()
-                    if (response.ok) {
-                        setListDeTai(data.sort((a: any, b: any) => a.de_tai.ma_de_tai.localeCompare(b.de_tai.ma_de_tai)))
-                    } else {
-                        toast.error('Lỗi khi lấy dữ liệu đề tài', { description: data.message })
-                    }
-
-
-                    const response0 = await fetch('http://localhost:3000/giang-vien', { method: 'GET', credentials: 'include' })
-                    const data0 = await response0.json()
-                    if (response0.ok) {
-                        const sortedData = data0.sort((a: any, b: any) => a.msgv.localeCompare(b.msgv));
-                        setListGiangVien(sortedData);
-                    } else {
-                        toast.error('Lỗi khi lấy dữ liệu giảng viên', { description: data.message })
-                    }
-                }
-                else toast.error('Lỗi khi lấy dữ liệu', { description: data1.message })
-            } catch (error) {
-                toast.warning('Lỗi hệ thống', { description: 'Vui lòng thử lại sau' })
-                console.error(error)
-            }
-        }
-        fetchDeTai()
-    }, [toggle])
 
 
 
     return (
-        <div className="p-5 sm:p-20">
+        <div className="p-5 sm:p-20 flex flex-col gap-10">
+            <Select value={selectHocKy} onValueChange={setSelectHocKy}>
+                <SelectTrigger className="flex justify-center w-full">
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    {listHocKy.length > 0 && listHocKy.map((hocKy: any) => (
+                        <SelectItem key={hocKy.id} value={String(hocKy.id)}>Học kỳ {hocKy.ten_hoc_ky} <span className="text-blue-500 italic">{currentHocKy?.current?.id === hocKy.id && " (Hiện hành)"}</span></SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <div className="border border-dashed p-2 rounded-2xl flex flex-col gap-10">
                 {listDeTai?.length > 0 ?
                     listDeTai.map((item: any, index: number) => {

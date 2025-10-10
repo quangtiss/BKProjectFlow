@@ -43,17 +43,95 @@ export class ChamDiemService {
     }
 
 
+    async findAll(query) {
+        return await this.prismaService.cham_diem.findMany({
+            where: {
+                id_de_tai: +query.idDeTai,
+                id_hoc_ky: +query.idHocKy,
+                vai_tro: query.vaiTro,
+                giai_doan: query.giaiDoan
+            },
+            include: {
+                giang_vien: {
+                    include: {
+                        tai_khoan: true
+                    }
+                },
+                bang_diem: {
+                    include: {
+                        sinh_vien: {
+                            include: {
+                                tai_khoan: true
+                            }
+                        },
+                        diem_thanh_phan: true
+                    }
+                }
+            }
+        })
+    }
+
     async create(data: any, idGV: number) {
         return await this.prismaService.$transaction(async (tx) => {
-            for (const sv of data.danh_gia) {
-                const records = sv.diem.map((diem) => ({
+            await tx.diem_thanh_phan.deleteMany({
+                where: {
+                    bang_diem: {
+                        cham_diem: {
+                            id_giang_vien: idGV,
+                            giai_doan: data.giai_doan,
+                            vai_tro: data.vai_tro,
+                            id_de_tai: data.id_de_tai,
+                            id_hoc_ky: data.id_hoc_ky
+                        }
+                    }
+                }
+            })
+
+            await tx.bang_diem.deleteMany({
+                where: {
+                    cham_diem: {
+                        id_giang_vien: idGV,
+                        giai_doan: data.giai_doan,
+                        vai_tro: data.vai_tro,
+                        id_de_tai: data.id_de_tai,
+                        id_hoc_ky: data.id_hoc_ky
+                    }
+                }
+            })
+
+            await tx.cham_diem.deleteMany({
+                where: {
                     id_giang_vien: idGV,
-                    id_sinh_vien: sv.id_sinh_vien,
-                    id_tieu_chi: diem.id_tieu_chi,
+                    giai_doan: data.giai_doan,
+                    vai_tro: data.vai_tro,
                     id_de_tai: data.id_de_tai,
-                    ket_qua_cham: String(diem.diem),
+                    id_hoc_ky: data.id_hoc_ky
+                }
+            })
+
+            const chamDiem = await tx.cham_diem.create({
+                data: {
+                    id_giang_vien: idGV,
+                    giai_doan: data.giai_doan,
+                    vai_tro: data.vai_tro,
+                    id_de_tai: data.id_de_tai,
+                    id_hoc_ky: data.id_hoc_ky
+                }
+            })
+
+            for (const sv of data.danh_gia) {
+                const bangDiem = await tx.bang_diem.create({
+                    data: {
+                        id_sinh_vien: sv.id_sinh_vien,
+                        id_cham_diem: chamDiem.id
+                    }
+                })
+                const records = sv.diem.map((diem) => ({
+                    id_bang_diem: bangDiem.id,
+                    id_tieu_chi: diem.id_tieu_chi,
+                    diem: String(diem.diem),
                 }))
-                await tx.cham_diem.createMany({ data: records })
+                await tx.diem_thanh_phan.createMany({ data: records })
             }
             return { message: 'Thành công' }
         })
@@ -67,50 +145,58 @@ export class ChamDiemService {
             const allDiem = await tx.cham_diem.findMany({
                 where: {
                     id_de_tai: data.id_de_tai,
-                    tieu_chi: {
-                        nhom_tieu_chi: {
-                            mau_danh_gia: {
-                                giai_doan: deTai.giai_doan
-                            }
+                    giai_doan: deTai.giai_doan,
+                    id_hoc_ky: data.id_hoc_ky
+                },
+                include: {
+                    bang_diem: {
+                        include: {
+                            diem_thanh_phan: true
                         }
                     }
                 }
             })
-            // 1. Đếm số giảng viên
-            const soGVHuongDanPhanBien = deTai.giai_doan === 'Đồ án chuyên ngành' ? 0 : 2;
-            const gVHoiDong = await tx.hoi_dong.findUnique({
-                where: {
-                    id: data.id_hoi_dong,
-                },
-                include: {
-                    tham_gia: true
-                }
-            })
-            const soGVHoiDong = gVHoiDong?.tham_gia.length || 0
-            const soGiangVien = soGVHoiDong + soGVHuongDanPhanBien
-
+            const soLuong = allDiem.length
             // 2. Cộng điểm theo sinh viên
-            const tongTheoSinhVien: Record<number, number> = {}
-            for (const diem of allDiem) {
-                if (!tongTheoSinhVien[diem.id_sinh_vien!]) {
-                    tongTheoSinhVien[diem.id_sinh_vien!] = 0
-                }
-                if (!isNaN(Number(diem.ket_qua_cham))) tongTheoSinhVien[diem.id_sinh_vien!] += Number(diem.ket_qua_cham)! // giả sử field tên là ket_qua_cham
-            }
+            const tongDiemTheoSinhVien = {}
+            for (const chamDiem of allDiem) {
+                // Duyệt từng bảng điểm của giảng viên đó
+                for (const bangDiem of chamDiem.bang_diem) {
+                    const idSV = bangDiem.id_sinh_vien
 
-            // 3. Tính trung bình theo sinh viên
-            const trungBinhTheoSinhVien = Object.entries(tongTheoSinhVien).map(
-                ([id_sinh_vien, tong]) => ({
-                    id_sinh_vien: Number(id_sinh_vien),
-                    diem_chuyen_nganh: Math.round(tong / soGiangVien),
-                    id_de_tai: deTai.id
-                })
-            )
+                    // Nếu sinh viên này chưa có trong object thì khởi tạo
+                    if (!tongDiemTheoSinhVien[idSV!]) {
+                        tongDiemTheoSinhVien[idSV!] = 0
+                    }
+
+                    // Duyệt tất cả điểm thành phần
+                    for (const diemTP of bangDiem.diem_thanh_phan) {
+                        const diemSo = parseFloat(diemTP.diem!)
+
+                        // Chỉ cộng nếu là số hợp lệ (bỏ qua "E" hoặc ký tự khác)
+                        if (!isNaN(diemSo)) {
+                            tongDiemTheoSinhVien[idSV!] += diemSo
+                        }
+                    }
+                }
+            }
+            // Sau khi có tổng điểm => chia cho countAll
+            for (const idSV in tongDiemTheoSinhVien) {
+                tongDiemTheoSinhVien[idSV] = Math.round(tongDiemTheoSinhVien[idSV] / soLuong)
+            }
+            const dods = Object.entries(tongDiemTheoSinhVien).map(([id_sinh_vien, diem]) => ({
+                id_de_tai: deTai.id,
+                id_sinh_vien: Number(id_sinh_vien),
+                diem_chuyen_nganh: Number(diem),
+            }))
 
             //4. Cập nhật kết quả
-            if (deTai.giai_doan === 'Đồ án chuyên ngành') await tx.ket_qua.createMany({ data: trungBinhTheoSinhVien })
+            if (deTai.giai_doan === 'Đồ án chuyên ngành')
+                await tx.ket_qua.createMany({
+                    data: dods
+                })
             else {
-                for (const diem of trungBinhTheoSinhVien) {
+                for (const diem of dods) {
                     await tx.ket_qua.update({
                         where: {
                             id_sinh_vien: diem.id_sinh_vien,
@@ -150,13 +236,6 @@ export class ChamDiemService {
                         trang_thai: 'Đang làm'
                     }
                 })
-            } else {
-                await tx.de_tai.update({
-                    where: { id: deTai.id },
-                    data: {
-                        giai_doan: 'Hoàn thành'
-                    }
-                })
             }
 
 
@@ -182,7 +261,7 @@ export class ChamDiemService {
             })
 
 
-            return { message: 'Thành công' }
+            // return { message: 'Thành công' }
         })
     }
 }

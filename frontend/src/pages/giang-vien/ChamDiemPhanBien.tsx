@@ -25,6 +25,7 @@ export function ChamDiemPhanBien() {
     const [deTai, setDeTai] = useState<any>()
     const [selectSV, setSelectSV] = useState<number>()
     const [isDone, setDone] = useState(false)
+    const [idHocKy, setIdHocKy] = useState(0)
     // Điểm hiện tại đang được nhập
     const [scores, setScores] = useState<{ [key: string]: number }>({})
     // Điểm của all sinh viên
@@ -59,6 +60,7 @@ export function ChamDiemPhanBien() {
                 const data0 = await response0.json()
                 if (response0.ok) {
                     setDeTai(data0)
+                    setIdHocKy(data0.thuoc_ve.find((item: any) => item.trang_thai === 'Đang làm')?.hoc_ky?.id)
                     const response = await fetch('http://localhost:3000/mau-danh-gia/giang-vien?loai_mau=Giảng viên phản biện&giai_doan=' + data0.giai_doan, {
                         method: 'GET',
                         credentials: 'include'
@@ -128,7 +130,7 @@ export function ChamDiemPhanBien() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id_de_tai: +id!, danh_gia: payload })
+                body: JSON.stringify({ id_de_tai: +id!, vai_tro: 'Phản biện', id_hoc_ky: idHocKy, giai_doan: 'Đồ án tốt nghiệp', danh_gia: payload })
             })
 
             const data = await res.json()
@@ -158,7 +160,7 @@ export function ChamDiemPhanBien() {
     )
 
     return (
-        <div className="flex flex-col p-5 gap-3">
+        <div className="flex flex-col p-5 gap-3 sm:p-20">
             <div className="text-center font-bold text-3xl mb-10">{bieuMau.ten_mau}</div>
             <div><span className="font-extrabold">GV phản biện: </span>{user.tai_khoan.ho + " " + user.tai_khoan.ten}</div>
             <div><span className="font-extrabold">MSGV: </span>{user.tai_khoan.giang_vien.msgv}</div>

@@ -14,5 +14,8 @@ export const HoiDongSchema = z.object({
     phong: z.string()
         .min(1, { message: 'Phòng tối thiểu 1 ký tự' })
         .max(100, { message: 'Phòng tối đa 100 ký tự' }),
-    ngay_gio: datetimeLocal
+    ngay_gio: datetimeLocal,
+    giai_doan: z.enum(['Đồ án chuyên ngành', 'Đồ án tốt nghiệp']),
+    nhom_nganh: z.enum(['Khoa học Máy tính', 'Kỹ thuật Máy tính', 'Liên ngành CS-CE']),
+    he_dao_tao: z.enum(['Tiếng Anh', 'Tiếng Việt'])
 })

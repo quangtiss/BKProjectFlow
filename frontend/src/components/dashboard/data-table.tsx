@@ -8,7 +8,6 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconCircleCheckFilled,
-  IconDotsVertical,
   IconLayoutColumns,
   IconLoader,
   IconSearch,
@@ -44,8 +43,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
@@ -181,30 +178,30 @@ export function DataTable() {
         );
       },
     },
-    {
-      id: "actions",
-      cell: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-              size="icon"
-            >
-              <IconDotsVertical />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Make a copy</DropdownMenuItem>
-            <DropdownMenuItem>Favorite</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
+    // {
+    //   id: "actions",
+    //   cell: () => (
+    //     <DropdownMenu>
+    //       <DropdownMenuTrigger asChild>
+    //         <Button
+    //           variant="ghost"
+    //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+    //           size="icon"
+    //         >
+    //           <IconDotsVertical />
+    //           <span className="sr-only">Open menu</span>
+    //         </Button>
+    //       </DropdownMenuTrigger>
+    //       <DropdownMenuContent align="end" className="w-32">
+    //         <DropdownMenuItem>Edit</DropdownMenuItem>
+    //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
+    //         <DropdownMenuItem>Favorite</DropdownMenuItem>
+    //         <DropdownMenuSeparator />
+    //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+    //       </DropdownMenuContent>
+    //     </DropdownMenu>
+    //   ),
+    // },
   ];
   const [textInput, setTextInput] = useState("");
   const [searchingWord, setSearchingWord] = useState<string>("");
@@ -848,7 +845,7 @@ function TableCellViewer({
               Giảng viên hướng dẫn
             </div>
             <ScrollArea className="h-auto max-h-[150px] w-full rounded-md border px-2">
-              {item.de_tai.huong_dan.map((huongDan: any) => (
+              {item.de_tai.huong_dan.filter((hd: any) => hd.trang_thai === 'Đã chấp nhận').map((huongDan: any) => (
                 <div className="flex flex-row items-center" key={huongDan.id}>
                   <User className="mr-2 scale-75" />
                   <div>

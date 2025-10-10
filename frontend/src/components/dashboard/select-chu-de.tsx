@@ -183,14 +183,14 @@ export default function ChuDeMultiSelect({ onRecommend, setOnRecommend, setListD
                 </div>
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>Chọn giảng viên</DialogTitle>
+                        <DialogTitle>Chọn chủ đề</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
                     <div className="flex items-center gap-2 mb-2">
                         <UserSearch className="w-5 h-5 text-muted-foreground" />
                         <Input
-                            placeholder="Tìm kiếm theo giảng viên..."
+                            placeholder="Tìm kiếm theo tên chủ đề..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value.trim())}
                         />
